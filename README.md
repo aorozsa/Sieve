@@ -2,9 +2,12 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
 
+## Getting started
+If you don't already have Angular installed, run `npm i -g @angular/cli`. Then run `npm i --save-dev electron electron-packager electron-builder`.
+
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npm start` for a dev server. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
@@ -12,7 +15,11 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Run
+
+Once built, run `electron .` on Windows and `npm run electron` on macOS.
 
 ## Running unit tests
 
@@ -22,6 +29,6 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
+## Distribution
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Run `npm run pack` to package the app, then run `./dist.sh` on Windows, or `npm run dist` on macOS to create a distributable installer for the current operating system. The outputs for these commands will be saved within `dist/`.
