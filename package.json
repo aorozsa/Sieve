@@ -18,7 +18,7 @@
     "dist": "build --pd dist/packages/*"
   },
   "build": {
-    "appId": "sieve",
+    "appId": "com.electron.sieve",
     "asar": "true",
     "dmg": {
       "contents": [
@@ -36,7 +36,14 @@
       ]
     },
     "linux": {
-      "target": "deb"
+      "executableName": "Sieve",
+      "category": "Productivity",
+      "icon": "build/icon.icns",
+      "target": [
+        "AppImage",
+        "deb",
+        "tar.gz"
+      ]
     },
     "win": {
       "target": "NSIS",

@@ -9,7 +9,7 @@ function createWindow() {
         width: 600,
         height: 600,
         backgroundColor: '#ffffff',
-        icon: path.join(__dirname, 'build/icon.ico')
+        icon: path.join(__dirname, 'build/icon.png')
     })
 
     win.loadURL(`file://${__dirname}/dist/index.html`)
