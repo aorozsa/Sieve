@@ -14,7 +14,7 @@
     "e2e": "ng e2e",
     "build": "ng build --prod",
     "electron": "electron .",
-    "pack": "electron-packager . Sieve --overwrite --icon build/icon.ico --out dist/packages --asar=true && cd dist/packages/Sieve-darwin-x64 && rm LICENSE* version",
+    "pack": "electron-packager . Sieve --overwrite --icon build/icon.icns --out dist/packages --asar=true && cd dist/packages/Sieve-darwin-x64 && rm LICENSE* version",
     "dist": "build --pd dist/packages/*"
   },
   "build": {

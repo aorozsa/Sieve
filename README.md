@@ -19,7 +19,7 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 
 ## Run
 
-Once built, run `electron .` on Windows and `npm run electron` on macOS.
+Once built, run `electron .` on Windows and `npm run electron` on macOS / Linux.
 
 ## Running unit tests
 
@@ -31,4 +31,4 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## Distribution
 
-Run `npm run pack` to package the app, then run `./dist.sh` on Windows, or `npm run dist` on macOS to create a distributable installer for the current operating system. The outputs for these commands will be saved within `dist/`.
+Run `npm run pack` to package the app, then run `./dist.sh` on Windows, or `npm run dist` on macOS / Linux to create a distributable installer for the current operating system. The outputs for these commands will be saved within `dist/`.
