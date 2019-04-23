@@ -4,12 +4,19 @@ var path = require('path')
 let win;
 
 function createWindow() {
+    // Set icon based on platform
+    if (process.platform === "win32") {
+        var icon = 'build/icon.ico';
+    } else {
+        var icon = 'build/icon.png';
+    }
+    
     // Create the browser window.
     win = new BrowserWindow({
         width: 600,
         height: 600,
         backgroundColor: '#ffffff',
-        icon: path.join(__dirname, 'build/icon.png')
+        icon: path.join(__dirname, icon)
     })
 
     win.loadURL(`file://${__dirname}/dist/index.html`)
