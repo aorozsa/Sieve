@@ -1,5 +1,14 @@
-<div>
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
+<h1>Sieve</h1>
+
+<!-- these are some basics to get you started -- modify as you see fit. -->
+
+<h2>
+<div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
+    <div class="container" *ngFor="let group of groups" id="g1">
+      <span class="group-handle">{{group.name}}</span>
+      <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
+        <div *ngFor="let item of group.items" [innerHtml]="item.name"></div>
+      </div>
+    </div>
 </div>
+<h2>

@@ -1,4 +1,29 @@
-div {
-    text-align: center;
-    color: red;
+/*
+ * this helps the mirrored elements be the right size
+ * and it's generally a good practice
+ */
+* {
+  box-sizing: border-box;
 }
+
+h3, h3 code {
+  font-size: 20px;
+}
+#g1{
+    float: left;
+}
+.container {
+  background: rgba(255, 255, 255, 0.4);
+  list-style: none;
+  padding: 8px;
+  color: #222;
+}
+
+.wrapper {
+    display: table;
+}
+div {
+    display: block;
+}
+
+a:link, a:visited, a:hover, a:active { color: lightblue; }
