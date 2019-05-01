@@ -8,6 +8,9 @@ import { DragulaModule, DragulaService }   from 'ng2-dragula';
 })
 
 export class AppComponent {
+  task: string;
+  
+
 
   constructor(private dragulaService: DragulaService) {
       this.dragulaService.createGroup("COLUMNS", {
