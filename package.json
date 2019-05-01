@@ -18,9 +18,7 @@
     "pack": "(rm -r dist/package || echo) && run-script-os",
     "pack:win32:linux": "electron-packager . Sieve --overwrite --icon build/icon.icns --out dist/package --asar=true",
     "pack:darwin": "npm run pack:win32:linux && cd dist/package/Sieve-darwin-x64 && rm LICENSE* version",
-    "dist": "run-script-os",
-    "dist:darwin": "build --pd dist/package/*",
-    "dist:linux": "npm run dist:darwin && cd dist/ && tar -zcvf Sieve-0.1.0.tar.gz package/Sieve-linux-x64 && cd .."
+    "dist": "build --pd dist/package/*"
   },
   "build": {
     "appId": "com.electron.sieve",
@@ -46,7 +44,8 @@
       "icon": "build/icon.icns",
       "target": [
         "AppImage",
-        "deb"
+        "deb",
+        "tar.gz"
       ]
     },
     "win": {
