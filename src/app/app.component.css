@@ -35,8 +35,8 @@ h1{
    overflow: scroll;
 }
 
-div {
-    display: block;
+.btn-primary{
+  display: inline-block
 }
 
 a:link, a:visited, a:hover, a:active { color: lightblue; }

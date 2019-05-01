@@ -8,7 +8,11 @@
       <span class="group-handle"> {{group.name}} </span>
       <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
         <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
-
       </div>
     </div>
 </div>
+<h2> Add Group </h2>
+
+<input type="text" class="form-control" placeholder="Enter group name" id="txtSearch" [(ngModel)]="task" />
+<button class="btn-primary" type="button" (click)="onClick()"> ADD NEW HEADER
+</button>

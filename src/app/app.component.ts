@@ -10,12 +10,12 @@ import { DragulaModule, DragulaService }   from 'ng2-dragula';
 export class AppComponent {
 
   constructor(private dragulaService: DragulaService) {
-
       this.dragulaService.createGroup("COLUMNS", {
         direction: 'vertical',
         moves: (el, source, handle) => handle.className === "group-handle"
       });
     }
+
 
     public groups:Array<any> = [
       {
@@ -32,7 +32,9 @@ export class AppComponent {
       }
     ];
 
-
-
+    onClick(){
+      this.groups.push({name: this.task});
+      this.task = '';
+    }
 
 }
