@@ -1,2 +1,2 @@
 #!/bin/sh
-build --pd dist/packages/*
+build --pd dist/package/*

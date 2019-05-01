@@ -7,6 +7,7 @@
   "homepage": "",
   "main": "index.js",
   "scripts": {
+    "install": "npm i -g @angular/cli && npm i --save-dev electron electron-packager electron-builder ng2-dragula jquery run-script-os",
     "ng": "ng",
     "start": "ng serve --open",
     "test": "ng test",
@@ -14,8 +15,12 @@
     "e2e": "ng e2e",
     "build": "ng build --prod",
     "electron": "electron .",
-    "pack": "electron-packager . Sieve --overwrite --icon build/icon.icns --out dist/packages --asar=true && cd dist/packages/Sieve-darwin-x64 && rm LICENSE* version",
-    "dist": "build --pd dist/packages/*"
+    "pack": "rm -r dist/package && run-script-os",
+    "pack:win32:linux": "electron-packager . Sieve --overwrite --icon build/icon.icns --out dist/package --asar=true",
+    "pack:darwin": "npm run pack:win32:linux && cd dist/package/Sieve-darwin-x64 && rm LICENSE* version",
+    "dist": "run-script-os",
+    "dist:darwin": "build --pd dist/package/*",
+    "dist:linux": "npm run dist:darwin && cd dist/ && tar -zcvf Sieve-0.1.0.tar.gz package/Sieve-linux-x64 && cd .."
   },
   "build": {
     "appId": "com.electron.sieve",
@@ -41,8 +46,7 @@
       "icon": "build/icon.icns",
       "target": [
         "AppImage",
-        "deb",
-        "tar.gz"
+        "deb"
       ]
     },
     "win": {
@@ -61,9 +65,6 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
-    "dragula": "^3.7.2",
-    "jquery": "^3.4.0",
-    "ng2-dragula": "^2.1.1",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
@@ -83,12 +84,15 @@
     "electron-packager": "^13.1.1",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
+    "jquery": "^3.4.0",
     "karma": "~4.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "ng2-dragula": "^2.1.1",
     "protractor": "~5.4.0",
+    "run-script-os": "^1.0.5",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2"

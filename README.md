@@ -3,7 +3,7 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
 
 ## Getting started
-If you don't already have Angular installed, run `npm i -g @angular/cli`. Then run `npm i --save-dev electron electron-packager electron-builder`.
+Run `npm run install` to install or update the used packages.
 
 ## Development server
 
