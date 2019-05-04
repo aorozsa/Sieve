@@ -12,12 +12,12 @@ h1{
 #g1{
     float: left;
 }
-.container {
+div.container {
   background: rgba(255, 255, 255, 0.4);
   list-style: none;
   padding: 20px;
   color: #222;
-  margin: auto
+  margin: 4px;
 }
 
 
@@ -27,12 +27,12 @@ h1{
 
 }
 .wrapper {
-    margin: auto;
-   width: 90%;
-   border: 3px;
-   padding: 10px;
-   text-align: center;
-   overflow: scroll;
+  margin: auto;
+  width: 90%;
+  border: 3px;
+  padding: 10px;
+  text-align: center;
+  overflow: scroll;
 }
 
 .btn-primary{

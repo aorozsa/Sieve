@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DragulaModule, DragulaService }   from 'ng2-dragula';
+import { DragulaModule, DragulaService } from 'ng2-dragula';
 
 @Component({
   selector: 'app-root',
@@ -9,18 +9,15 @@ import { DragulaModule, DragulaService }   from 'ng2-dragula';
 
 export class AppComponent {
   task: string;
-  
-
 
   constructor(private dragulaService: DragulaService) {
-      this.dragulaService.createGroup("COLUMNS", {
+      this.dragulaService.createGroup('COLUMNS', {
         direction: 'vertical',
-        moves: (el, source, handle) => handle.className === "group-handle"
+        moves: (el, source, handle) => handle.className === 'container'
       });
     }
 
-
-    public groups:Array<any> = [
+    public groups: Array<any> = [
       {
         name: 'Group A',
         items: [{name: 'Item A'}, {name: 'Item B'}, {name: 'Item C'}, {name: 'Item D'}]
@@ -35,9 +32,8 @@ export class AppComponent {
       }
     ];
 
-    onClick(){
+    onClick() {
       this.groups.push({name: this.task});
       this.task = '';
     }
-
 }
