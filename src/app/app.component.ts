@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(private dragulaService: DragulaService) {
       this.dragulaService.createGroup('COLUMNS', {
         direction: 'vertical',
-        moves: (el, source, handle) => handle.className === 'container'
+        moves: (el, source, handle) => handle.className === 'header'
       });
     }
 
@@ -33,7 +33,7 @@ export class AppComponent {
     ];
 
     onClick() {
-      this.groups.push({name: this.task});
+      this.groups.push({name: this.task, items: [{name: 'PLACEHOLDER'}]});
       this.task = '';
     }
 }
