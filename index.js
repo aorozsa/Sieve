@@ -13,12 +13,12 @@ function createWindow() {
     
     // Create the browser window.
     win = new BrowserWindow({
-        width: 600,
-        height: 600,
+        show: false,
         backgroundColor: '#ffffff',
         icon: path.join(__dirname, icon)
     })
-
+    win.maximize()
+    win.show()
     win.loadURL(`file://${__dirname}/dist/index.html`)
 
     //// uncomment below to open the DevTools.

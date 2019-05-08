@@ -3,7 +3,7 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
 
 ## Getting started
-Run `npm run install` to install or update the used packages.
+Run `npm run install` to install or update the packages used.
 
 ## Development server
 
@@ -15,11 +15,11 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `npm run build` to build and run the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Run
 
-Once built, run `electron .` on Windows and `npm run electron` on macOS / Linux.
+Once built, run `npm run electron`.
 
 ## Running unit tests
 
@@ -31,4 +31,4 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## Distribution
 
-Run `npm run pack` to package the app, then run `./dist.sh` on Windows, or `npm run dist` on macOS / Linux to create a distributable installer for the current operating system. The outputs for these commands will be saved within `dist/`.
+Run `npm run dist` on macOS / Linux or `npm run pack && ./dist.sh` on Windows to create a distributable installer for the current operating system. The outputs for these commands will be saved within `dist/`.
