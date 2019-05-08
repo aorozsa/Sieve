@@ -12,7 +12,7 @@ export class AppComponent {
 
   constructor(private dragulaService: DragulaService) {
       this.dragulaService.createGroup('COLUMNS', {
-        direction: 'vertical',
+        direction: 'horizontal',
         moves: (el, source, handle) => handle.className === 'header'
       });
     }

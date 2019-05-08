@@ -2,44 +2,66 @@
  * this helps the mirrored elements be the right size
  * and it's generally a good practice
  */
+
+
+ @font-face {
+  font-family: 'NotoSansJP-Regular';
+  src: url("../assets/fonts/NotoSansJP-Regular.otf")
+ }
+ body {
+   font-family: Lato;
+   background-color: #E8EFFA;
+   font-family: 'NotoSansJP-Regular';
+ }
+
+ h1{
+   text-align: center;
+   font-family: 'NotoSansJP-Regular';
+   font-size: 100px
+ }
+
 * {
   box-sizing: border-box;
 }
 
-h1{
-  text-align: center;
-}
-#g1{
-    float: left;
-}
+
+
 div.container {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(153, 162, 176, 0.4);
   list-style: none;
   padding: 20px;
   color: #222;
   margin: 4px;
-
+  margin: 0 auto;
 }
 
 .groups{
-
-   left:50%;
+  margin: 0 auto;
+   font-family: 'NotoSansJP-Regular';
+   float:right;
+   background: rgba(250, 244, 232);
+   margin: 4px;
+   max-width:235
 }
 
 .header{
   font-size: 30;
+
 }
 
 .item{
   margin: auto;
-  background: rgba(255, 255, 255, 1);
-  margin: 20px;
+  background: rgba(255, 252, 247);
+  margin-top:20px;
   padding: 50px;
+  font-size: 100%;
+  text-align: center;
+
 
 }
 .wrapper {
-  margin: auto;
-  width: 90%;
+  margin: 0 auto;
+  width: 50%;
   border: 3px;
   padding: 10px;
   text-align: center;
