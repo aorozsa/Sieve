@@ -20,11 +20,24 @@
    font-size: 100px
  }
 
+#header{
+  width:100%;
+
+}
+
+#logo{
+  text-align: center;
+  display:block;
+  margin:auto;
+  margin-bottom: 50px;
+  margin-top:100px;
+  width:300px;
+  opacity: 0.8;
+}
+
 * {
   box-sizing: border-box;
 }
-
-
 
 div.container {
   background: rgba(153, 162, 176, 0.4);
@@ -36,36 +49,37 @@ div.container {
 }
 
 .groups{
-  margin: 0 auto;
    font-family: 'NotoSansJP-Regular';
-   float:right;
+   float:left;
    background: rgba(250, 244, 232);
-   margin: 4px;
-   max-width:235
+   margin: 0 4;
 }
 
 .header{
   font-size: 30;
-
 }
+
 
 .item{
-  margin: auto;
+  line-height: 100px;
   background: rgba(255, 252, 247);
   margin-top:20px;
-  padding: 50px;
-  font-size: 100%;
+  width:100px;
+  height: 100px;
+  font-size: 1em;
   text-align: center;
-
-
+  word-wrap: break-word;
 }
+
 .wrapper {
   margin: 0 auto;
   width: 50%;
+  height:100%;
   border: 3px;
   padding: 10px;
   text-align: center;
-  overflow: scroll;
+  background-color: #B8B6B4;
+
 }
 
 .btn-primary{
