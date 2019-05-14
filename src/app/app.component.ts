@@ -31,13 +31,15 @@ export class AppComponent {
 
     saveButton(){
       const blob = new Blob([JSON.stringify(this.groups)], {type : 'application/json'});
-      saveAs(blob, this.saveName +'.json');
+      // saveAs(blob, this.saveName + '.json');
+      saveAs(blob, this.saveName + '.json');
       this.saveName = '';
     }
 
     loadFile(filePath: string) {
       console.log(filePath)
       var fileName = filePath.replace(/^.*[\\\/]/, '')
+      console.log(fileName)
       this.groups = require("../assets/save/" + fileName);
 
     }

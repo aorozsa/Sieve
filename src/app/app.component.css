@@ -78,11 +78,16 @@ div.container {
   padding: 10px;
   text-align: center;
   background-color: #B8B6B4;
-
 }
 
-.btn-primary{
-  display: inline-block
+.controls{
+  margin: 0 auto;
+  width: 50%;
+  line-height: 50px;
+  border: 3px;
+  padding: 10px;
+  text-align: center;
+  background-color: #9C91FF;
 }
 
 a:link, a:visited, a:hover, a:active { color: lightblue; }

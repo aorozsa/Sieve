@@ -2,16 +2,7 @@
 <div id='header'>
 <img id='logo' src='assets/images/banner.png'>
 </div>
-<div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
-  <div class="groups" *ngFor="let group of groups" id="g1">
-    <span class="header"> {{group.name}} </span>
-    <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
-      <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
-    </div>
-  </div>
-</div>
-<h2> Add Group </h2>
-
+<div class='controls'>
 <input type="text" placeholder="Enter group name" [(ngModel)]="task" />
 <button  type="button" (click)="newHeader()">ADD NEW HEADER</button>
 <br>
@@ -26,3 +17,13 @@
 
 <input #filePath type="file" id="input"/>
 <button (click)="loadFile(filePath.value)">LOAD</button>
+</div>
+
+<div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
+  <div class="groups" *ngFor="let group of groups" id="g1">
+    <span class="header"> {{group.name}} </span>
+    <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
+      <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
+    </div>
+  </div>
+</div>
