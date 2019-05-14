@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { DragulaModule, DragulaService } from 'ng2-dragula';
+import { saveAs } from 'file-saver';
+declare var require: any
 
 @Component({
   selector: 'app-root',
@@ -9,6 +11,10 @@ import { DragulaModule, DragulaService } from 'ng2-dragula';
 
 export class AppComponent {
   task: string;
+  saveName: String;
+  loadName: String;
+
+  public groups: Array<any>;
 
   constructor(private dragulaService: DragulaService) {
       this.dragulaService.createGroup('COLUMNS', {
@@ -17,23 +23,24 @@ export class AppComponent {
       });
     }
 
-    public groups: Array<any> = [
-      {
-        name: 'Group A',
-        items: [{name: 'Item A'}, {name: 'Item B'}, {name: 'Item C'}, {name: 'Item D'}]
-      },
-      {
-        name: 'Group B',
-        items: [{name: 'Item 1'}, {name: 'Item 2'}, {name: 'Item 3'}, {name: 'Item 4'}]
-      },
-      {
-        name: 'Group C',
-        items: [{name: 'Item 1'}, {name: 'Item 2'}, {name: 'Item 3'}, {name: 'Item 4'}]
-      }
-    ];
-
-    onClick() {
-      this.groups.push({name: this.task, items: [{name: 'PLACEHOLDER'}]});
+    newHeader() {
+      this.groups.push({name: this.task, items: [{name: ''}]});
       this.task = '';
+      console.log(this.groups);
     }
+
+    saveButton(){
+      const blob = new Blob([JSON.stringify(this.groups)], {type : 'application/json'});
+      saveAs(blob, this.saveName +'.json');
+      this.saveName = '';
+    }
+
+    loadFile(filePath: string) {
+      console.log(filePath)
+      var fileName = filePath.replace(/^.*[\\\/]/, '')
+      this.groups = require("../assets/save/" + fileName);
+
+    }
+
+
 }

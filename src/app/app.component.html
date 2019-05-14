@@ -12,6 +12,17 @@
 </div>
 <h2> Add Group </h2>
 
-<input type="text" class="form-control" placeholder="Enter group name" id="txtSearch" [(ngModel)]="task" />
-<button class="btn-primary" type="button" (click)="onClick()"> ADD NEW HEADER
-</button>
+<input type="text" placeholder="Enter group name" [(ngModel)]="task" />
+<button  type="button" (click)="newHeader()">ADD NEW HEADER</button>
+<br>
+
+<!-- <input type="text" placeholder="Enter new slide" [(ngModel)]="task" />
+<button  type="button" (click)="onClick()">ADD NEW HEADER</button>
+<br> -->
+
+<input type="text" placeholder="Enter file name for saving" [(ngModel)]="saveName" />
+<button  type="button" (click)="saveButton()">SAVE</button>
+<br>
+
+<input #filePath type="file" id="input"/>
+<button (click)="loadFile(filePath.value)">LOAD</button>
