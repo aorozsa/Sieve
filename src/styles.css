@@ -1,29 +1,30 @@
 /* Add application styles & imports to this file! */
-html { background-color: #ff7700;
-background-image: url("src/assets/images/dots.svg");
-background-attachment: fixed;
+html {
+  background-color: #ff7700;
+  background-image: url("src/assets/images/Arrows.svg");
+  background-attachment: fixed;
+  background-repeat: repeat;
 }
-
-
 
 /* in-flight clone */
 .gu-mirror {
   position: fixed !important;
   margin: 0 !important;
-
   z-index: 9999 !important;
   opacity: 0.8;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   filter: alpha(opacity=80);
   pointer-events: none;
-  box-shadow: 1px 1px 24px 6px rgba(0,0,0,0.88);
--webkit-box-shadow: 1px 1px 24px 6px rgba(0,0,0,0.88);
--moz-box-shadow: 1px 1px 24px 6px rgba(0,0,0,0.88);
+  box-shadow: 1px 1px 24px 6px rgba(0, 0, 0, 0.88);
+  -webkit-box-shadow: 1px 1px 24px 6px rgba(0, 0, 0, 0.88);
+  -moz-box-shadow: 1px 1px 24px 6px rgba(0, 0, 0, 0.88);
 }
+
 /* high-performance display:none; helper */
 .gu-hide {
   left: -9999px !important;
 }
+
 /* added to mirrorContainer (default = body) while dragging */
 .gu-unselectable {
   -webkit-user-select: none !important;
@@ -31,12 +32,13 @@ background-attachment: fixed;
   -ms-user-select: none !important;
   user-select: none !important;
 }
+
 /* added to the source element while its mirror is dragged */
 .gu-transit {
   opacity: 0.2;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
   filter: alpha(opacity=20);
-  box-shadow: 1px 1px 24px 6px rgba(125,255,0,0.88) inset;
--webkit-box-shadow: 1px 1px 24px 6px rgba(125,255,0,0.88) inset;
--moz-box-shadow: 1px 1px 24px 6px rgba(125,255,0,0.88) inset;
+  box-shadow: 1px 1px 24px 6px rgba(125, 255, 0, 0.88) inset;
+  -webkit-box-shadow: 1px 1px 24px 6px rgba(125, 255, 0, 0.88) inset;
+  -moz-box-shadow: 1px 1px 24px 6px rgba(125, 255, 0, 0.88) inset;
 }

@@ -34,7 +34,7 @@
   <input #filePath type="file" id="input" />
   <button (click)="loadFile(filePath.value)">LOAD</button>
 </div>
-<div class="flex-container">
+
   <div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
     <div class="groups" *ngFor="let group of groups" id="g1">
       <span class="header"> {{group.name}} </span>
@@ -43,4 +43,3 @@
       </div>
     </div>
   </div>
-</div>

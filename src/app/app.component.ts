@@ -15,7 +15,7 @@ export class AppComponent {
   loadName: String;
   itemName: String;
   selectedGroup: String = 'None';
-  selectedGroupID: Integer;
+  selectedGroupID = '';
 
   public groups: Array<any> = require("src/assets/save/groups.json");
 
@@ -25,6 +25,7 @@ export class AppComponent {
       moves: (el, source, handle) => handle.className === 'header'
     });
   }
+
 
   newHeader() {
     this.groups.push({ name: this.task, items: [{ name: '' }] });
