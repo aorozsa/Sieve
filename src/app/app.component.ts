@@ -40,7 +40,7 @@ export class AppComponent {
       console.log(filePath)
       var fileName = filePath.replace(/^.*[\\\/]/, '')
       console.log(fileName)
-      this.groups = require("../assets/save/" + fileName);
+      this.groups = require("src/assets/save/" + fileName);
 
     }
 
