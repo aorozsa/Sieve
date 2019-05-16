@@ -3,28 +3,35 @@
 <img id='logo' src='assets/images/banner.png'>
 </div>
 <div class='controls'>
-<input type="text" placeholder="Enter group name" [(ngModel)]="task" />
-<button  type="button" (click)="newHeader()">ADD NEW HEADER</button>
-<br>
+  <select>
+    <option *ngFor="let group of groups; let i = index;" [selected] = "i==1">{{group.name}}</option>
+  </select>
+  <input type="text" placeholder="Enter group name" [(ngModel)]="task" />
+  <button  type="button" (click)="newHeader()">ADD NEW HEADER</button>
+  <br>
 
-<!-- <input type="text" placeholder="Enter new slide" [(ngModel)]="task" />
-<button  type="button" (click)="onClick()">ADD NEW HEADER</button>
-<br> -->
-ALL FILES NEED TO BE SAVED TO THE SRC/ASSETS/SAVE FOLDER
-<br>
-<input type="text" placeholder="Enter file name for saving" [(ngModel)]="saveName" />
-<button  type="button" (click)="saveButton()">SAVE</button>
-<br>
-<br>
-<input #filePath type="file" id="input"/>
-<button (click)="loadFile(filePath.value)">LOAD</button>
+  <!-- <input type="text" placeholder="Enter new slide" [(ngModel)]="task" />
+  <button  type="button" (click)="onClick()">ADD NEW HEADER</button>
+  <br> -->
+  ALL FILES NEED TO BE SAVED TO THE SRC/ASSETS/SAVE FOLDER
+  <br>
+  <input type="text" placeholder="Enter file name for saving" [(ngModel)]="saveName" />
+  <button  type="button" (click)="saveButton()">SAVE</button>
+  <br>
+  <br>
+  <input #filePath type="file" id="input"/>
+  <button (click)="loadFile(filePath.value)">LOAD</button>
 </div>
-
+<div class="flex-container">
 <div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
+
   <div class="groups" *ngFor="let group of groups" id="g1">
+
     <span class="header"> {{group.name}} </span>
+
     <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
       <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
     </div>
   </div>
+</div>
 </div>

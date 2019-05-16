@@ -6,8 +6,9 @@
 
  @font-face {
   font-family: 'NotoSansJP-Regular';
-  src: url("../assets/fonts/NotoSansJP-Regular.otf")
+  src: url("src/assets/fonts/NotoSansJP-Regular.otf")
  }
+
  body {
    font-family: Lato;
    background-color: #E8EFFA;
@@ -16,14 +17,18 @@
 
  h1{
    text-align: center;
-   font-family: 'NotoSansJP-Regular';
+
    font-size: 100px
  }
 
 #header{
   width:100%;
-
 }
+
+.flex-container {
+  display: flex;
+}
+
 
 #logo{
   text-align: center;
@@ -42,10 +47,11 @@
 div.container {
   background: rgba(153, 162, 176, 0.4);
   list-style: none;
-  padding: 20px;
+  padding: 20 20 20 20;
   color: #222;
-  margin: 4px;
-  margin: 0 auto;
+
+
+  min-height: 150px;
 }
 
 .groups{
@@ -53,21 +59,28 @@ div.container {
    float:left;
    background: rgba(250, 244, 232);
    margin: 0 4;
+   min-width: 150px;
+   max-width: 100%;
+
 }
 
 .header{
   font-size: 30;
+  padding: 10px;
+  display: inline-block;
 }
 
 
 .item{
   background: rgba(255, 252, 247);
-  margin-top:20px;
-  width:100px;
+  margin-top: 20px;
+  min-width: 100px;
   height: 100px;
   font-size: 1em;
   text-align: center;
   word-wrap: break-word;
+  line-height: 100px;
+  border: 2px solid #000000;
 }
 
 .wrapper {
@@ -85,9 +98,13 @@ div.container {
   width: 50%;
   line-height: 20px;
   border: 3px;
-  padding: 10px;
+  padding: 100px;
   text-align: center;
   background-color: #9C91FF;
+  border-radius:50px 50px 0px 0px;
+  -moz-border-radius:50px 50px 0px 0px;
+  -webkit-border-radius:50px 50px 0px 0px;
+  font-family: 'NotoSansJP-Regular';
 }
 
 a:link, a:visited, a:hover, a:active { color: lightblue; }

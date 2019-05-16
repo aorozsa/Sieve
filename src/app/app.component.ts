@@ -14,7 +14,7 @@ export class AppComponent {
   saveName: String;
   loadName: String;
 
-  public groups: Array<any>;
+  public groups: Array<any>  = require("src/assets/save/groups.json");
 
   constructor(private dragulaService: DragulaService) {
       this.dragulaService.createGroup('COLUMNS', {
