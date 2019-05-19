@@ -1,4 +1,3 @@
-<!-- these are some basics to get you started -- modify as you see fit. -->
 <div id='header'>
   <h1>SIEVE</h1>
 </div>
@@ -9,7 +8,6 @@
     <option *ngFor="let group of groups; let i = index" [ngValue]="i">{{group.name}}</option>
   </select>
   <p><span>You selected: </span><b>{{selectedGroup}}</b></p>
-
 
   <input type="text" placeholder="Enter slide summary" [(ngModel)]="itemName" />
   <button type="button" (click)="newItem()">ADD</button>
@@ -31,15 +29,15 @@
   <button type="button" (click)="saveButton()">SAVE</button>
   <br>
   <br>
-  <input #filePath type="file" id="input" />
+  <input #filePath type="file" />
   <button (click)="loadFile(filePath.value)">LOAD</button>
 </div>
 
-  <div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
-    <div class="groups" *ngFor="let group of groups" id="g1">
-      <span class="header"> {{group.name}} </span>
-      <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
-        <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
-      </div>
+<div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
+  <div class="groups" *ngFor="let group of groups" id="g1">
+    <span class="header"> {{group.name}} </span>
+    <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
+      <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
     </div>
   </div>
+</div>

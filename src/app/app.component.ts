@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DragulaModule, DragulaService } from 'ng2-dragula';
 import { saveAs } from 'file-saver';
-declare var require: any
+declare var require: any;
 
 @Component({
   selector: 'app-root',
@@ -11,13 +11,14 @@ declare var require: any
 
 export class AppComponent {
   task: string;
-  saveName: String;
-  loadName: String;
-  itemName: String;
-  selectedGroup: String = 'None';
+  saveName: string;
+  loadName: string;
+  itemName: string;
+  // selectedGroup: string = 'None';
+  selectedGroup = 'None';
   selectedGroupID = '';
 
-  public groups: Array<any> = require("src/assets/save/groups.json");
+  public groups: Array<any> = require('src/assets/save/groups.json');
 
   constructor(private dragulaService: DragulaService) {
     this.dragulaService.createGroup('COLUMNS', {
@@ -26,7 +27,6 @@ export class AppComponent {
     });
   }
 
-
   newHeader() {
     this.groups.push({ name: this.task, items: [{ name: '' }] });
     this.task = '';
@@ -34,41 +34,36 @@ export class AppComponent {
   }
 
   selectChangeHandler(event: any) {
-    //update the ui
+    // Update the UI
     this.selectedGroupID = event.target.options.selectedIndex;
     this.selectedGroup = event.target.value;
-
   }
 
   newItem() {
     try {
       this.groups[this.selectedGroupID].items.push({ name: this.itemName })
       this.task = '';
-    }
-    catch (err) {
+    } catch (err) {
       this.selectedGroup = 'Please Select a Group';
     }
     // this.groups.push({name: this.task, items: [{name: ''}]});
     // this.task = '';
     // console.log(this.groups);
-    console.log(this.selectedGroup)
-    console.log(this.groups)
+    console.log(this.selectedGroup);
+    console.log(this.groups);
   }
 
   saveButton() {
     const blob = new Blob([JSON.stringify(this.groups)], { type: 'application/json' });
-    // saveAs(blob, this.saveName + '.json');
     saveAs(blob, this.saveName + '.json');
     this.saveName = '';
   }
 
   loadFile(filePath: string) {
-    console.log(filePath)
-    var fileName = filePath.replace(/^.*[\\\/]/, '')
-    console.log(fileName)
-    this.groups = require("src/assets/save/" + fileName);
+    console.log(filePath);
+    const fileName = filePath.replace(/^.*[\\\/]/, '');
+    console.log(fileName);
+    this.groups = require('src/assets/save/' + fileName);
 
   }
-
-
 }

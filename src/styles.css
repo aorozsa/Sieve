@@ -6,6 +6,10 @@ html {
   background-repeat: repeat;
 }
 
+button, input[type="file"] { 
+  cursor: pointer;
+}
+
 /* in-flight clone */
 .gu-mirror {
   position: fixed !important;

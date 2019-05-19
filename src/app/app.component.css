@@ -3,43 +3,41 @@
  * and it's generally a good practice
  */
 
-
- @font-face {
+@font-face {
   font-family: 'NotoSansJP-Regular';
   src: url("src/assets/fonts/NotoSansJP-Regular.otf")
- }
+}
 
- body {
-   font-family: Lato;
-   background-color: #00000;
-   font-family: 'NotoSansJP-Regular';
- }
+body {
+  font-family: Lato;
+  background-color: #000000;
+  font-family: 'NotoSansJP-Regular';
+}
 
- h1{
-   text-align: center;
-   font-family: 'NotoSansJP-Regular';
-   font-size: 100px;
-   color: white;
-   font-size: 400px;
-    -webkit-text-stroke: 1px black;
- }
+h1 {
+  text-align: center;
+  margin: auto;
+  font-family: 'NotoSansJP-Regular';
+  font-size: 100px;
+  color: white;
+  font-size: 400px;
+  -webkit-text-stroke: 1px black;
+}
 
-#header{
-  width:100%;
-  Padding-top:100px;
-  font-color:white
+#header {
+  width: 100%;
+  color: white;
 }
 
 
 
-
-#logo{
+#logo {
   text-align: center;
-  display:block;
-  margin:auto;
+  display: block;
+  margin: auto;
   margin-bottom: 50px;
-  margin-top:100px;
-  width:300px;
+  margin-top: 100px;
+  width: 300px;
   opacity: 0.8;
 }
 
@@ -55,24 +53,23 @@ div.container {
   min-height: 150px;
 }
 
-.groups{
-   font-family: 'NotoSansJP-Regular';
-   float:left;
-   background: rgba(250, 244, 232);
-   margin: 0 4;
-   min-width: 150px;
-   max-width: 100%;
-  
+.groups {
+  font-family: 'NotoSansJP-Regular';
+  float: left;
+  background: rgba(250, 244, 232);
+  margin: 0 4;
+  min-width: 150px;
+  max-width: 100%;
 }
 
-.header{
+.header {
   font-size: 30;
   padding: 10px;
   display: inline-block;
+  cursor: pointer;
 }
 
-
-.item{
+.item {
   background: rgba(255, 252, 247);
   margin-top: 20px;
   min-width: 100px;
@@ -82,19 +79,20 @@ div.container {
   word-wrap: break-word;
   line-height: 100px;
   border: 2px solid #000000;
+  cursor: pointer;
 }
 
 .wrapper {
   margin: 0 auto;
   width: 50%;
-  height:100%;
+  height: 100%;
   border: 3px;
   padding: 10px;
   text-align: center;
   background-color: #B8B6B4;
 }
 
-.controls{
+.controls {
   margin: 0 auto;
   width: 50%;
   line-height: 20px;
@@ -105,4 +103,6 @@ div.container {
   font-family: 'NotoSansJP-Regular';
 }
 
-a:link, a:visited, a:hover, a:active { color: lightblue; }
+a:link, a:visited, a:hover, a:active {
+  color: lightblue;
+}
