@@ -42,7 +42,7 @@ button, input[type="file"] {
   opacity: 0.2;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
   filter: alpha(opacity=20);
-  box-shadow: 1px 1px 24px 6px rgba(125, 255, 0, 0.88) inset;
-  -webkit-box-shadow: 1px 1px 24px 6px rgba(125, 255, 0, 0.88) inset;
-  -moz-box-shadow: 1px 1px 24px 6px rgba(125, 255, 0, 0.88) inset;
+  box-shadow: 1px 1px 1px 1px rgba(255, 255, 255, 0.8) inset;
+  -webkit-box-shadow: 1px 1px 24px 6px rgba(255, 255, 255, 0.8) inset;
+  -moz-box-shadow: 1px 1px 24px 6px rgba(255, 255, 255, 0.8) inset;
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DragulaModule, DragulaService } from 'ng2-dragula';
 import { saveAs } from 'file-saver';
+import { ExcelService } from './services/excel.service';
 declare var require: any;
 
 @Component({
@@ -10,6 +11,20 @@ declare var require: any;
 })
 
 export class AppComponent {
+  data: any = [{
+    eid: 'e101',
+    ename: 'ravi',
+    esal: 1000
+  }, {
+    eid: 'e102',
+    ename: 'ram',
+    esal: 2000
+  }, {
+    eid: 'e103',
+    ename: 'rajesh',
+    esal: 3000
+  }];
+
   task: string;
   saveName: string;
   loadName: string;
@@ -19,8 +34,7 @@ export class AppComponent {
   selectedGroupID = '';
 
   public groups: Array<any> = require('src/assets/save/groups.json');
-
-  constructor(private dragulaService: DragulaService) {
+  constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
     this.dragulaService.createGroup('COLUMNS', {
       direction: 'horizontal',
       moves: (el, source, handle) => handle.className === 'header'
@@ -64,6 +78,9 @@ export class AppComponent {
     const fileName = filePath.replace(/^.*[\\\/]/, '');
     console.log(fileName);
     this.groups = require('src/assets/save/' + fileName);
+  }
 
+  exportAsXLSX() {
+    this.excelService.exportAsExcelFile(this.data, 'data');
   }
 }
