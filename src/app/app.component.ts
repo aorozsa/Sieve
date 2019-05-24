@@ -11,20 +11,6 @@ declare var require: any;
 })
 
 export class AppComponent {
-  data: any = [{
-    eid: 'e101',
-    ename: 'ravi',
-    esal: 1000
-  }, {
-    eid: 'e102',
-    ename: 'ram',
-    esal: 2000
-  }, {
-    eid: 'e103',
-    ename: 'rajesh',
-    esal: 3000
-  }];
-
   task: string;
   saveName: string;
   loadName: string;
@@ -81,6 +67,33 @@ export class AppComponent {
   }
 
   exportAsXLSX() {
-    this.excelService.exportAsExcelFile(this.data, 'data');
+    const data = new Array<any>();
+    for (let listIndex = 0; listIndex < this.groups.length; listIndex++) {
+      const group = this.groups[listIndex];
+
+      for (const attKey in group) {
+
+        const attVal = group[attKey];
+        if (attKey === 'name') {
+          data.push({ Group: attVal });
+
+        } else {
+
+          // tslint:disable-next-line: prefer-for-of
+          for (let itemsIndex = 1; itemsIndex <= attVal.length; itemsIndex++) {
+            const items = attVal[itemsIndex - 1];
+            // tslint:disable-next-line: forin
+            for (let item in items) {
+              item = items[item];
+              const key = 'I' + itemsIndex;
+              data[listIndex][key] = 'Sample Title' + '\n\n' + item;
+            }
+          }
+
+        }
+
+      }
+    }
+    this.excelService.exportAsExcelFile(data, 'data');
   }
 }
