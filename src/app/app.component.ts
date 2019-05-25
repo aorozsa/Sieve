@@ -26,7 +26,6 @@ export class AppComponent {
       moves: (el, source, handle) => handle.className === 'header'
     });
     this.dragulaService.createGroup('ITEMS', {
-      direction: 'vertical',
       direction: 'horizontal',
       revertOnSpill: false,
       moves: (el, source, handle) => handle.className === 'item'
