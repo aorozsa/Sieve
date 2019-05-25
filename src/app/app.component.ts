@@ -22,8 +22,14 @@ export class AppComponent {
   public groups: Array<any> = require('src/assets/save/groups.json');
   constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
     this.dragulaService.createGroup('COLUMNS', {
-      direction: 'horizontal',
+      direction: 'vertical',
       moves: (el, source, handle) => handle.className === 'header'
+    });
+    this.dragulaService.createGroup('ITEMS', {
+      direction: 'vertical',
+      direction: 'horizontal',
+      revertOnSpill: false,
+      moves: (el, source, handle) => handle.className === 'item'
     });
   }
 
@@ -72,11 +78,9 @@ export class AppComponent {
       const group = this.groups[listIndex];
 
       for (const attKey in group) {
-
         const attVal = group[attKey];
         if (attKey === 'name') {
           data.push({ Group: attVal });
-
         } else {
 
           // tslint:disable-next-line: prefer-for-of
