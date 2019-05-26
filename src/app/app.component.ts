@@ -33,7 +33,7 @@ export class AppComponent {
   }
 
   newHeader() {
-    this.groups.push({ name: this.task, items: [{ name: '' }] });
+    this.groups.push({ name: this.task, items: [] });
     this.task = '';
     console.log(this.groups);
   }
