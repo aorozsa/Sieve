@@ -56,7 +56,7 @@ div.container {
 .item {
   background: rgba(255, 252, 247);
   width: 100px;
-  height: 100px;
+  height: auto;
   font-size: 1em;
   text-align: center;
   word-wrap: break-word;
