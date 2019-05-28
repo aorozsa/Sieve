@@ -18,6 +18,9 @@ export class AppComponent {
   // selectedGroup: string = 'None';
   selectedGroup = 'None';
   selectedGroupID = '';
+  
+  selectedItem = 'None';
+  selectedItemID = '';
 
   public groups: Array<any> = require('src/assets/save/groups.json');
   constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
@@ -43,10 +46,16 @@ export class AppComponent {
     this.selectedGroupID = event.target.options.selectedIndex;
     this.selectedGroup = event.target.value;
   }
+  
+  selectItemHandler(event: any) {
+    // Update the UI
+    this.selectedItemID = event.target.options.selectedIndex;
+    this.selectedItem = event.target.value;
+  }
 
   newItem() {
     try {
-      this.groups[this.selectedGroupID].items.push({ name: this.itemName })
+      this.groups[Number(this.selectedGroupID) - 1].items.push({ name: this.itemName })
       this.task = '';
     } catch (err) {
       this.selectedGroup = 'Please Select a Group';
@@ -62,6 +71,10 @@ export class AppComponent {
     const blob = new Blob([JSON.stringify(this.groups)], { type: 'application/json' });
     saveAs(blob, this.saveName + '.json');
     this.saveName = '';
+  }
+  
+  hideThis(item) {
+	  item.hide = "true";
   }
 
   loadFile(filePath: string) {

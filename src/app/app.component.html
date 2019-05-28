@@ -2,10 +2,11 @@
   <h2> Add Slide </h2>
   <span>Select a group add slide to:</span>
   <select (change)="selectChangeHandler($event)">
+    <option selected disabled>None</option>
     <option *ngFor="let group of groups; let i = index" [ngValue]="i">{{group.name}}</option>
   </select>
   <p><span>You selected: </span><b>{{selectedGroup}}</b></p>
-
+  
   <input type="text" placeholder="Enter slide summary" [(ngModel)]="itemName" />
   <button type="button" (click)="newItem()">ADD</button>
 
@@ -17,7 +18,23 @@
   <!-- <input type="text" placeholder="Enter new slide" [(ngModel)]="task" />
   <button  type="button" (click)="onClick()">ADD NEW HEADER</button>
   <br> -->
-
+  
+  <h2> Edit Items </h2>
+  <span>Select a slide to act on:</span>
+  <select (change)="selectItemHandler($event)">
+	<option selected disabled>None</option>
+    <ng-container *ngFor="let group of groups">
+	  <ng-container *ngFor="let item of group.items; let i = index">
+        <option *ngIf="item.hide != 'true'" [ngValue]="i">{{item.name}}</option>
+	  </ng-container>
+	</ng-container>
+  </select>
+  <p><span>You selected: </span><b>{{selectedItem}}</b></p>
+  
+  <input type="text" placeholder="{{selectedItem}}" [(ngModel)]="title"><br>
+  <input type="text" placeholder="Quote" [(ngModel)]="quote"><br>
+  <input type="text" placeholder="Coding" [(ngModel)]="coding"><br>
+  
   <h2> Load Files </h2>
   ALL FILES NEED TO BE SAVED TO THE SRC/ASSETS/SAVE FOLDER
   <br>
@@ -37,7 +54,18 @@
   <div class="groups" *ngFor="let group of groups" id="g1">
     <span class="header"> {{group.name}} </span>
     <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
-      <div class="item" *ngFor="let item of group.items" [innerHtml]="item.name"></div>
+	
+	<ng-container *ngFor="let item of group.items">
+	  <div class="item" *ngIf="item.hide != 'true'">
+	  
+	    <button class="hidebutton" type="button" (click)="item.hide = 'true'">X</button>
+		<br>
+		
+		<span class="itemname">{{item.name}}</span>
+		
+	  </div>
+	</ng-container>
+	
     </div>
   </div>
 </div>
