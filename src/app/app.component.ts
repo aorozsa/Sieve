@@ -15,15 +15,15 @@ export class AppComponent {
   saveName: string;
   loadName: string;
   itemName: string;
-  
+
   name: string;
   quote: string;
   coding: string;
-  
+
   // selectedGroup: string = 'None';
   selectedGroup = 'None';
   selectedGroupID = 0;
-  
+
   selectedItem = 'None';
   selectedItemID = 0;
 
@@ -31,12 +31,12 @@ export class AppComponent {
   constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
     this.dragulaService.createGroup('COLUMNS', {
       direction: 'vertical',
-      moves: (el, source, handle) => handle.className === 'header'
+      moves: (el, source, handle) => handle.className === 'header' || handle.className === 'headername'
     });
     this.dragulaService.createGroup('ITEMS', {
       direction: 'horizontal',
       revertOnSpill: false,
-      moves: (el, source, handle) => handle.className === 'item'
+      moves: (el, source, handle) => handle.className === 'item' || handle.className === 'itemname'
     });
   }
 
@@ -51,7 +51,7 @@ export class AppComponent {
     this.selectedGroupID = Number(event.target.options.selectedIndex) - 1;
     this.selectedGroup = event.target.value;
   }
-  
+
   selectItemHandler(event: any) {
     // Update the UI
     this.selectedItemID = Number(event.target.options.selectedIndex) - 1;
@@ -60,7 +60,7 @@ export class AppComponent {
 
   newItem() {
     try {
-      this.groups[this.selectedGroupID].items.push({ name: this.itemName })
+      this.groups[this.selectedGroupID].items.push({ name: this.itemName });
       this.task = '';
     } catch (err) {
       this.selectedGroup = 'Please Select a Group';
@@ -84,11 +84,11 @@ export class AppComponent {
     console.log(fileName);
     this.groups = require('src/assets/save/' + fileName);
   }
-  
+
   onSubmit() {
     this.groups[this.selectedGroupID].items[this.selectedItemID].name = this.name;
-	this.groups[this.selectedGroupID].items[this.selectedItemID].quote = this.quote;
-	this.groups[this.selectedGroupID].items[this.selectedItemID].coding = this.coding;
+    this.groups[this.selectedGroupID].items[this.selectedItemID].quote = this.quote;
+    this.groups[this.selectedGroupID].items[this.selectedItemID].coding = this.coding;
   }
 
   exportAsXLSX() {
