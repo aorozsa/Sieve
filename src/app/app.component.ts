@@ -16,16 +16,16 @@ export class AppComponent {
   loadName: string;
   itemName: string;
   
-  title: string;
+  name: string;
   quote: string;
   coding: string;
   
   // selectedGroup: string = 'None';
   selectedGroup = 'None';
-  selectedGroupID = '';
+  selectedGroupID = 0;
   
   selectedItem = 'None';
-  selectedItemID = '';
+  selectedItemID = 0;
 
   public groups: Array<any> = require('src/assets/save/groups.json');
   constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
@@ -48,19 +48,19 @@ export class AppComponent {
 
   selectChangeHandler(event: any) {
     // Update the UI
-    this.selectedGroupID = event.target.options.selectedIndex;
+    this.selectedGroupID = Number(event.target.options.selectedIndex) - 1;
     this.selectedGroup = event.target.value;
   }
   
   selectItemHandler(event: any) {
     // Update the UI
-    this.selectedItemID = event.target.options.selectedIndex;
+    this.selectedItemID = Number(event.target.options.selectedIndex) - 1;
     this.selectedItem = event.target.value;
   }
 
   newItem() {
     try {
-      this.groups[Number(this.selectedGroupID) - 1].items.push({ name: this.itemName })
+      this.groups[this.selectedGroupID].items.push({ name: this.itemName })
       this.task = '';
     } catch (err) {
       this.selectedGroup = 'Please Select a Group';
@@ -83,6 +83,12 @@ export class AppComponent {
     const fileName = filePath.replace(/^.*[\\\/]/, '');
     console.log(fileName);
     this.groups = require('src/assets/save/' + fileName);
+  }
+  
+  onSubmit() {
+    this.groups[this.selectedGroupID].items[this.selectedItemID].name = this.name;
+	this.groups[this.selectedGroupID].items[this.selectedItemID].quote = this.quote;
+	this.groups[this.selectedGroupID].items[this.selectedItemID].coding = this.coding;
   }
 
   exportAsXLSX() {
