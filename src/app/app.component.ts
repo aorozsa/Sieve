@@ -15,6 +15,11 @@ export class AppComponent {
   saveName: string;
   loadName: string;
   itemName: string;
+  
+  title: string;
+  quote: string;
+  coding: string;
+  
   // selectedGroup: string = 'None';
   selectedGroup = 'None';
   selectedGroupID = '';
@@ -71,10 +76,6 @@ export class AppComponent {
     const blob = new Blob([JSON.stringify(this.groups)], { type: 'application/json' });
     saveAs(blob, this.saveName + '.json');
     this.saveName = '';
-  }
-  
-  hideThis(item) {
-	  item.hide = "true";
   }
 
   loadFile(filePath: string) {
