@@ -90,7 +90,7 @@ export class AppComponent {
     this.groups[this.selectedGroupID].items[this.selectedItemID].quote = this.quote;
     this.groups[this.selectedGroupID].items[this.selectedItemID].coding = this.coding;
   }
-
+  
   exportAsXLSX() {
     const data = new Array<any>();
     for (let listIndex = 0; listIndex < this.groups.length; listIndex++) {

@@ -28,28 +28,20 @@ body {
   box-sizing: border-box;
 }
 
-div.container {
-  background-color: #B8B6B4;
-  list-style: none;
-  color: #222;
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
 .groups {
   font-family: 'NotoSansJP-Regular';
   float: left;
-  background: rgba(250, 244, 232);
   margin: 4px;
   display: flex;
-  width: 99%;
 }
 
 .header {
+  background: rgba(250, 244, 232);
+  border: 1px solid rgba(0, 0, 0, 0.5);
   position: relative;
   height: 130px;
   width: 130px;
+  min-width: 130px;
   text-align: center;
   font-size: 30;
   word-wrap: break-word;
@@ -67,6 +59,14 @@ div.container {
   transform: translate(-50%, -50%);
   display: inline-block;
   word-wrap: break-word;
+}
+
+div.container {
+  background-color: #B8B6B4;
+  list-style: none;
+  color: #222;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .item {

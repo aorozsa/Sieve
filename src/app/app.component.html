@@ -1,5 +1,8 @@
-<div class='controls'>
+<script src="script.js"></script>
 
+<div class='controls' ng-controller="homeCtrl as vm">
+  <button ng-click="vm.openWindow()">Stuff</button>
+  
   <h2>Select a group to work with:</h2>
   <select (change)="selectChangeHandler($event)">
     <option selected disabled>None</option>
@@ -64,18 +67,18 @@
   <!-- Groups -->
   <ng-container *ngFor="let group of groups">
     <div class="groups" *ngIf="group.hide != 'true'" id="g1">
-      <!-- Group Lead Card -->
-      <span class="header">
-        <span class="headername">{{group.name}}</span>
-        <button class="hidebutton" type="button" (click)="group.hide = 'true'">X</button>
-      </span>
 
       <!-- Item Container -->
       <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
+	    <!-- Group Lead Card -->
+		<div class="header">
+		  <div class="headername">{{group.name}}</div>
+		  <button class="hidebutton" type="button" (click)="group.hide = 'true'">X</button>
+		</div>
         <!-- For each item in group -->
         <ng-container *ngFor="let item of group.items">
           <!-- Show item if not hidden -->
-          <div class="item" *ngIf="item.hide != 'true'">
+          <div class="item" *ngIf="item.hide != 'true'" (click)="onClick('alert(\'hello!\')')">
             <span class="itemname">{{item.name}}</span>
             <button class="hidebutton" type="button" (click)="item.hide = 'true'">X</button>
           </div>
