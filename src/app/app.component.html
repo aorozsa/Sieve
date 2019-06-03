@@ -19,7 +19,7 @@
 
   <div id='create' class='subcontrol'>
 	  <h2> Create Group </h2>
-	  <input type="text" placeholder="Group Bame" [(ngModel)]="task" />
+	  <input type="text" placeholder="Group Name" [(ngModel)]="task" />
 	  <button type="button" (click)="newHeader()">Create</button>
 	  <br>
   </div>
@@ -51,6 +51,7 @@
 				  <option *ngIf="item.hide != 'true'">{{item.name}}</option>
 				</ng-container>
 			  </select>
+			  <br>
 			  <span>You selected: </span><b>{{groups[selectedGroupID].items[selectedItemID].name}}</b>
 
 			  <br>Name: {{groups[selectedGroupID].items[selectedItemID].name}}
