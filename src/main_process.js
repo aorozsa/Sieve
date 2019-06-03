@@ -1,10 +1,19 @@
-//main.js
-/*code
-.
-.
-.
-*/
-const ipc = require('electron').ipcMain;
+const {app, BrowserWindow} = require('electron')
+const url = require('url')
+const path = require('path')
+const {ipcMain} = require('electron')
+
+let win
+
+function createWindow() {
+   win = new BrowserWindow({width: 800, height: 600})
+   win.loadURL(url.format ({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file:',
+      slashes: true
+   }))
+}
+
 // Event handler for asynchronous incoming messages
 ipcMain.on('asynchronous-message', (event, arg) => {
    console.log(arg)
@@ -20,3 +29,5 @@ ipcMain.on('synchronous-message', (event, arg) => {
    // Synchronous event emmision
    event.returnValue = 'sync pong'
 })
+
+app.on('ready', createWindow)

@@ -14,6 +14,12 @@ body {
   font-family: 'NotoSansJP-Regular';
 }
 
+
+
+button {
+
+}
+
 #logo {
   text-align: center;
   display: block;
@@ -29,7 +35,7 @@ body {
 }
 
 div.container {
-  background-color: #B8B6B4;
+  background-color: #AFC0FA;
   list-style: none;
   color: #222;
   display: flex;
@@ -40,7 +46,7 @@ div.container {
 .groups {
   font-family: 'NotoSansJP-Regular';
   float: left;
-  background: rgba(250, 244, 232);
+  background:#6877AD;
   margin: 4px;
   display: flex;
   width: 99%;
@@ -70,15 +76,16 @@ div.container {
 }
 
 .item {
-  background: rgba(255, 252, 247);
+  background: #ACB9EB;
   position: relative;
   height: 130px;
   width: 130px;
   text-align: center;
-  font-size: 1em;
+  font-size: 20px;
   word-wrap: break-word;
   border: 1px solid rgba(0, 0, 0, 0.5);
   cursor: pointer;
+  padding:100px;
 }
 
 .itemname {
@@ -91,6 +98,7 @@ div.container {
   transform: translate(-50%, -50%);
   display: inline-block;
   word-wrap: break-word;
+
 }
 
 .hideButton {
@@ -102,27 +110,77 @@ div.container {
 
 /*For the controls and cards sections*/
 
-.wrapper, .controls {
-  margin: 0 auto;
-  width: 90%;
-  border: 3px;
-  text-align: center;
-}
 
 .wrapper {
   flex-wrap: wrap;
   height: 100%;
   padding: 10px;
-  background-color: #B8B6B4;
+  background-color:#CCD7FF;
+  border: 3px;
+  text-align: center;
+  margin-left: 600px;
+  overflow: scroll;
 }
 
 .controls {
   line-height: 20px;
   padding: 20px 20px 50px;
-  background-color: #4F69FF;
+  background-color: #6877AD;
+  font-family: 'NotoSansJP-Regular';
+  float:left;
+  width:600px;
+  height:100%;
+  text-align: center;
+  font-size: 10px;
+  overflow: scroll;
+}
+
+.controls input, .controls button, .controls select {
+  font-size: 15px;
+}
+.controls button {
+    margin-top: 5px;
+}
+
+.footer{
+  background-color: #FAE6AF;
+  text-align: center;
   font-family: 'NotoSansJP-Regular';
 }
 
-a:link, a:visited, a:hover, a:active {
-  color: lightblue;
+button {
+	-moz-box-shadow:inset 0px 1px 0px 0px #7a8eb9;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #7a8eb9;
+	box-shadow:inset 0px 1px 0px 0px #7a8eb9;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #637aad), color-stop(1, #5972a7));
+	background:-moz-linear-gradient(top, #637aad 5%, #5972a7 100%);
+	background:-webkit-linear-gradient(top, #637aad 5%, #5972a7 100%);
+	background:-o-linear-gradient(top, #637aad 5%, #5972a7 100%);
+	background:-ms-linear-gradient(top, #637aad 5%, #5972a7 100%);
+	background:linear-gradient(to bottom, #637aad 5%, #5972a7 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#637aad', endColorstr='#5972a7',GradientType=0);
+	background-color:#637aad;
+	border:1px solid #314179;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:13px;
+	font-weight:bold;
+	padding:6px 12px;
+	text-decoration:none;
+}
+button:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #5972a7), color-stop(1, #637aad));
+	background:-moz-linear-gradient(top, #5972a7 5%, #637aad 100%);
+	background:-webkit-linear-gradient(top, #5972a7 5%, #637aad 100%);
+	background:-o-linear-gradient(top, #5972a7 5%, #637aad 100%);
+	background:-ms-linear-gradient(top, #5972a7 5%, #637aad 100%);
+	background:linear-gradient(to bottom, #5972a7 5%, #637aad 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5972a7', endColorstr='#637aad',GradientType=0);
+	background-color:#5972a7;
+}
+button:active {
+	position:relative;
+	top:1px;
 }

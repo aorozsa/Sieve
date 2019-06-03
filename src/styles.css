@@ -1,17 +1,21 @@
 /* Add application styles & imports to this file! */
-html {
-  background-color: #ff7700;
-  background-image: url("src/assets/images/Arrows.svg");
-  background-attachment: fixed;
-  background-repeat: repeat;
+@font-face {
+  font-family: 'NotoSansJP-Regular';
+  src: url("src/assets/fonts/NotoSansJP-Regular.otf")
 }
 
-button, input[type="file"] { 
+
+html {
+  height: 100%;
+}
+
+button, input[type="file"] {
   cursor: pointer;
 }
 
 /* in-flight clone */
 .gu-mirror {
+  font-family: 'NotoSansJP-Regular';
   position: fixed !important;
   margin: 0 !important;
   z-index: 9999 !important;
@@ -39,9 +43,10 @@ button, input[type="file"] {
 
 /* added to the source element while its mirror is dragged */
 .gu-transit {
+  font-family: 'NotoSansJP-Regular';
   opacity: 0.2;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-  filter: alpha(opacity=20);
+  filter: alpha(opacity=90);
   box-shadow: 1px 1px 1px 1px rgba(255, 255, 255, 0.8) inset;
   -webkit-box-shadow: 1px 1px 24px 6px rgba(255, 255, 255, 0.8) inset;
   -moz-box-shadow: 1px 1px 24px 6px rgba(255, 255, 255, 0.8) inset;
