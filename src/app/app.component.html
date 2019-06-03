@@ -69,7 +69,6 @@
   <!-- User Workspace -->
   <div class="wrapper" dragula="COLUMNS" [(dragulaModel)]="groups">
 
-<<<<<<< HEAD
     <!-- Groups -->
     <ng-container *ngFor="let group of groups">
       <div class="groups" *ngIf="group.hide != 'true'" id="g1">
@@ -78,10 +77,6 @@
           <span class="headername">{{group.name}}</span>
           <button class="hidebutton" type="button" (click)="group.hide = 'true'">X</button>
         </span>
-=======
-<!-- User Workspace -->
-<div class="wrapper" dragula="GROUPS" [(dragulaModel)]="groups">
->>>>>>> 6df13edd80b669d7be7e1d27b2c46663b2d8d5a8
 
         <!-- Item Container -->
         <div class="container" dragula="ITEMS" [(dragulaModel)]="group.items">
