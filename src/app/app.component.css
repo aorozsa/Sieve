@@ -14,12 +14,6 @@ body {
   font-family: 'NotoSansJP-Regular';
 }
 
-
-
-button {
-
-}
-
 #logo {
   text-align: center;
   display: block;
@@ -161,7 +155,6 @@ button {
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#637aad', endColorstr='#5972a7',GradientType=0);
 	background-color:#637aad;
 	border:1px solid #314179;
-	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Arial;
@@ -179,4 +172,7 @@ button:hover {
 	background:linear-gradient(to bottom, #5972a7 5%, #637aad 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5972a7', endColorstr='#637aad',GradientType=0);
 	background-color:#5972a7;
+}
+button:active {
+	top:1px;
 }
