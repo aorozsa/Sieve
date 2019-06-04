@@ -15,7 +15,9 @@ function createWindow() {
     win = new BrowserWindow({
         show: false,
         backgroundColor: '#ffffff',
-        icon: path.join(__dirname, icon)
+        icon: path.join(__dirname, icon),
+        minWidth: 1280,
+        minHeight: 800
     })
     win.maximize()
     win.show()
