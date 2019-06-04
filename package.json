@@ -15,7 +15,7 @@
     "e2e": "ng e2e",
     "electron": "electron .",
     "build": "ng build --prod && npm run electron",
-    "dist": "ng build --prod && npm run package && build --pd dist/package/*",
+    "dist": "ng build --prod && npm run package && build --pd dist/package/* || build --pd dist/package/Sieve-win32-x64",
     "package": "(rm -r dist/package || echo) && run-script-os",
     "package:win32:linux": "electron-packager . Sieve --overwrite --icon build/icon.icns --out dist/package --asar=true",
     "package:darwin": "npm run pack:win32:linux && cd dist/package/Sieve-darwin-x64 && rm LICENSE* version"
