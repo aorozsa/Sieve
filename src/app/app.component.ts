@@ -31,7 +31,7 @@ export class AppComponent {
   constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
     this.dragulaService.createGroup('COLUMNS', {
       direction: 'vertical',
-      moves: (el, source, handle) => handle.className === 'header' || handle.className === 'headername'
+      moves: (el, source, handle) => handle.className === 'groups' || handle.className === 'header' || handle.className === 'headername'
     });
     this.dragulaService.createGroup('ITEMS', {
       direction: 'horizontal',
