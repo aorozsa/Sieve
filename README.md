@@ -19,4 +19,4 @@ Once built, run `npm run electron`.
 
 ## Distribution
 
-Run `npm run dist` to create a distributable installer for the current operating system. The outputs for these commands will be saved within `dist/`.
+Run `npm run dist` to create a distributable installer for the current operating system. The output will be saved within `dist/`.
