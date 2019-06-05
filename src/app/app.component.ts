@@ -29,7 +29,7 @@ export class AppComponent {
 
   public groups: Array<any> = require('src/assets/save/groups.json');
   constructor(private dragulaService: DragulaService, private excelService: ExcelService) {
-    this.dragulaService.createGroup('COLUMNS', {
+    this.dragulaService.createGroup('GROUPS', {
       direction: 'vertical',
       moves: (el, source, handle) => handle.className === 'groups' || handle.className === 'header' || handle.className === 'headername'
     });
