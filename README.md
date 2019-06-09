@@ -5,6 +5,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Getting started
 Run `npm run install` to install or update the packages used.
 
+Core app files are found under `src/app`. The most important files are `app.component.html`, `app.component.ts` and `app.component.css`.
+
 ## Development server
 
 Run `npm start` for a dev server. The app will automatically reload if you change any of the source files.
