@@ -1,24 +1,12 @@
 # Sieve
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
-
 ## Getting started
-Run `npm run install` to install or update the packages used.
+Run `npm install` to install the required packages. Run `npm update` to update installed packages.
 
-Core app files are found under `src/app`. The most important files are `app.component.html`, `app.component.ts` and `app.component.css`.
-
-## Development server
-
-Run `npm start` for a dev server. The app will automatically reload if you change any of the source files.
-
-## Build
-
-Run `npm run build` to build and run the project. The build artifacts will be stored in the `dist/` directory.
+HTML pages are found in `windows/`, scripts are found in `scripts/`, and styles are found in `styles.css`.
 
 ## Run
-
-Once built, run `npm run electron`.
+Run `npm start` to run the project.
 
 ## Distribution
-
-Run `npm run dist` to create a distributable installer for the current operating system. The output will be saved within `dist/`.
+Run `npm run dist` to create an installer for the current operating system. Installers can be created for Windows, macOS and Linux. Icons used in installers are found in `build/`. To just create a packaged app instead of an installer, run `npm run pack`. The outputs will be saved within `dist/`.

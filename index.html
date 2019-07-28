@@ -1,0 +1,55 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+  <title>Sieve</title>
+</head>
+
+<body>
+  <div class="controls">
+    <h1>Control Panel</h1>
+    <button class='newCardBtn'>Add New Card</button>
+    <button class='exampleBtn'>Example different modal</button>
+  </div>
+
+  <div class="grid">
+    <div class="item" id="ghost">
+      <div class="item-content">
+        <h1>+</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals. A new div has to be specified every time with a different id -->
+  <div class="modal" id="newCard">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <br>
+        <br>
+        <button class='regBtn' disabled>Regular Card</button>
+        <button class='groupBtn'>Group Card</button>
+        <br>
+        <br>
+        <button class='addCardbtn'>Add New Card</button>
+      </div>
+  </div>
+
+  <!-- This is just an example. This (along with the associated javascript) can be deleted -->
+  <div class="modal" id="example">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <br>
+        <br>
+        <h1>This is just an example to demonstrate how to add other modals</h1>
+      </div>
+  </div>
+
+  <!-- Imports for Muuri and index -->
+  <script src="scripts/web-animations.min.js"></script>
+  <script src="scripts/hammer.min.js"></script>
+  <script src="scripts/muuri.min.js"></script>
+  <script src="scripts/index.js"></script>
+</body>
+
+</html>
