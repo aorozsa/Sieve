@@ -4,23 +4,21 @@ var modal; // Div element that gets set by every button that opens a modal
 var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
 var draggable = true; // Specifies whether grid items are draggable or not
 var group; // Boolean specifying whether the card to add is a group card or not
-var newCardBtn = document.querySelector(".newCardBtn");
 var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
 var addCardbtn = document.querySelector('.addCardbtn');
 var ghost; // "Card" used for adding other cards.
+var ghost_html = document.getElementById('ghost'); // HTML of the ghost card. Used for adding click event
+var group_title = document.querySelector('.group_title');
+var title = document.querySelector('.title');
+var comment = document.querySelector('.comment');
+var code = document.querySelector('.code');
 
 // Functions
 function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
   modal.classList.toggle("show-modal");
   draggable = !draggable;
-}
-
-function windowOnClick(event) {
-  if (event.target === modal) {
-    toggleModal();
-  }
 }
 
 function addCard(data) { // Creates a HTML element based on the data and adds it to the grid
@@ -29,16 +27,16 @@ function addCard(data) { // Creates a HTML element based on the data and adds it
     var itemTemplate = '' +
         '<div class="item">' +
           '<div class="item-content">' +
-            '<h4>' + data[0] + '</h4>' +
-            '<h6>' + data[1] + '</h6>' +
-            '<p>' + data[2] + '</p>' +
+            '<p id="title">' + data[0] + '</p>' +
+            '<p id="comment">' + data[1] + '</p>' +
+            '<p id="code">' + data[2] + '</p>' +
           '</div>' +
         '</div>';
   } else { // Otherwise create a grid
     var itemTemplate = '' +
         '<div class="item">' +
           '<div class="item-content">' +
-            '<h4>' + data[0] + '</h4>' +
+            '<p>' + data[0] + '</p>' +
           '</div>' +
         '</div>';
   }
@@ -52,7 +50,7 @@ grid = new Muuri('.grid', { // Initialise the grid
   items: "*", // Default value. Change this to an array
   dragEnabled: true,
   dragContainer: document.body,
-  dragStartPredicate: function (item, e) { // Items are draggable if draggable is true
+  dragStartPredicate: function (item, e) { // Items are draggable if true is returned
     if (item === ghost) return false;
     return draggable;
   }
@@ -70,22 +68,19 @@ modals.forEach(function(mod) { // Enables the modals
   mod.style.display = "block";
 });
 
-newCardBtn.addEventListener('click', function(event) { // Every modal-opening button has to set "modal" to be something else
-  modal = document.getElementById("newCard");
-  toggleModal();
-});
-
-/* This is just an example. This (along with the associated html) can be deleted */
-var exampleBtn = document.querySelector(".exampleBtn");
-exampleBtn.addEventListener('click', function(event) {
-  modal = document.getElementById("example"); // Every modal-opening button has to set "modal" to be something else
-  toggleModal();
-});
-
 closeButtons.forEach(function(closeButton) { // Adds event listeners to all the modal close buttons
   closeButton.addEventListener('click', toggleModal);
 });
-window.addEventListener('click', windowOnClick);
+window.addEventListener('click', function(event) {
+  if (event.target === modal) {
+    toggleModal();
+  }
+});
+
+ghost_html.addEventListener('click', function(event) { // Every modal-opening button has to set "modal" to be something else
+  modal = document.getElementById("newCardModal");
+  toggleModal();
+});
 
 regBtn.addEventListener('click', function(event) {
   group = false;
@@ -101,9 +96,19 @@ groupBtn.addEventListener('click', function(event) {
 
 // Sends the signal to add a card. Would be based off modal element contents
 addCardbtn.addEventListener('click', function(event) {
-  if (group) { // If "group" is selected in the modal, generate a group
-    addCard(["Group Title"]);
-  } else { // Otherwise generate a standard card
-    addCard(["Sample title", "Sample comment", "Sample code"]);
+  try {
+    if (group) { // If "group" is selected in the modal, generate a group
+      if (group_title.value === "") {
+        throw "Groups need to have a title";
+      }
+      addCard([group_title.value]);
+    } else { // Otherwise generate a standard card
+      if (title.value === "" || comment.value === "" || code.value === "") {
+        throw "All fields need to be filled out."
+      }
+      addCard([title.value, comment.value, code.value]);
+    }
+  } catch(err) {
+    alert(err);
   }
 });
