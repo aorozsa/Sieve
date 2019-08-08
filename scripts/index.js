@@ -12,8 +12,8 @@ var group_title = document.querySelector('.group_title');
 var title = document.querySelector('.title');
 var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
-var dataid = 2;
-var itemsList;
+var savedItems; // Used for saving the current layout.
+
 
 // Functions
 function newGrid() {
@@ -31,25 +31,20 @@ function newGrid() {
 }
 
 var val = 1;
-function ghostAction() {
+function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
   /*
   modal = document.getElementById("newCardModal");
   toggleModal();*/
 
-  addCard([val]);
+  addNewCard([val]);
   val++;
 }
 
-function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
-  modal.classList.toggle("show-modal");
-  draggable = !draggable;
-}
-
-function addCard(data) { // Creates a HTML element based on the data and adds it to the grid
+function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   if (data.length == 3) { // If 3, create a regular card
     var itemTemplate = '' +
-        '<div class="item" data-id="' + dataid + '">' +
+        '<div class="item">' +
           '<div class="item-content">' +
             '<p id="title">' + data[0] + '</p>' +
             '<p id="comment">' + data[1] + '</p>' +
@@ -59,17 +54,22 @@ function addCard(data) { // Creates a HTML element based on the data and adds it
 
   } else { // Otherwise create a group card
     var itemTemplate = '' +
-        '<div class="item" data-id="' + dataid + '">' +
+        '<div class="item">' +
           '<div class="item-content">' +
             '<p>' + data[0] + '</p>' +
           '</div>' +
         '</div>';
   }
 
-  dataid++;
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
 }
+
+function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
+  modal.classList.toggle("show-modal");
+  draggable = !draggable;
+}
+
 
 // Main part
 grid.on('dragEnd', function (item, event) {
@@ -91,33 +91,17 @@ window.addEventListener('click', function(event) {
 });
 
 saveBtn.addEventListener('click', function(event) {
-  var itemIds = grid.getItems().map(function (item) {
-    return item.getElement().getAttribute('data-id');
-  });
-
-  var layout = JSON.stringify(itemIds);
-  itemsList = layout;
+  savedItems = grid.getItems();
 });
 
 loadBtn.addEventListener('click', function(event) {
-  var layout = JSON.parse(itemsList);
-  var currentItems = grid.getItems();
-  var currentItemIds = currentItems.map(function (item) {
-    return item.getElement().getAttribute('data-id')
+  var itemsToAdd = [];
+  savedItems.forEach(function(item) {
+    itemsToAdd.push(item.getElement());
   });
-  var newItems = [];
-  var itemId;
-  var itemIndex;
-
-  for (var i = 0; i < layout.length; i++) {
-    itemId = layout[i];
-    itemIndex = currentItemIds.indexOf(itemId);
-    if (itemIndex > -1) {
-      newItems.push(currentItems[itemIndex])
-    }
-  }
-
-  grid.sort(newItems, {layout: 'instant'});
+  grid.remove(grid.getItems(), {removeElements: true});
+  grid.add(itemsToAdd);
+  ghost = grid.getItems(0)[0]
 });
 
 /*
@@ -128,12 +112,12 @@ addCardbtn.addEventListener('click', function(event) {
       if (group_title.value === "") {
         throw "Groups need to have a title";
       }
-      addCard([group_title.value]);
+      addNewCard([group_title.value]);
     } else { // Otherwise generate a standard card
       if (title.value === "" || comment.value === "" || code.value === "") {
         throw "All fields need to be filled out."
       }
-      addCard([title.value, comment.value, code.value]);
+      addNewCard([title.value, comment.value, code.value]);
     }
   } catch(err) {
     alert(err);
