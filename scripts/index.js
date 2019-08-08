@@ -1,35 +1,31 @@
-// Declarations
-var grid = newGrid();
+// Variables
+var grid = new Muuri('.grid', { // Initialise the grid
+  layoutOnInit: false,
+  dragEnabled: true,
+  dragContainer: document.body,
+  dragStartPredicate: function (item, e) { // Items are draggable if true is returned
+    if (item === ghost) return false;
+    return draggable;
+  }
+});
 var ghost = grid.getItems(0)[0]; // "Card" used for adding other cards.
-var modal; // Div element that gets set by every button that opens a modal
-var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
-var draggable = true; // Specifies whether grid items are draggable or not
-var group; // Boolean specifying whether the card to add is a group card or not
-var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
-var loadBtn = document.querySelector('.loadBtn');
+var savedItems; // Used for saving the current layout.
 var saveBtn = document.querySelector('.saveBtn');
+var loadBtn = document.querySelector('.loadBtn');
 var group_title = document.querySelector('.group_title');
 var title = document.querySelector('.title');
 var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
-var savedItems; // Used for saving the current layout.
+
+// Modal stuff. Might be deleted/changed in the future
+var draggable = true; // Specifies whether grid items are draggable or not. Used for modals
+var group; // Boolean specifying whether the card to add is a group card or not
+var modal; // Div element that gets set by every button that opens a modal
+var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
+var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
 
 
 // Functions
-function newGrid() {
-  var g = new Muuri('.grid', { // Initialise the grid
-    items: "*",
-    layoutOnInit: false,
-    dragEnabled: true,
-    dragContainer: document.body,
-    dragStartPredicate: function (item, e) { // Items are draggable if true is returned
-      if (item === ghost) return false;
-      return draggable;
-    }
-  });
-  return g;
-}
-
 var val = 1;
 function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
   /*
@@ -71,7 +67,7 @@ function toggleModal() { // Toggles the selected modal visibility and whether gr
 }
 
 
-// Main part
+// Events
 grid.on('dragEnd', function (item, event) {
   if (grid.getItems(0)[0] !== ghost) {
     grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
