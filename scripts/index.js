@@ -7,6 +7,8 @@ var group; // Boolean specifying whether the card to add is a group card or not
 var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
+var loadBtn = document.querySelector('.loadBtn');
+var saveBtn = document.querySelector('.saveBtn');
 var addCardbtn = document.querySelector('.addCardbtn');
 var ghost; // "Card" used for adding other cards.
 var ghost_html = document.getElementById('ghost'); // HTML of the ghost card. Used for adding click event
@@ -14,6 +16,10 @@ var group_title = document.querySelector('.group_title');
 var title = document.querySelector('.title');
 var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
+var dataid = 0;
+var comments = [];
+var titles = [];
+var codes = [];
 
 // Functions
 function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
@@ -25,13 +31,18 @@ function addCard(data) { // Creates a HTML element based on the data and adds it
   var itemElem = document.createElement('div');
   if (data.length == 3) { // If 3, create a regular card
     var itemTemplate = '' +
-        '<div class="item">' +
+        '<div class="item" ' + 'data-id=' + dataid + '>' +
           '<div class="item-content">' +
             '<p id="title">' + data[0] + '</p>' +
             '<p id="comment">' + data[1] + '</p>' +
             '<p id="code">' + data[2] + '</p>' +
           '</div>' +
         '</div>';
+        dataid++;
+        titles.push(data[0]);
+        comments.push(data[1]);
+        codes.push(data[2]);
+
   } else { // Otherwise create a grid
     var itemTemplate = '' +
         '<div class="item">' +
@@ -82,6 +93,7 @@ ghost_html.addEventListener('click', function(event) { // Every modal-opening bu
   toggleModal();
 });
 
+
 regBtn.addEventListener('click', function(event) {
   group = false;
   regBtn.disabled = true;
@@ -92,6 +104,23 @@ groupBtn.addEventListener('click', function(event) {
   group = true;
   regBtn.disabled = false;
   groupBtn.disabled = true;
+});
+
+saveBtn.addEventListener('click', function(event) {
+  var order = grid.getItems().map(item => item.getElement().getAttribute('data-id'))
+  console.log(order, titles, comments, codes);
+});
+
+loadBtn.addEventListener('click', function(event) {
+  var grid = new Muuri('.grid', {
+  layoutOnInit: false,
+  sortData: {
+    id: function (item, element) {
+      return parseFloat(element.getAttribute('data-id'));
+    }
+  }
+  })
+  grid.sort('id');
 });
 
 // Sends the signal to add a card. Would be based off modal element contents

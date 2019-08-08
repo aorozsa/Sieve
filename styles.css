@@ -1,3 +1,10 @@
+body {
+display:block;
+}
+.wrapper{
+  margin: 0 auto;
+  width:700px;
+}
 .item {
   display: block;
   position: absolute;

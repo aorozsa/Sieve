@@ -1,4 +1,7 @@
+'use strict';
+
 const { app, BrowserWindow } = require('electron');
+require('electron-reload')(__dirname);
 const path = require('path');
 let win;
 
