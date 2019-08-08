@@ -50,7 +50,7 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "electron": "^5.0.8",
+    "electron": "^5.0.9",
     "electron-builder": "^20.44.4",
     "electron-packager": "^14.0.4",
     "hammerjs": "^2.0.8",

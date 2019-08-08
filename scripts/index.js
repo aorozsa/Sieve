@@ -1,27 +1,45 @@
 // Declarations
-var grid;
+var grid = newGrid();
+var ghost = grid.getItems(0)[0]; // "Card" used for adding other cards.
 var modal; // Div element that gets set by every button that opens a modal
 var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
 var draggable = true; // Specifies whether grid items are draggable or not
 var group; // Boolean specifying whether the card to add is a group card or not
 var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
-var regBtn = document.querySelector('.regBtn');
-var groupBtn = document.querySelector('.groupBtn');
 var loadBtn = document.querySelector('.loadBtn');
 var saveBtn = document.querySelector('.saveBtn');
-var addCardbtn = document.querySelector('.addCardbtn');
-var ghost; // "Card" used for adding other cards.
-var ghost_html = document.getElementById('ghost'); // HTML of the ghost card. Used for adding click event
 var group_title = document.querySelector('.group_title');
 var title = document.querySelector('.title');
 var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
-var dataid = 0;
-var comments = [];
-var titles = [];
-var codes = [];
+var dataid = 2;
+var itemsList;
 
 // Functions
+function newGrid() {
+  var g = new Muuri('.grid', { // Initialise the grid
+    items: "*",
+    layoutOnInit: false,
+    dragEnabled: true,
+    dragContainer: document.body,
+    dragStartPredicate: function (item, e) { // Items are draggable if true is returned
+      if (item === ghost) return false;
+      return draggable;
+    }
+  });
+  return g;
+}
+
+var val = 1;
+function ghostAction() {
+  /*
+  modal = document.getElementById("newCardModal");
+  toggleModal();*/
+
+  addCard([val]);
+  val++;
+}
+
 function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
   modal.classList.toggle("show-modal");
   draggable = !draggable;
@@ -31,44 +49,29 @@ function addCard(data) { // Creates a HTML element based on the data and adds it
   var itemElem = document.createElement('div');
   if (data.length == 3) { // If 3, create a regular card
     var itemTemplate = '' +
-        '<div class="item" ' + 'data-id=' + dataid + '>' +
+        '<div class="item" data-id="' + dataid + '">' +
           '<div class="item-content">' +
             '<p id="title">' + data[0] + '</p>' +
             '<p id="comment">' + data[1] + '</p>' +
             '<p id="code">' + data[2] + '</p>' +
           '</div>' +
         '</div>';
-        dataid++;
-        titles.push(data[0]);
-        comments.push(data[1]);
-        codes.push(data[2]);
 
-  } else { // Otherwise create a grid
+  } else { // Otherwise create a group card
     var itemTemplate = '' +
-        '<div class="item">' +
+        '<div class="item" data-id="' + dataid + '">' +
           '<div class="item-content">' +
             '<p>' + data[0] + '</p>' +
           '</div>' +
         '</div>';
   }
 
+  dataid++;
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
 }
 
 // Main part
-grid = new Muuri('.grid', { // Initialise the grid
-  items: "*", // Default value. Change this to an array
-  dragEnabled: true,
-  dragContainer: document.body,
-  dragStartPredicate: function (item, e) { // Items are draggable if true is returned
-    if (item === ghost) return false;
-    return draggable;
-  }
-});
-
-ghost = grid.getItems(0)[0];
-
 grid.on('dragEnd', function (item, event) {
   if (grid.getItems(0)[0] !== ghost) {
     grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
@@ -78,7 +81,6 @@ grid.on('dragEnd', function (item, event) {
 modals.forEach(function(mod) { // Enables the modals
   mod.style.display = "block";
 });
-
 closeButtons.forEach(function(closeButton) { // Adds event listeners to all the modal close buttons
   closeButton.addEventListener('click', toggleModal);
 });
@@ -88,41 +90,37 @@ window.addEventListener('click', function(event) {
   }
 });
 
-ghost_html.addEventListener('click', function(event) { // Every modal-opening button has to set "modal" to be something else
-  modal = document.getElementById("newCardModal");
-  toggleModal();
-});
-
-
-regBtn.addEventListener('click', function(event) {
-  group = false;
-  regBtn.disabled = true;
-  groupBtn.disabled = false;
-});
-
-groupBtn.addEventListener('click', function(event) {
-  group = true;
-  regBtn.disabled = false;
-  groupBtn.disabled = true;
-});
-
 saveBtn.addEventListener('click', function(event) {
-  var order = grid.getItems().map(item => item.getElement().getAttribute('data-id'))
-  console.log(order, titles, comments, codes);
+  var itemIds = grid.getItems().map(function (item) {
+    return item.getElement().getAttribute('data-id');
+  });
+
+  var layout = JSON.stringify(itemIds);
+  itemsList = layout;
 });
 
 loadBtn.addEventListener('click', function(event) {
-  var grid = new Muuri('.grid', {
-  layoutOnInit: false,
-  sortData: {
-    id: function (item, element) {
-      return parseFloat(element.getAttribute('data-id'));
+  var layout = JSON.parse(itemsList);
+  var currentItems = grid.getItems();
+  var currentItemIds = currentItems.map(function (item) {
+    return item.getElement().getAttribute('data-id')
+  });
+  var newItems = [];
+  var itemId;
+  var itemIndex;
+
+  for (var i = 0; i < layout.length; i++) {
+    itemId = layout[i];
+    itemIndex = currentItemIds.indexOf(itemId);
+    if (itemIndex > -1) {
+      newItems.push(currentItems[itemIndex])
     }
   }
-  })
-  grid.sort('id');
+
+  grid.sort(newItems, {layout: 'instant'});
 });
 
+/*
 // Sends the signal to add a card. Would be based off modal element contents
 addCardbtn.addEventListener('click', function(event) {
   try {
@@ -140,4 +138,4 @@ addCardbtn.addEventListener('click', function(event) {
   } catch(err) {
     alert(err);
   }
-});
+});*/
