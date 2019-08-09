@@ -15,12 +15,6 @@
   border-radius: 5px;
   border-color: red;
 }
-#ghost {
-  border-style: dashed;
-  border-color: black;
-  font-size: 25px;
-  cursor: pointer;
-}
 .item.muuri-item-dragging {
   z-index: 3;
 }
@@ -36,6 +30,12 @@
   height: 100%;
   text-align: center;
   display: inline-block;
+}
+#ghost {
+  border-style: dashed;
+  border-color: black;
+  font-size: 25px;
+  cursor: pointer;
 }
 
 /* Modal styles */

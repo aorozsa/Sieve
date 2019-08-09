@@ -5,7 +5,7 @@ var grid = new Muuri('.grid', { // Initialise the grid
   dragContainer: document.body,
   dragStartPredicate: function (item, e) { // Items are draggable if true is returned
     if (item === ghost) return false;
-    return draggable;
+    return true;
   }
 });
 var ghost = grid.getItems(0)[0]; // "Card" used for adding other cards.
@@ -18,7 +18,6 @@ var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
 
 // Modal stuff. Might be deleted/changed in the future
-var draggable = true; // Specifies whether grid items are draggable or not. Used for modals
 var group; // Boolean specifying whether the card to add is a group card or not
 var modal; // Div element that gets set by every button that opens a modal
 var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
@@ -28,9 +27,8 @@ var closeButtons = document.querySelectorAll(".close-button"); // List of all mo
 // Functions
 var val = 1;
 function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
-  /*
   modal = document.getElementById("newCardModal");
-  toggleModal();*/
+  toggleModal();
 
   addNewCard([val]);
   val++;
@@ -63,7 +61,6 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
 
 function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
   modal.classList.toggle("show-modal");
-  draggable = !draggable;
 }
 
 
@@ -91,13 +88,11 @@ saveBtn.addEventListener('click', function(event) {
 });
 
 loadBtn.addEventListener('click', function(event) {
-  var itemsToAdd = [];
-  savedItems.forEach(function(item) {
-    itemsToAdd.push(item.getElement());
-  });
   grid.remove(grid.getItems(), {removeElements: true});
-  grid.add(itemsToAdd);
-  ghost = grid.getItems(0)[0]
+  savedItems.forEach(function(item) {
+    grid.add(item.getElement());
+  });
+  ghost = grid.getItems(0)[0];
 });
 
 /*
