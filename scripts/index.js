@@ -3,9 +3,15 @@ var grid = new Muuri('.grid', { // Initialise the grid
   layoutOnInit: false,
   dragEnabled: true,
   dragContainer: document.body,
+  dragPlaceholder: {
+    enabled: true,
+    createElement: function (item) {
+      return item.getElement().cloneNode(true);
+    }
+  },
   dragStartPredicate: function (item, e) { // Items are draggable if true is returned
     if (item === ghost) return false;
-    return true;
+    return Muuri.ItemDrag.defaultStartPredicate(item, e);
   }
 });
 var ghost = grid.getItems(0)[0]; // "Card" used for adding other cards.
@@ -40,9 +46,11 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
     var itemTemplate = '' +
         '<div class="item">' +
           '<div class="item-content">' +
-            '<p id="title">' + data[0] + '</p>' +
-            '<p id="comment">' + data[1] + '</p>' +
-            '<p id="code">' + data[2] + '</p>' +
+            '<div class="card">' +
+              '<p id="title">' + data[0] + '</p>' +
+              '<p id="comment">' + data[1] + '</p>' +
+              '<p id="code">' + data[2] + '</p>' +
+            '</div>' +
           '</div>' +
         '</div>';
 
@@ -50,7 +58,9 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
     var itemTemplate = '' +
         '<div class="item">' +
           '<div class="item-content">' +
-            '<p>' + data[0] + '</p>' +
+            '<div class="card">' +
+              '<p>' + data[0] + '</p>' +
+            '</div>' +
           '</div>' +
         '</div>';
   }
