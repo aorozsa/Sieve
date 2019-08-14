@@ -9,17 +9,13 @@
 <body>
   <div>
     <button class='saveBtn'>save</button>
-    <button class='loadBtn'>load</load>
+    <label class="loadBtn">
+      load
+      <input type="file"/>
+    </label>
+    <button class='clearBtn'>clear</button>
   </div>
-  <div class="grid">
-    <div class="item">
-      <div class="item-content">
-        <div class="card" id="ghost" onclick="ghostAction();">
-          <h1>+</h1>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="grid"></div>
 
   <!-- Modals. A new div has to be specified every time with a different id -->
   <div class="modal" id="newCardModal">
@@ -27,13 +23,14 @@
         <span class="close-button">&times;</span>
         <br>
         <br>
-        <h1>This has to be changed to be the other feature we discussed</h1>
+        <h1>Now that I think about it, these modals could be used for major functions such as clear and load.</h1>
       </div>
   </div>
 
-  <!-- Imports for Muuri and index -->
+  <!-- Imports -->
   <script src="scripts/muuri.min.js"></script>
   <script src="scripts/web-animations.min.js"></script>
+  <script src="scripts/FileSaver.js"></script>
   <script src="scripts/index.js"></script>
 </div>
 </body>

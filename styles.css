@@ -2,6 +2,7 @@
 .grid {
   position: relative;
   margin: 0 -10px;
+  width: 100%;
 }
 .item {
   position: absolute;
@@ -134,12 +135,6 @@
   height: 25px;
   font-size: 16px;
 }
-button {
-  position: relative;
-  font-size: 20px;
-  width: 50%;
-  cursor: pointer;
-}
 textarea {
   width: 100%;
   border-style: none;
@@ -170,4 +165,30 @@ p {
   left: 50%;
   top: 90%;
   transform: translate(-50%, -90%);
+}
+
+button {
+  position: relative;
+  font-size: 20px;
+  width: 50%;
+  cursor: pointer;
+}
+input[type=file] { /* This hides the default input */
+  display: none;
+}
+.loadBtn {
+  text-align: center;
+  display: inline-block;
+  line-height: 1.7em;
+  font-size: 20px;
+  border: 1px solid #666;
+  background-image: linear-gradient( to bottom, #fff, #ccc );
+  width: 50%;
+  height: 35px;
+}
+.loadBtn:hover {
+  cursor: pointer;
+}
+.loadBtn:focus {
+  padding: 0  0.56em 0 0.68em;
 }
