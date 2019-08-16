@@ -31,6 +31,7 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
+      if (e.target.matches("textarea")) return false; // Disables dragging on textareas. This will be altered in the future
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
   }).on('dragEnd', function(item, event) {
@@ -44,7 +45,7 @@ function initialise() {
   if (layout) { // Automatically loads the last layout if applicable
     load(layout);
   } else {
-    addExistingCard(ghostMarkup); // Adds the ghost card by default. This area could also be used for a "first-time message"
+    addSavedCard(ghostMarkup); // Adds the ghost card by default. This area could also be used for a "first-time message"
   }
 }
 
@@ -77,7 +78,7 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p>' + data[0] + '</p>' +
+      '<textarea placeholder="Title"></textarea>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -88,7 +89,7 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
   window.localStorage.setItem('layout', gridToJSON()); // Saves the grid's items
 }
 
-function addExistingCard(cardDiv) { // Like addNewCard, but it accepts a string of the pre-written card class and creates a template using that
+function addSavedCard(cardDiv) { // Like addNewCard, but it accepts a string of the pre-written card class and creates a template using that
   var itemElem = document.createElement('div');
   var itemTemplate =
     '<div class="item">' +
@@ -115,9 +116,9 @@ function gridToJSON() { // Returns all of the grid's item elements in a stringif
 function load(layout) { // Loads cards that have already been created before
   var itemsToLoad = JSON.parse(layout);
   itemsToLoad.forEach(function(item) {
-    addExistingCard(item);
+    addSavedCard(item);
   });
-  window.localStorage.setItem('layout', gridToJSON()); // Saves tge grid's items
+  window.localStorage.setItem('layout', gridToJSON()); // Saves the grid's items
 }
 
 function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
@@ -160,15 +161,13 @@ loadBtn.addEventListener('change', function(e) {
     load(contents);
   };
   reader.readAsText(file);
-
-  window.localStorage.setItem('layout', gridToJSON());
 }), false;
 
 clearBtn.addEventListener('click', function(event) { // Removes all items, adds back the ghost, then saves the layout
   grid.remove(grid.getItems(), {
     removeElements: true
   });
-  addExistingCard(ghostMarkup);
+  addSavedCard(ghostMarkup);
   window.localStorage.setItem('layout', gridToJSON()); // Saves the grid's items
 });
 
