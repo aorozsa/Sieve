@@ -1,5 +1,6 @@
 // Variables
 var grid;
+var grid2;
 var ghost; // "Card" used for adding other cards.
 var ghostMarkup = '<div class="card" id="ghost" onclick="ghostAction();"><h1>+</h1></div>'; // HTML markup for the ghost card
 var saveBtn = document.querySelector('.saveBtn');
@@ -41,7 +42,8 @@ function initialise() {
       if (item === ghost) return false;
       if (e.target.matches("textarea")) return false; // Disables dragging on textareas. This will be altered in the future
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
-    }
+    },
+    dragSort: getAllGrids
   }).on('dragEnd', function(item, event) {
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
@@ -56,6 +58,18 @@ function initialise() {
   // } else {
   //   addSavedCard(ghostMarkup); // Adds the ghost card by default. This area could also be used for a "first-time message"
   // }
+
+  grid2 = new Muuri('.grid-2', {
+    dragEnabled: true,
+    dragContainer: document.body,
+    dragSort: getAllGrids
+  });
+
+}
+
+function getAllGrids(item) {
+  var grids = (grid, grid2);
+  return [grids];
 }
 
 
@@ -63,10 +77,12 @@ function initialise() {
 function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
   // modal = document.getElementById("newCardModal");
   // toggleModal();
-
-  addNewCard([title.value, comment.value, code.value]);
+  if (title.value==""){
+    addNewCard([dataid, dataid, dataid]);
+  }else{
+    addNewCard([title.value, comment.value, code.value]);
+  }
   console.log(title.value);
-
 
 }
 
