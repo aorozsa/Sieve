@@ -31,7 +31,8 @@ var grids = [];
 
 // Functions
 function initialise() {
-  grid = new Muuri('.grid', { // Initialise the grid
+  grid = new Muuri('.grid', {
+    layoutDuration: 2000, // Initialise the grid
     layoutOnInit: false,
     dragEnabled: true,
     dragContainer: document.body,
