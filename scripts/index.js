@@ -68,8 +68,8 @@ function initialise() {
 }
 
 function getAllGrids(item) {
-  var grids = (grid, grid2);
-  return [grids];
+  // var grids = (grid, grid2);
+  return [grid, grid2];
 }
 
 
