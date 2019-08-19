@@ -5,6 +5,7 @@ var ghost; // "Card" used for adding other cards.
 var ghostMarkup = '<div class="card" id="ghost" onclick="ghostAction();"><h1>+</h1></div>'; // HTML markup for the ghost card
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
+var gridBtn = document.querySelector('.gridBtn');
 var sortBtn = document.querySelector('.sortBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var group_title = document.querySelector('.group_title');
@@ -24,6 +25,8 @@ var comments = ['test1', 'test2', 'test3'];
 var codes = ['test1', 'test2', 'test3'];
 var data_layout = [2, 5, 7];
 var dataid;
+var gridCounter = 2;
+var grids = [];
 
 
 // Functions
@@ -50,6 +53,7 @@ function initialise() {
     }
     // window.localStorage.setItem('layout', gridToJSON()); // Autosaves the grid's items
   });
+
   addSavedCard(ghostMarkup);
   var layout = window.localStorage.getItem('layout');
   // if (layout) { // Automatically loads the last layout if applicable
@@ -58,18 +62,34 @@ function initialise() {
   // } else {
   //   addSavedCard(ghostMarkup); // Adds the ghost card by default. This area could also be used for a "first-time message"
   // }
+}
 
-  grid2 = new Muuri('.grid-2', {
+function randomColour(){
+  return '#'+Math.floor(Math.random()*16777215).toString(16);
+
+}
+
+function newGrid(){
+  var colour = randomColour();
+  var itemElem = document.createElement('div');
+  // var gridDiv = '<div class="grid grid-'+ gridCounter + '></div>'
+  itemElem.setAttribute('class', "grid grid-" + gridCounter);
+  // itemElem.innerHTML = gridDiv;
+  document.getElementById("grids").appendChild(itemElem);
+  var sheet = window.document.styleSheets[0];
+  sheet.insertRule('.grid-'+gridCounter+' .card { color: '+colour+'; }', sheet.cssRules.length);
+  sheet.insertRule('.grid-'+gridCounter+'{ background: '+colour+'; }', sheet.cssRules.length);
+  this['grid' + gridCounter] = new Muuri('.grid-' + gridCounter, {
     dragEnabled: true,
     dragContainer: document.body,
     dragSort: getAllGrids
   });
-
+    grids.push(eval("grid"+gridCounter));
+    gridCounter++;
 }
 
-function getAllGrids(item) {
-  // var grids = (grid, grid2);
-  return [grid, grid2];
+function getAllGrids() {
+  return grids;
 }
 
 
@@ -86,7 +106,9 @@ function ghostAction() { // Change this to toggle visibility of two buttons. One
 
 }
 
-function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
+function addNewCard(data) {
+  console.log(grids);
+ // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   if (data.length == 3) { // If 3, create a regular card
     if(Math.max(...data_layout) > -1){
@@ -200,6 +222,10 @@ window.addEventListener('click', function(event) {
 //   };
 //   reader.readAsText(file);
 // }), false;
+
+gridBtn.addEventListener('click', function(event) {
+  newGrid();
+});
 
 saveBtn.addEventListener('click', function(event) {
   localStorage.clear();
