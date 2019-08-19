@@ -62,6 +62,7 @@ function initialise() {
   // } else {
   //   addSavedCard(ghostMarkup); // Adds the ghost card by default. This area could also be used for a "first-time message"
   // }
+  grids.push(grid);
 }
 
 function randomColour(){
