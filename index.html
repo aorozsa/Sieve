@@ -8,27 +8,16 @@
 
 <body>
   <div>
-    <div>
-    <textarea class="title" placeholder="Title"></textarea><br>
-    <textarea class="comment" placeholder="Comment"></textarea><br>
-    <textarea class="code" placeholder="Code"></textarea>
-  </div>
-    <br>
-    <br>
-    <br>
     <button class='saveBtn'>save</button>
-    <button class='loadBtn'>Load</button>
-    <button class='sortBtn'>sort into saved order</button>
-    <button class='gridBtn'>new group</button>
-    <!-- <label class="loadBtn">
+    <label class="loadBtn">
       load
-      <input type="file"/> -->
+      <form id="load">
+        <input type="file">
+      </form>
     </label>
     <button class='clearBtn'>clear</button>
   </div>
-  <div id="grids">
   <div class="grid"></div>
-  </div>
 
   <!-- Modals. A new div has to be specified every time with a different id -->
   <div class="modal" id="newCardModal">

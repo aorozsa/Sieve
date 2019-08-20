@@ -1,6 +1,6 @@
-'use strict';
+
+
 const { app, BrowserWindow } = require('electron');
-require('electron-reload')(__dirname);
 
 const path = require('path');
 let win;
@@ -30,7 +30,6 @@ function createWindow() {
   })
   //win.webContents.openDevTools()
 }
-
 
 // Create window on electron intialization
 app.on('ready', createWindow);

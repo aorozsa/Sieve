@@ -3,7 +3,7 @@
 ## Getting started
 Run `npm install` to install the required packages. Run `npm update` to update installed packages.
 
-HTML pages are found in `windows/`, scripts are found in `scripts/`, and styles are found in `styles.css`.
+Markup is found in `index.html`, scripts are found in `scripts/`, and styles are found in `styles.css`.
 
 ## Run
 Run `npm start` to run the project.

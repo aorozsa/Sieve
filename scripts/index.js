@@ -1,38 +1,24 @@
 // Variables
 var grid;
-var grid2;
 var ghost; // "Card" used for adding other cards.
-var ghostMarkup = '<div class="card" id="ghost" onclick="ghostAction();"><h1>+</h1></div>'; // HTML markup for the ghost card
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
-var gridBtn = document.querySelector('.gridBtn');
-var sortBtn = document.querySelector('.sortBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var group_title = document.querySelector('.group_title');
 var title = document.querySelector('.title');
 var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
+
 // Modal stuff. Might be deleted/changed in the future
 var group; // Boolean specifying whether the card to add is a group card or not
 var modal; // Div element that gets set by every button that opens a modal
 var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
 var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
 
-// Storing items in arrays to save
-var titles = ['test1', 'test2', 'test3'];
-
-var comments = ['test1', 'test2', 'test3'];
-var codes = ['test1', 'test2', 'test3'];
-var data_layout = [2, 5, 7];
-var dataid;
-var gridCounter = 2;
-var grids = [];
-
 
 // Functions
 function initialise() {
-  grid = new Muuri('.grid', {
-    layoutDuration: 2000, // Initialise the grid
+  grid = new Muuri('.grid', { // Initialise the grid
     layoutOnInit: false,
     dragEnabled: true,
     dragContainer: document.body,
@@ -46,81 +32,52 @@ function initialise() {
       if (item === ghost) return false;
       if (e.target.matches("textarea")) return false; // Disables dragging on textareas. This will be altered in the future
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
-    },
-    dragSort: getAllGrids
+    }
   }).on('dragEnd', function(item, event) {
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
     }
-    // window.localStorage.setItem('layout', gridToJSON()); // Autosaves the grid's items
+    window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's items
   });
 
-  addSavedCard(ghostMarkup);
-  var layout = window.localStorage.getItem('layout');
-  // if (layout) { // Automatically loads the last layout if applicable
-  //   addSavedCard(ghostMarkup);
-  //   load(layout);
-  // } else {
-  //   addSavedCard(ghostMarkup); // Adds the ghost card by default. This area could also be used for a "first-time message"
-  // }
-  grids.push(grid);
-}
-
-function randomColour(){
-  return '#'+Math.floor(Math.random()*16777215).toString(16);
-
-}
-
-function newGrid(){
-  var colour = randomColour();
+  // Adds in the ghost card by default
   var itemElem = document.createElement('div');
-  // var gridDiv = '<div class="grid grid-'+ gridCounter + '></div>'
-  itemElem.setAttribute('class', "grid grid-" + gridCounter);
-  // itemElem.innerHTML = gridDiv;
-  document.getElementById("grids").appendChild(itemElem);
-  var sheet = window.document.styleSheets[0];
-  sheet.insertRule('.grid-'+gridCounter+' .card { color: '+colour+'; }', sheet.cssRules.length);
-  sheet.insertRule('.grid-'+gridCounter+'{ background: '+colour+'; }', sheet.cssRules.length);
-  this['grid' + gridCounter] = new Muuri('.grid-' + gridCounter, {
-    dragEnabled: true,
-    dragContainer: document.body,
-    dragSort: getAllGrids
-  });
-    grids.push(eval("grid"+gridCounter));
-    gridCounter++;
-}
+  var itemTemplate =
+    '<div class="item">'+
+    '<div class="item-content">' +
+    '<div class="card" id="ghost" onclick="ghostAction();"><h1>+</h1></div>' +
+    '</div>'+
+    '</div>';
+  itemElem.innerHTML = itemTemplate;
+  grid.add(itemElem.firstChild);
+  ghost = grid.getItems(0)[0];
 
-function getAllGrids() {
-  return grids;
-}
-
-
-
-function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
-  // modal = document.getElementById("newCardModal");
-  // toggleModal();
-  if (title.value==""){
-    addNewCard([dataid, dataid, dataid]);
-  }else{
-    addNewCard([title.value, comment.value, code.value]);
+  var layout = window.localStorage.getItem('layout');
+  if (layout) { // Automatically loads the last layout if applicable
+    load(layout);
   }
-  console.log(title.value);
-
 }
 
-function addNewCard(data) {
-  console.log(grids);
- // Creates a HTML element based on the data and adds it to the grid
+var val = 1;
+var toggleBool = true;
+function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
+  modal = document.getElementById("newCardModal");
+  toggleModal();
+
+  if (toggleBool) {
+    addNewCard([val]);
+  } else {
+    addNewCard([val, val, val]);
+  }
+  toggleBool = !toggleBool;
+  val++;
+}
+
+function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   if (data.length == 3) { // If 3, create a regular card
-    if(Math.max(...data_layout) > -1){
-      dataid = (Math.max(...data_layout) + 1);
-    } else {
-      dataid = 1;
-    }
-
     var itemTemplate =
-      '<div class="item"' + 'data-id=' + dataid + '>' +
+      '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
       '<p id="title">' + data[0] + '</p>' +
@@ -135,53 +92,58 @@ function addNewCard(data) {
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<textarea placeholder="Title"></textarea>' +
+      '<p class="group_title">' + data[0] + '</p>' +
       '</div>' +
       '</div>' +
       '</div>';
   }
-  titles.push(data[0]);
-  comments.push(data[1]);
-  codes.push(data[2]);
-  data_layout.push(dataid);
-  console.log(titles, comments, codes, data_layout);
+
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
-  // window.localStorage.setItem('layout', gridToJSON()); // Saves the grid's items
+  window.localStorage.setItem('layout', saveItems()); // Saves the grid's items
 }
 
-
-function addSavedCard(cardDiv) { // Like addNewCard, but it accepts a string of the pre-written card class and creates a template using that
-  var itemElem = document.createElement('div');
-  var itemTemplate =
-    '<div class="item" data-id="0">' +
-    '<div class="item-content">'  +
-    cardDiv +
-    '</div>' +
-    '</div>';
-  itemElem.innerHTML = itemTemplate;
-  grid.add(itemElem.firstChild);
-  if (cardDiv.includes("ghost")) { // Initialise the ghost card, if that's what the card in question is
-    ghost = grid.getItems(0)[0];
-  }
+function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
+  var items = grid.getItems().map(item => item.getElement());
+  var itemsToSave = [];
+  items.forEach(function(item) {
+    if (items.indexOf(item) != 0) {
+      item = JSON.stringify(item.firstElementChild.innerHTML);
+      var itemData = item.match(/<p.*?<\/p>/g);
+      var dataToSave = [];
+      itemData.forEach(function(elem) {
+        elem = elem.split('">').pop().split('</p>')[0];
+        dataToSave.push(elem);
+      });
+      itemsToSave.push(dataToSave);
+    }
+  });
+  return JSON.stringify(itemsToSave);
 }
 
-// function gridToJSON() { // Returns all of the grid's item elements in a stringified format. Core component for saving
-//   var items = grid.getItems().map(item => item.getElement());
-//   var itemsToSave = [];
-//   items.forEach(function(item) {
-//     itemsToSave.push(item.firstElementChild.innerHTML);
-//   });
-//   return JSON.stringify(itemsToSave);
-// }
+function load(layout) { // Loads cards that have already been created before
+  var itemsToLoad = JSON.parse(layout);
+  itemsToLoad.forEach(function(item) {
+    addNewCard(item);
+  });
+  window.localStorage.setItem('layout', saveItems()); // Saves the grid's items
+}
 
-// function load(layout) { // Loads cards that have already been created before
-//   var itemsToLoad = JSON.parse(layout);
-//   itemsToLoad.forEach(function(item) {
-//     addSavedCard(item);
-//   });
-//   window.localStorage.setItem('layout', gridToJSON()); // Saves the grid's items
-// }
+function deleteItems(items) {
+  grid.hide(items, {
+    onFinish: function(hiddenItems) {
+      grid.remove(hiddenItems, {
+        removeElements: true
+      });
+    }
+  });
+}
+
+function allItems() { // Returns all items except the ghost
+  var items = grid.getItems();
+  items.shift()
+  return items;
+}
 
 function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
   modal.classList.toggle("show-modal");
@@ -203,139 +165,37 @@ window.addEventListener('click', function(event) {
   }
 });
 
-// saveBtn.addEventListener('click', function(event) {
-//   var file = new Blob([gridToJSON()], {
-//     type: 'application/octet-stream'
-//   });
-//   saveAs(file, "SieveSaveFile");
-// });
-//
-// loadBtn.addEventListener('change', function(e) {
-//   var file = e.target.files[0];
-//   if (!file) return;
-//
-//   var reader = new FileReader();
-//   reader.onload = function(e) {
-//     var contents = e.target.result;
-//     grid.remove(grid.getItems(), {
-//       removeElements: true
-//     });
-//     load(contents);
-//   };
-//   reader.readAsText(file);
-// }), false;
-
-gridBtn.addEventListener('click', function(event) {
-  newGrid();
-});
 
 saveBtn.addEventListener('click', function(event) {
-  localStorage.clear();
-  window.localStorage.setItem('savedTitles', titles);
-  window.localStorage.setItem('savedComments', comments);
-  window.localStorage.setItem('savedCodes', codes);
-  window.localStorage.setItem('savedCards', data_layout);
-  saveLayout(grid);
-  console.log(window.localStorage.getItem('layout'));
-  console.log(data_layout);
-});
-
-function serializeLayout(grid) {
-  var itemIds = grid.getItems().map(function (item) {
-    return item.getElement().getAttribute('data-id');
+  var file = new Blob([saveItems()], {
+    type: 'application/octet-stream'
   });
-  return JSON.stringify(itemIds);
-}
-
-function saveLayout(grid) {
-  var layout = serializeLayout(grid);
-  window.localStorage.setItem('layout', layout);
-
-}
-
-loadBtn.addEventListener('click', function(e) {
-  loadCards();
+  saveAs(file, "SieveSaveFile");
 });
 
-function emptyArray(array){
-  array.length = 0;
-}
+loadBtn.addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
 
-function emptyAll(){
-  emptyArray(titles);
-  emptyArray(comments);
-  emptyArray(codes);
-  emptyArray(data_layout);
-}
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    grid.hide(allItems(), { // Deletes the items in a fancy way before loading in new items
+      onFinish: function(hiddenItems) {
+        grid.remove(hiddenItems, {
+          removeElements: true
+        });
+        load(contents);
+        document.getElementById("load").reset();
+      }
+    });
+  };
+  reader.readAsText(file);
+}), false;
 
-function loadCards() {
-  console.log(window.localStorage.getItem('savedCards'));
-   // Creates a HTML element based on the data and adds it to the grid
-  if (window.localStorage.getItem('savedCards').length > 1){
-    removeItemsFromGrid();
-    emptyAll();
-    titles = window.localStorage.getItem('savedTitles').split(',');
-    comments = window.localStorage.getItem('savedComments').split(',');
-    codes = window.localStorage.getItem('savedCodes').split(',');
-    data_layout = window.localStorage.getItem('savedCards').split(',');
-  }
-  for (i = 0; i < titles.length; i++){
-    var itemElem = document.createElement('div');
-      var itemTemplate =
-        '<div class="item"' + 'data-id=' + data_layout[i] + '>' +
-        '<div class="item-content">' +
-        '<div class="card">' +
-        '<p id="title">' + titles[i] + '</p>' +
-        '<p id="comment">' + comments[i] + '</p>' +
-        '<p id="code">' + codes[i] + '</p>' +
-        '</div>' +
-        '</div>' +
-        '</div>';
-        itemElem.innerHTML = itemTemplate;
-        grid.add(itemElem.firstChild);
-    }
-  }
-
-function saveLayout(grid) {
-  var layout = serializeLayout(grid);
-  window.localStorage.setItem('layout', layout);
-}
-
-function removeItemsFromGrid() {
-          var items = grid.getItems();
-          items.shift();
-          grid.hide(items, {
-            onFinish: function(hiddenItems) {
-              grid.remove(hiddenItems, { removeElements: true });
-            }
-          });
-        }
-
-clearBtn.addEventListener('click', function(event) { // Removes all items, adds back the ghost, then saves the layout
-  removeItemsFromGrid();
-  emptyAll();
-  // localStorage.clear();
-});
-
-sortBtn.addEventListener('click', function(e) {
-  var currentItems = grid.getItems();
-  var currentItemIds = currentItems.map(function (item) {
-    return item.getElement().getAttribute('data-id')
-  });
-  var newItems = [];
-  var itemId;
-  var itemIndex;
-  var layout = JSON.parse(window.localStorage.getItem('layout'));
-  console.log(layout);
-  console.log(currentItemIds);
-  for (var i = 0; i < layout.length; i++) {
-    itemId = layout[i];
-    itemIndex = currentItemIds.indexOf(itemId);
-    if (itemIndex > -1) {
-      newItems.push(currentItems[itemIndex])
-    }
-  }
-  grid.sort(newItems);
+clearBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  deleteItems(allItems());
+  window.localStorage.removeItem('layout'); // Removes the layout from memory.
 });
 
 /*

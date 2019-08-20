@@ -50,16 +50,14 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "electron": "^5.0.9",
+    "electron": "^5.0.10",
     "electron-builder": "^20.44.4",
     "electron-packager": "^14.0.4",
     "electron-reload": "^1.5.0",
     "run-script-os": "^1.0.7"
   },
   "dependencies": {
-    "electron-context-menu": "^0.14.0",
     "muuri": "^0.8.0",
-    "reload": "^3.0.1",
     "web-animations-js": "^2.3.2"
   }
 }
