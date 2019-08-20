@@ -52,8 +52,9 @@ function initialise() {
   grid.add(itemElem.firstChild);
   ghost = grid.getItems(0)[0];
 
+  // Automatically loads the last layout if applicable
   var layout = window.localStorage.getItem('layout');
-  if (layout) { // Automatically loads the last layout if applicable
+  if (layout) {
     load(layout);
   }
 }
@@ -73,7 +74,7 @@ function ghostAction() { // Change this to toggle visibility of two buttons. One
   val++;
 }
 
-function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
+function addNewCard(data, loading = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   if (data.length == 3) { // If 3, create a regular card
     var itemTemplate =
@@ -100,23 +101,23 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
 
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
-  window.localStorage.setItem('layout', saveItems()); // Saves the grid's items
+  if (!loading) { // Saves the grid's items when adding just one card. Would seriously bottleneck loading otherwise.
+    window.localStorage.setItem('layout', saveItems());
+  }
 }
 
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
-  var items = grid.getItems().map(item => item.getElement());
+  var items = allItems().map(item => item.getElement());
   var itemsToSave = [];
   items.forEach(function(item) {
-    if (items.indexOf(item) != 0) {
-      item = JSON.stringify(item.firstElementChild.innerHTML);
-      var itemData = item.match(/<p.*?<\/p>/g);
-      var dataToSave = [];
-      itemData.forEach(function(elem) {
-        elem = elem.split('">').pop().split('</p>')[0];
-        dataToSave.push(elem);
-      });
-      itemsToSave.push(dataToSave);
-    }
+    item = JSON.stringify(item.firstElementChild.innerHTML);
+    var itemData = item.match(/<p.*?<\/p>/g);
+    var dataToSave = [];
+    itemData.forEach(function(elem) {
+      elem = elem.split('">').pop().split('</p>')[0];
+      dataToSave.push(elem);
+    });
+    itemsToSave.push(dataToSave);
   });
   return JSON.stringify(itemsToSave);
 }
@@ -124,7 +125,7 @@ function saveItems() { // Returns all of the grid's item data in a readable form
 function load(layout) { // Loads cards that have already been created before
   var itemsToLoad = JSON.parse(layout);
   itemsToLoad.forEach(function(item) {
-    addNewCard(item);
+    addNewCard(item, true);
   });
   window.localStorage.setItem('layout', saveItems()); // Saves the grid's items
 }
