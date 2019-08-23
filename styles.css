@@ -20,7 +20,7 @@ html {
   position: absolute;
   z-index: 10;
   bottom: 125%;
-  left: 105%;
+  left: 115%;
   top: 130%;
   margin-left: -60px;
   opacity: 0;
@@ -35,7 +35,7 @@ html {
   content: "";
   position: absolute;
   top: -35%;
-  left: 50%;
+  left: 27px;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
