@@ -4,12 +4,14 @@ var ghost; // "Card" used for adding other cards.
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
 var clearBtn = document.querySelector('.clearBtn');
+var clearYesBtn = document.getElementById('clearYesBtn');
+var clearNoBtn = document.getElementById('clearNoBtn');
 var group_title = document.querySelector('.group_title');
 var title = document.querySelector('.title');
 var comment = document.querySelector('.comment');
 var code = document.querySelector('.code');
 
-// Modal stuff. Might be deleted/changed in the future
+// Modal variables
 var group; // Boolean specifying whether the card to add is a group card or not
 var modal; // Div element that gets set by every button that opens a modal
 var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
@@ -30,7 +32,6 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
-      if (e.target.matches("textarea")) return false; // Disables dragging on textareas. This will be altered in the future
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
   }).on('dragEnd', function(item, event) {
@@ -166,7 +167,6 @@ window.addEventListener('click', function(event) {
   }
 });
 
-
 saveBtn.addEventListener('click', function(event) {
   var file = new Blob([saveItems()], {
     type: 'application/octet-stream'
@@ -195,8 +195,18 @@ loadBtn.addEventListener('change', function(e) {
 }), false;
 
 clearBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  modal = document.getElementById("clearConfirmModal");
+  toggleModal();
+});
+
+clearYesBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  toggleModal();
   deleteItems(allItems());
   window.localStorage.removeItem('layout'); // Removes the layout from memory.
+});
+
+clearNoBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  toggleModal();
 });
 
 /*
@@ -217,4 +227,5 @@ addCardbtn.addEventListener('click', function(event) {
   } catch(err) {
     alert(err);
   }
-});*/
+});
+*/

@@ -1,3 +1,52 @@
+html {
+  font-family: "Impact", "Charcoal", sans-serif,
+}
+.modal { /* Classes that have text selection disabled. You can add more. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.tooltip {
+  visibility: hidden;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  width: auto;
+  height: 30px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%;
+  left: 105%;
+  top: 130%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tooltip p {
+  line-height: 30px;
+  margin-top: 0;
+  margin-right: 20px;
+}
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: -35%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #555 transparent;
+}
+.saveBtn:hover .tooltip, .loadBtn:hover .tooltip,
+.clearBtn:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
 /* Core Muuri styles */
 .grid {
   position: relative;
@@ -13,7 +62,6 @@
 }
 .item.muuri-item-dragging {
   z-index: 9999;
-  cursor: move;
 }
 .item.muuri-item-releasing {
   z-index: 9999;
@@ -46,11 +94,15 @@
   border: 2px solid;
   border-radius: 5px;
   color: red;
+  cursor: grab;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -ms-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
+}
+.card:active {
+  cursor: grabbing;
 }
 #ghost {
   color: black;
@@ -80,10 +132,11 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1rem;
   width: 450px;
   height: auto;
   border-radius: 0.5rem;
+  text-align: center;
 }
 .close-button {
   float: right;
@@ -167,28 +220,40 @@ p {
   transform: translate(-50%, -90%);
 }
 
-button {
+label {
   position: relative;
-  font-size: 20px;
-  width: 50%;
   cursor: pointer;
+  text-align: center;
+  line-height: 250%;
+  display: inline-block;
+  margin-right: 20px;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  border: 2px outset lightgray;
+  border-radius: 5px;
+}
+label:active {
+  border: 2px inset lightgray;
 }
 input[type=file] { /* This hides the default input */
   display: none;
 }
-.loadBtn {
-  text-align: center;
-  display: inline-block;
-  line-height: 1.7em;
-  font-size: 20px;
-  border: 1px solid #666;
-  background-image: linear-gradient( to bottom, #fff, #ccc );
-  width: 50%;
-  height: 35px;
+.saveBtn {
+  background-image: url("app_images/save.png");
 }
-.loadBtn:hover {
-  cursor: pointer;
+.loadBtn {
+  background-image: url("app_images/load.png");
 }
 .loadBtn:focus {
   padding: 0  0.56em 0 0.68em;
+}
+.clearBtn {
+  background-image: url("app_images/clear.png");
+}
+.confirmBtn {
+  width: 40%;
+}
+#clearNoBtn {
+  float: right;
 }

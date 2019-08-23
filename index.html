@@ -7,25 +7,37 @@
 </head>
 
 <body>
-  <div>
-    <button class='saveBtn'>save</button>
+  <div class='controls'>
+    <label class='saveBtn'>
+      <span class="tooltip"><p>Save</p></span>
+    </label>
     <label class="loadBtn">
-      load
+      <span class="tooltip"><p>Load</p></span>
       <form id="load">
         <input type="file">
       </form>
     </label>
-    <button class='clearBtn'>clear</button>
+    <label class='clearBtn'>
+      <span class="tooltip"><p>Clear</p></span>
+    </label>
   </div>
+
   <div class="grid"></div>
 
   <!-- Modals. A new div has to be specified every time with a different id -->
   <div class="modal" id="newCardModal">
       <div class="modal-content">
         <span class="close-button">&times;</span>
-        <br>
-        <br>
         <h1>Now that I think about it, these modals could be used for major functions such as clear and load. They could also be used for adding in cards again for use in large grids.</h1>
+      </div>
+  </div>
+  <div class="modal" id="clearConfirmModal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h1>Are you sure you want to clear the entire grid? This can not be undone.</h1>
+        <br>
+        <label class="confirmBtn" id="clearYesBtn">Yes</label>
+        <label class="confirmBtn" id="clearNoBtn">No</label>
       </div>
   </div>
 
