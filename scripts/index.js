@@ -1,21 +1,24 @@
 // Variables
 var grid;
 var ghost; // "Card" used for adding other cards.
+var editable = false; // Boolean that specifies whether the card can be modified or not.
+var toggleEditBtn = document.querySelector('.toggleEditBtn');
+var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
-var clearBtn = document.querySelector('.clearBtn');
-var clearYesBtn = document.getElementById('clearYesBtn');
-var clearNoBtn = document.getElementById('clearNoBtn');
-var group_title = document.querySelector('.group_title');
-var title = document.querySelector('.title');
-var comment = document.querySelector('.comment');
-var code = document.querySelector('.code');
 
 // Modal variables
 var group; // Boolean specifying whether the card to add is a group card or not
 var modal; // Div element that gets set by every button that opens a modal
-var modals = document.querySelectorAll(".modal"); // List of all modals. Only used in initialisation.
-var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
+var regBtn = document.querySelector('.regBtn');
+var groupBtn = document.querySelector('.groupBtn');
+var addCardBtn = document.querySelector('.addCardBtn');
+var templateGroupTitle = document.getElementById('templateGroupTitle');
+var templateTitle = document.getElementById('templateTitle');
+var templateComment = document.getElementById('templateComment');
+var templateCode = document.getElementById('templateCode');
+var clearYesBtn = document.getElementById('clearYesBtn');
+var clearNoBtn = document.getElementById('clearNoBtn');
 
 
 // Functions
@@ -32,6 +35,8 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
+      if (e.target.matches("p") && editable) return false; // Disables dragging on card text when specified.
+      if (e.target.matches("label")) return false; // Disables dragging on buttons.
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
   }).on('dragEnd', function(item, event) {
@@ -58,21 +63,23 @@ function initialise() {
   if (layout) {
     load(layout);
   }
+
+  regBtn.style.cursor = "default"; // Sets the cursor for the regular card toggle in the add card modal.
+
+  var modals = document.querySelectorAll(".modal"); // List of all modals
+  var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
+
+  modals.forEach(function(mod) { // Enables the modals
+    mod.style.display = "block";
+  });
+  closeButtons.forEach(function(closeButton) { // Adds an event listener to all the modal close buttons
+    closeButton.addEventListener('click', toggleModal);
+  });
 }
 
-var val = 1;
-var toggleBool = true;
 function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
   modal = document.getElementById("newCardModal");
   toggleModal();
-
-  if (toggleBool) {
-    addNewCard([val]);
-  } else {
-    addNewCard([val, val, val]);
-  }
-  toggleBool = !toggleBool;
-  val++;
 }
 
 function addNewCard(data, loading = false) { // Creates a HTML element based on the data and adds it to the grid
@@ -82,9 +89,9 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p id="title">' + data[0] + '</p>' +
-      '<p id="comment">' + data[1] + '</p>' +
-      '<p id="code">' + data[2] + '</p>' +
+      '<p class="title" contenteditable="true">' + data[0] + '</p>' +
+      '<p class="comment" contenteditable="true">' + data[1] + '</p>' +
+      '<p class="code" contenteditable="true">' + data[2] + '</p>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -94,7 +101,7 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p class="group_title">' + data[0] + '</p>' +
+      '<p class="group_title" contenteditable="true">' + data[0] + '</p>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -147,24 +154,43 @@ function allItems() { // Returns all items except the ghost
   return items;
 }
 
-function toggleModal() { // Toggles the selected modal visibility and whether grid items can be dragged
+function toggleModal() { // Toggles the currently selected modal's visibility
   modal.classList.toggle("show-modal");
 }
 
 
-// The main part of the program
+// Event listeners
 initialise();
 
-modals.forEach(function(mod) { // Enables the modals
-  mod.style.display = "block";
-});
-closeButtons.forEach(function(closeButton) { // Adds event listeners to all the modal close buttons
-  closeButton.addEventListener('click', toggleModal);
-});
 window.addEventListener('click', function(event) {
   if (event.target === modal) {
     toggleModal();
   }
+});
+
+toggleEditBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  if (editable) {
+    editable = false;
+    toggleEditBtn.style.border = "2px outset lightgray";
+    toggleEditBtn.style.backgroundColor = "white";
+  } else {
+    editable = true;
+    toggleEditBtn.style.border = "2px inset lightgray";
+    toggleEditBtn.style.backgroundColor = "lightblue";
+  }
+});
+
+clearBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  modal = document.getElementById("clearConfirmModal");
+  toggleModal();
+});
+clearYesBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  toggleModal();
+  deleteItems(allItems());
+  window.localStorage.removeItem('layout'); // Removes the layout from memory.
+});
+clearNoBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+  toggleModal();
 });
 
 saveBtn.addEventListener('click', function(event) {
@@ -194,38 +220,34 @@ loadBtn.addEventListener('change', function(e) {
   reader.readAsText(file);
 }), false;
 
-clearBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
-  modal = document.getElementById("clearConfirmModal");
-  toggleModal();
+regBtn.addEventListener('click', function(event) {
+  group = false;
+  regBtn.disabled = true;
+  groupBtn.disabled = false;
+  regBtn.style.cursor = "default";
+  groupBtn.style.cursor = "pointer";
 });
-
-clearYesBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
-  toggleModal();
-  deleteItems(allItems());
-  window.localStorage.removeItem('layout'); // Removes the layout from memory.
+groupBtn.addEventListener('click', function(event) {
+  group = true;
+  regBtn.disabled = false;
+  groupBtn.disabled = true;
+  regBtn.style.cursor = "pointer";
+  groupBtn.style.cursor = "default";
 });
+// Sends the signal to add a card.
+addCardBtn.addEventListener('click', function(event) {
+  if (group) { // If "group" is selected in the modal, generate a group
+    var gt = templateGroupTitle.textContent;
+    if (group_title.text === "") gt = "Group Title";
+    addNewCard([gt]);
 
-clearNoBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
-  toggleModal();
-});
-
-/*
-// Sends the signal to add a card. Would be based off modal element contents
-addCardbtn.addEventListener('click', function(event) {
-  try {
-    if (group) { // If "group" is selected in the modal, generate a group
-      if (group_title.value === "") {
-        throw "Groups need to have a title";
-      }
-      addNewCard([group_title.value]);
-    } else { // Otherwise generate a standard card
-      if (title.value === "" || comment.value === "" || code.value === "") {
-        throw "All fields need to be filled out."
-      }
-      addNewCard([title.value, comment.value, code.value]);
-    }
-  } catch(err) {
-    alert(err);
+  } else { // Otherwise generate a standard card
+    var t = templateTitle.textContent;
+    var c = templateComment.textContent;
+    var cod = templateCode.textContent;
+    if (t === "") t = "Title";
+    if (c === "") c = "Comment";
+    if (cod === "") cod = "Code";
+    addNewCard([t, c, cod]);
   }
 });
-*/
