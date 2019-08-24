@@ -8,7 +8,6 @@ var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
 
 // Modal variables
-var group; // Boolean specifying whether the card to add is a group card or not
 var modal; // Div element that gets set by every button that opens a modal
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
@@ -35,7 +34,8 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
-      if (e.target.matches("p") && editable) return false; // Disables dragging on card text when specified.
+      if (e.target.matches("::-webkit-scrollbar")) return false;
+      if (e.target.matches("p") && editable) return false;
       if (e.target.matches("label")) return false; // Disables dragging on buttons.
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
@@ -84,14 +84,16 @@ function ghostAction() { // Change this to toggle visibility of two buttons. One
 
 function addNewCard(data, loading = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
+  var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
+
   if (data.length == 3) { // If 3, create a regular card
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p class="title" contenteditable="true">' + data[0] + '</p>' +
-      '<p class="comment" contenteditable="true">' + data[1] + '</p>' +
-      '<p class="code" contenteditable="true">' + data[2] + '</p>' +
+      '<p class="title" contenteditable="true"' + style + data[0] + '</p>' +
+      '<p class="comment" contenteditable="true"' + style + data[1] + '</p>' +
+      '<p class="code" contenteditable="true"' + style + data[2] + '</p>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -101,7 +103,7 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p class="group_title" contenteditable="true">' + data[0] + '</p>' +
+      '<p class="group_title" contenteditable="true"' + style + data[0] + '</p>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -109,6 +111,7 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
 
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
+
   if (!loading) { // Saves the grid's items when adding just one card. Would seriously bottleneck loading otherwise.
     window.localStorage.setItem('layout', saveItems());
   }
@@ -167,20 +170,27 @@ window.addEventListener('click', function(event) {
     toggleModal();
   }
 });
-
-toggleEditBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
-  if (editable) {
-    editable = false;
-    toggleEditBtn.style.border = "2px outset lightgray";
-    toggleEditBtn.style.backgroundColor = "white";
-  } else {
-    editable = true;
-    toggleEditBtn.style.border = "2px inset lightgray";
-    toggleEditBtn.style.backgroundColor = "lightblue";
-  }
+window.addEventListener('keyup', function(event) {
+  window.localStorage.setItem('layout', saveItems()); // Saves the grid's items whenever a key is pressed
 });
 
-clearBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+toggleEditBtn.addEventListener('click', function(event) {
+  var pStyle;
+  if (editable) {
+    toggleEditBtn.style.backgroundColor = "white";
+    pStyle = "inherit";
+  } else {
+    toggleEditBtn.style.backgroundColor = "lightblue";
+    pStyle = "text";
+  }
+  var allPElements = document.getElementsByTagName('p');
+  for (var i = 0; i < allPElements.length; i++) {
+    allPElements[i].style.cursor = pStyle;
+  }
+  editable = !editable;
+});
+
+clearBtn.addEventListener('click', function(event) {
   modal = document.getElementById("clearConfirmModal");
   toggleModal();
 });
@@ -189,7 +199,7 @@ clearYesBtn.addEventListener('click', function(event) { // Removes all items exc
   deleteItems(allItems());
   window.localStorage.removeItem('layout'); // Removes the layout from memory.
 });
-clearNoBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+clearNoBtn.addEventListener('click', function(event) {
   toggleModal();
 });
 
@@ -221,33 +231,30 @@ loadBtn.addEventListener('change', function(e) {
 }), false;
 
 regBtn.addEventListener('click', function(event) {
-  group = false;
   regBtn.disabled = true;
   groupBtn.disabled = false;
   regBtn.style.cursor = "default";
   groupBtn.style.cursor = "pointer";
 });
 groupBtn.addEventListener('click', function(event) {
-  group = true;
   regBtn.disabled = false;
   groupBtn.disabled = true;
   regBtn.style.cursor = "pointer";
   groupBtn.style.cursor = "default";
 });
-// Sends the signal to add a card.
 addCardBtn.addEventListener('click', function(event) {
-  if (group) { // If "group" is selected in the modal, generate a group
-    var gt = templateGroupTitle.textContent;
-    if (group_title.text === "") gt = "Group Title";
-    addNewCard([gt]);
+  if (groupBtn.disabled) { // If "group" is selected in the modal, generate a group card
+    var group_title = templateGroupTitle.textContent;
+    if (templateGroupTitle === "") group_title = "Group Title";
+    addNewCard([group_title]);
 
   } else { // Otherwise generate a standard card
-    var t = templateTitle.textContent;
-    var c = templateComment.textContent;
-    var cod = templateCode.textContent;
-    if (t === "") t = "Title";
-    if (c === "") c = "Comment";
-    if (cod === "") cod = "Code";
-    addNewCard([t, c, cod]);
+    var title = templateTitle.textContent;
+    var comment = templateComment.textContent;
+    var code = templateCode.textContent;
+    if (title === "") title = "Title";
+    if (comment === "") comment = "Comment";
+    if (code === "") code = "Code";
+    addNewCard([title, comment, code]);
   }
 });

@@ -4,10 +4,10 @@ html {
 }
 label, button {
   position: relative;
+  display: inline-block;
   cursor: pointer;
   text-align: center;
   line-height: 250%;
-  display: inline-block;
   margin-right: 20px;
   width: 50px;
   height: 50px;
@@ -15,6 +15,9 @@ label, button {
   border: 2px outset lightgray;
   border-radius: 5px;
   background-color: white;
+}
+button {
+  line-height: normal;
 }
 label:active, button:active {
   border: 2px inset lightgray;
@@ -25,13 +28,15 @@ button:focus {
 p {
   position: absolute;
   width: 100%;
-  white-space: nowrap;
   overflow: auto;
   outline: none;
-  white-space: initial;
   color: black;
   overflow-x: hidden;
 }
+input[type=file] {
+  display: none;
+}
+
 /* Classes that have text selection disabled. You can add more. */
 .modal, body {
   -webkit-touch-callout: none;
@@ -41,6 +46,23 @@ p {
   -ms-user-select: none;
   user-select: none;
 }
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 /* Tooltip styles */
 .tooltip {
   visibility: hidden;
@@ -203,6 +225,9 @@ p {
 #template:active {
   cursor: default;
 }
+#templateTitle, #templateComment, #templateCode {
+  cursor: text;
+}
 .regBtn, .groupBtn {
   margin-right: 0px;
   width: 50%;
@@ -222,8 +247,13 @@ p {
 }
 .group_title, .item-content h1 {
   height: auto;
+  max-height: 100%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+.group_title {
+  font-size: 30px;
+  font-weight: bold;
 }
 .title {
   max-height: 15%;
@@ -260,12 +290,8 @@ p {
 }
 
 /* Control button styles */
-input[type=file] {
-  /* This hides the default input */
-  display: none;
-}
 .toggleEditBtn {
-
+  background-image: url("app_images/edit.png");
 }
 .clearBtn {
   background-image: url("app_images/clear.png");
