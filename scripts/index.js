@@ -9,6 +9,7 @@ var loadBtn = document.querySelector('.loadBtn');
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
+var firstClick; // Used to determine if the mouse is released in the same place as it was held down
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
 var addCardBtn = document.querySelector('.addCardBtn');
@@ -161,17 +162,36 @@ function toggleModal() { // Toggles the currently selected modal's visibility
   modal.classList.toggle("show-modal");
 }
 
+function toggleGroupRegular() {
+  regBtn.disabled = !regBtn.disabled;
+  groupBtn.disabled = !groupBtn.disabled;
+  templateGroupTitle.hidden = !templateGroupTitle.hidden;
+  templateTitle.hidden = !templateTitle.hidden;
+  templateComment.hidden = !templateComment.hidden;
+  templateCode.hidden = !templateCode.hidden;
+  if (regBtn.disabled) {
+    regBtn.style.cursor = "default";
+    groupBtn.style.cursor = "pointer";
+  } else {
+    regBtn.style.cursor = "pointer";
+    groupBtn.style.cursor = "default";
+  }
+}
+
 
 // Event listeners
 initialise();
 
-window.addEventListener('click', function(event) {
-  if (event.target === modal) {
-    toggleModal();
-  }
-});
 window.addEventListener('keyup', function(event) {
   window.localStorage.setItem('layout', saveItems()); // Saves the grid's items whenever a key is pressed
+});
+window.addEventListener('mousedown', function(event) {
+  firstClick = event.target;
+});
+window.addEventListener('mouseup', function(event) {
+  if (event.target === modal && event.target === firstClick) {
+    toggleModal();
+  }
 });
 
 toggleEditBtn.addEventListener('click', function(event) {
@@ -230,18 +250,8 @@ loadBtn.addEventListener('change', function(e) {
   reader.readAsText(file);
 }), false;
 
-regBtn.addEventListener('click', function(event) {
-  regBtn.disabled = true;
-  groupBtn.disabled = false;
-  regBtn.style.cursor = "default";
-  groupBtn.style.cursor = "pointer";
-});
-groupBtn.addEventListener('click', function(event) {
-  regBtn.disabled = false;
-  groupBtn.disabled = true;
-  regBtn.style.cursor = "pointer";
-  groupBtn.style.cursor = "default";
-});
+regBtn.addEventListener('click', toggleGroupRegular);
+groupBtn.addEventListener('click', toggleGroupRegular);
 addCardBtn.addEventListener('click', function(event) {
   if (groupBtn.disabled) { // If "group" is selected in the modal, generate a group card
     var group_title = templateGroupTitle.textContent;
