@@ -4,6 +4,7 @@ var dummyGrid; // An invisible grid used in group collapsing.
 var ghost; // Placeholder card used for adding other cards.
 var editable = false; // Boolean that specifies whether the cards can be modified or not.
 var collapseLock = false; // Stops the group collapse button's action from firing twice
+var collapseDrag = false; // True if the group collapse was triggered by the drag.
 var collapseSave = {}; // Used to record the active collapsed cards
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
@@ -51,9 +52,19 @@ function initialise() {
       }
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
+  }).on('dragStart', function(item, event) {
+    if (!(item._id in collapseSave)) {
+      toggleGroupCollapse(item, event);
+      collapseDrag = true;
+    } else {
+      collapseDrag = false;
+    }
   }).on('dragEnd', function(item, event) {
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
+    }
+    if (collapseDrag) {
+      toggleGroupCollapse(item, event);
     }
   });
 
