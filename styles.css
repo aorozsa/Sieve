@@ -1,6 +1,6 @@
 /* Global styles */
 html {
-  font-family: "Impact", "Charcoal", sans-serif;
+  font-family: "Georgia", "Times", serif;
 }
 label, button {
   position: relative;
@@ -157,6 +157,22 @@ input[type=file] {
 }
 .card:active {
   cursor: grabbing;
+}
+.card-remove {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.card:hover .card-remove {
+  display: block;
 }
 #ghost {
   color: black;

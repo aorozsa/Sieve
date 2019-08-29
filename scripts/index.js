@@ -35,7 +35,10 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
-      if (e.target.matches("::-webkit-scrollbar")) return false;
+      if (e.target.matches(".card-remove")) {
+        deleteItems(item);
+        return false;
+      }
       if (e.target.matches("p") && editable) return false;
       if (e.target.matches("label")) return false; // Disables dragging on buttons.
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
@@ -44,6 +47,8 @@ function initialise() {
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
     }
+    window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's items
+  }).on('remove', function (items, indices) {
     window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's items
   });
 
@@ -95,6 +100,7 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
       '<p class="title" contenteditable="true"' + style + data[0] + '</p>' +
       '<p class="comment" contenteditable="true"' + style + data[1] + '</p>' +
       '<p class="code" contenteditable="true"' + style + data[2] + '</p>' +
+      '<div class="card-remove">&#10005</div>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -105,6 +111,7 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
       '<div class="item-content">' +
       '<div class="card">' +
       '<p class="group_title" contenteditable="true"' + style + data[0] + '</p>' +
+      '<div class="card-remove">&#10005</div>' +
       '</div>' +
       '</div>' +
       '</div>';
