@@ -1,7 +1,10 @@
 // Variables
 var grid;
-var ghost; // "Card" used for adding other cards.
-var editable = false; // Boolean that specifies whether the card can be modified or not.
+var dummyGrid; // An invisible grid used in group collapsing.
+var ghost; // Placeholder card used for adding other cards.
+var editable = false; // Boolean that specifies whether the cards can be modified or not.
+var collapseLock = false; // Stops the group collapse button's action from firing twice
+var collapseSave = {}; // Used to record the active collapsed cards
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
@@ -34,31 +37,35 @@ function initialise() {
       }
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
-      if (item === ghost) return false;
+      if (item === ghost || (e.target.matches("p") && editable)) return false;
       if (e.target.matches(".card-remove")) {
         deleteItems(item);
         return false;
       }
-      if (e.target.matches("p") && editable) return false;
-      if (e.target.matches("label")) return false; // Disables dragging on buttons.
+      if (e.target.matches(".group-collapse")) {
+        if (!collapseLock) {
+          toggleGroupCollapse(item, e.target);
+        }
+        collapseLock = !collapseLock;
+        return false;
+      }
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
   }).on('dragEnd', function(item, event) {
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
     }
-    window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's items
-  }).on('remove', function (items, indices) {
-    window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's items
   });
+
+  dummyGrid = new Muuri('.dummygrid');
 
   // Adds in the ghost card by default
   var itemElem = document.createElement('div');
   var itemTemplate =
-    '<div class="item">'+
+    '<div class="item">' +
     '<div class="item-content">' +
     '<div class="card" id="ghost" onclick="ghostAction();"><h1>+</h1></div>' +
-    '</div>'+
+    '</div>' +
     '</div>';
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
@@ -74,7 +81,6 @@ function initialise() {
 
   var modals = document.querySelectorAll(".modal"); // List of all modals
   var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
-
   modals.forEach(function(mod) { // Enables the modals
     mod.style.display = "block";
   });
@@ -88,7 +94,7 @@ function ghostAction() { // Change this to toggle visibility of two buttons. One
   toggleModal();
 }
 
-function addNewCard(data, loading = false) { // Creates a HTML element based on the data and adds it to the grid
+function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
 
@@ -112,6 +118,7 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
       '<div class="card">' +
       '<p class="group_title" contenteditable="true"' + style + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
+      '<div class="group-collapse">C</div>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -119,13 +126,63 @@ function addNewCard(data, loading = false) { // Creates a HTML element based on 
 
   itemElem.innerHTML = itemTemplate;
   grid.add(itemElem.firstChild);
+}
 
-  if (!loading) { // Saves the grid's items when adding just one card. Would seriously bottleneck loading otherwise.
-    window.localStorage.setItem('layout', saveItems());
+function toggleGroupCollapse(gridItem, eventTarget) {
+  var items = allItems();
+  var saveName = String(gridItem._id); // Assigns the save data to the grid card's id within the grid
+  var itemsToLoad = collapseSave[saveName];
+
+  if (itemsToLoad === undefined && eventTarget !== null) { // For collapsing a group
+    var savedItems = [];
+    for (var i = items.indexOf(gridItem) + 1; i < items.length; i++) {
+      var content = items[i].getElement().firstElementChild.innerHTML;
+      if (!content.includes("group_title")) { // If it isn't a group card
+        savedItems.push(items[i]);
+        grid.hide(items[i], {
+          onFinish: function(hiddenItem) {
+            grid.send(hiddenItem[0], dummyGrid, -1);
+          }
+        });
+      } else { // End early if another group is found.
+        break;
+      }
+    }
+    collapseSave[saveName] = savedItems; // Save the data
+
+  } else { // For expanding a group
+    try {
+      var destinationIndex = items.indexOf(gridItem) + 2;
+      var dummyItems = dummyGrid.getItems();
+      itemsToLoad.forEach(function(item) {
+        dummyGrid.send(item, grid, destinationIndex++);
+        grid.show(item);
+        dummyItems = dummyGrid.getItems();
+      });
+      delete collapseSave[saveName];
+    } catch (e) {}
   }
+  grid.synchronize();
+
+  try {
+    if (eventTarget.innerHTML === 'C') {
+      eventTarget.innerHTML = 'E';
+    } else {
+      eventTarget.innerHTML = 'C';
+    }
+  } catch (e) {}
+}
+
+function undoGroupCollapse() { // Goes through every item and undoes any collapsed grids. Necessary for saving
+  allItems().forEach(function(item) {
+    if (item.getElement().firstElementChild.innerHTML.includes("group-collapse")) {
+      toggleGroupCollapse(item, null);
+    }
+  });
 }
 
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
+  undoGroupCollapse();
   var items = allItems().map(item => item.getElement());
   var itemsToSave = [];
   items.forEach(function(item) {
@@ -144,13 +201,12 @@ function saveItems() { // Returns all of the grid's item data in a readable form
 function load(layout) { // Loads cards that have already been created before
   var itemsToLoad = JSON.parse(layout);
   itemsToLoad.forEach(function(item) {
-    addNewCard(item, true);
+    addNewCard(item);
   });
-  window.localStorage.setItem('layout', saveItems()); // Saves the grid's items
 }
 
-function deleteItems(items) {
-  grid.hide(items, {
+function deleteItems(items, selectedGrid = grid) {
+  selectedGrid.hide(items, {
     onFinish: function(hiddenItems) {
       grid.remove(hiddenItems, {
         removeElements: true
@@ -189,9 +245,10 @@ function toggleGroupRegular() {
 // Event listeners
 initialise();
 
-window.addEventListener('keyup', function(event) {
-  window.localStorage.setItem('layout', saveItems()); // Saves the grid's items whenever a key is pressed
-});
+window.addEventListener("beforeunload", function(event) { // Necessary things to do before closing
+  undoGroupCollapse();
+  window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's layout
+}, false);
 window.addEventListener('mousedown', function(event) {
   firstClick = event.target;
 });
@@ -224,7 +281,8 @@ clearBtn.addEventListener('click', function(event) {
 clearYesBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
   toggleModal();
   deleteItems(allItems());
-  window.localStorage.removeItem('layout'); // Removes the layout from memory.
+  deleteItems(dummyGrid.getItems(), dummyGrid);
+  window.localStorage.clear(); // Removes the layout from memory.
 });
 clearNoBtn.addEventListener('click', function(event) {
   toggleModal();
