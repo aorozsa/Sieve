@@ -1,10 +1,10 @@
 // Variables
 var grid;
-var dummyGrid; // An invisible grid used in group collapsing.
-var ghost; // Placeholder card used for adding other cards.
-var editable = false; // Boolean that specifies whether the cards can be modified or not.
+var dummyGrid; // An invisible grid used in group collapsing
+var ghost; // Placeholder card used for adding other cards
+var editable = false; // Boolean that specifies whether the cards can be modified or not
 var collapseLock = false; // Stops the group collapse button's action from firing twice
-var collapseDrag = false; // True if the group collapse was triggered by the drag.
+var collapseDrag = false; // True if the group collapse was triggered by dragging and wasn't already active
 var collapseSave = {}; // Used to record the active collapsed cards
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
@@ -68,7 +68,7 @@ function initialise() {
     }
   });
 
-  dummyGrid = new Muuri('.dummygrid');
+  dummyGrid = new Muuri('.dummygrid'); // Invisible grid used to house regular cards that collapse in on groups
 
   // Adds in the ghost card by default
   var itemElem = document.createElement('div');
@@ -88,7 +88,7 @@ function initialise() {
     load(layout);
   }
 
-  regBtn.style.cursor = "default"; // Sets the cursor for the regular card toggle in the add card modal.
+  regBtn.style.cursor = "default"; // Sets the cursor for the regular card toggle in the add card modal
 
   var modals = document.querySelectorAll(".modal"); // List of all modals
   var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
@@ -100,7 +100,7 @@ function initialise() {
   });
 }
 
-function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group.
+function ghostAction() { // Change this to toggle visibility of two buttons. One will add a blank card, other will add a blank group
   modal = document.getElementById("newCardModal");
   toggleModal();
 }
@@ -144,44 +144,45 @@ function toggleGroupCollapse(gridItem, eventTarget) {
   var saveName = String(gridItem._id); // Assigns the save data to the grid card's id within the grid
   var itemsToLoad = collapseSave[saveName];
 
-  if (itemsToLoad === undefined && eventTarget !== null) { // For collapsing a group
-    var savedItems = [];
-    for (var i = items.indexOf(gridItem) + 1; i < items.length; i++) {
-      var content = items[i].getElement().firstElementChild.innerHTML;
-      if (!content.includes("group_title")) { // If it isn't a group card
-        savedItems.push(items[i]);
-        grid.hide(items[i], {
-          onFinish: function(hiddenItem) {
-            grid.send(hiddenItem[0], dummyGrid, -1);
-          }
-        });
-      } else { // End early if another group is found.
-        break;
-      }
-    }
-    collapseSave[saveName] = savedItems; // Save the data
-
-  } else { // For expanding a group
-    try {
-      var destinationIndex = items.indexOf(gridItem) + 2;
-      var dummyItems = dummyGrid.getItems();
-      itemsToLoad.forEach(function(item) {
-        dummyGrid.send(item, grid, destinationIndex++);
-        grid.show(item);
-        dummyItems = dummyGrid.getItems();
-      });
-      delete collapseSave[saveName];
-    } catch (e) {}
-  }
-  grid.synchronize();
-
   try {
+    if (itemsToLoad === undefined && eventTarget !== null) { // For collapsing a group
+      var savedItems = [];
+      for (var i = items.indexOf(gridItem) + 1; i < items.length; i++) {
+        var content = items[i].getElement().firstElementChild.innerHTML;
+        if (!content.includes("group_title")) { // If it's a regular card, save it
+          savedItems.push(items[i]);
+          grid.hide(items[i], {
+            onFinish: function(hiddenItem) {
+              grid.send(hiddenItem[0], dummyGrid, -1);
+            }
+          });
+        } else { // End early if another group is found
+          break;
+        }
+      }
+      collapseSave[saveName] = savedItems; // Save the data
+
+    } else { // For expanding a group
+      var destinationIndex = items.indexOf(gridItem) + 2;
+      itemsToLoad.forEach(function(item) {
+        var dummyItems = dummyGrid.getItems();
+        dummyGrid.send(item, grid, destinationIndex++);
+      });
+      grid.show(itemsToLoad);
+      delete collapseSave[saveName]; // Delete the data
+    }
+
     if (eventTarget.innerHTML === 'C') {
       eventTarget.innerHTML = 'E';
     } else {
       eventTarget.innerHTML = 'C';
     }
-  } catch (e) {}
+
+  } catch (e) {
+    return;
+  } finally {
+    grid.synchronize();
+  }
 }
 
 function undoGroupCollapse() { // Goes through every item and undoes any collapsed grids. Necessary for saving
@@ -259,7 +260,7 @@ initialise();
 window.addEventListener("beforeunload", function(event) { // Necessary things to do before closing
   undoGroupCollapse();
   window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's layout
-}, false);
+});
 window.addEventListener('mousedown', function(event) {
   firstClick = event.target;
 });
@@ -271,6 +272,7 @@ window.addEventListener('mouseup', function(event) {
 
 toggleEditBtn.addEventListener('click', function(event) {
   var pStyle;
+  var allPElements = document.getElementsByTagName('p');
   if (editable) {
     toggleEditBtn.style.backgroundColor = "white";
     pStyle = "inherit";
@@ -278,7 +280,6 @@ toggleEditBtn.addEventListener('click', function(event) {
     toggleEditBtn.style.backgroundColor = "lightblue";
     pStyle = "text";
   }
-  var allPElements = document.getElementsByTagName('p');
   for (var i = 0; i < allPElements.length; i++) {
     allPElements[i].style.cursor = pStyle;
   }
@@ -289,11 +290,11 @@ clearBtn.addEventListener('click', function(event) {
   modal = document.getElementById("clearConfirmModal");
   toggleModal();
 });
-clearYesBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes the autosaved grid data.
+clearYesBtn.addEventListener('click', function(event) { // Removes all items except the ghost, then removes everything from memory
   toggleModal();
   deleteItems(allItems());
   deleteItems(dummyGrid.getItems(), dummyGrid);
-  window.localStorage.clear(); // Removes the layout from memory.
+  window.localStorage.clear();
 });
 clearNoBtn.addEventListener('click', function(event) {
   toggleModal();
