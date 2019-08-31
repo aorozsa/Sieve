@@ -46,16 +46,22 @@
       <span class="close-button">&times;</span>
       <br>
       <br>
-      <button class='regBtn' disabled>Regular Card</button>
-      <button class='groupBtn'>Group Card</button>
+      <button class='groupBtn' disabled>Group Card</button>
+      <button class='regBtn'>Regular Card</button>
       <br>
+      <br>
+      <br>
+      <label class="pickColourBtn">
+        Change colour (groups only)
+        <input type="color" class="colourPicker" onchange='changeTemplateColour();' value="#ff0000">
+      </label>
       <div class="item" id="template">
         <div class="item-content">
-          <div class="card" id="template">
-            <p class="group_title" id="templateGroupTitle" contenteditable="true" hidden>Title</p>
-            <p class="title" id="templateTitle" contenteditable="true">Title</p>
-            <p class="comment" id="templateComment" contenteditable="true">Comment</p>
-            <p class="code" id="templateCode" contenteditable="true">Code</p>
+          <div class="card" id="templateCard">
+            <p class="group_title" id="templateGroupTitle" contenteditable="true">Group Title</p>
+            <p class="title" id="templateTitle" contenteditable="true" hidden>Title</p>
+            <p class="comment" id="templateComment" contenteditable="true" hidden>Comment</p>
+            <p class="code" id="templateCode" contenteditable="true" hidden>Code</p>
           </div>
         </div>
       </div>

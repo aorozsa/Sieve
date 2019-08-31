@@ -14,8 +14,12 @@ var loadBtn = document.querySelector('.loadBtn');
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
 var firstClick; // Used to determine if the mouse is released in the same place as it was held down
+var templateCard = document.getElementById('templateCard');
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
+var regBtn = document.querySelector('.regBtn');
+var pickColourBtn = document.querySelector('.pickColourBtn');
+var colourPicker = document.querySelector('.colourPicker');
 var addCardBtn = document.querySelector('.addCardBtn');
 var templateGroupTitle = document.getElementById('templateGroupTitle');
 var templateTitle = document.getElementById('templateTitle');
@@ -53,7 +57,7 @@ function initialise() {
       return Muuri.ItemDrag.defaultStartPredicate(item, e);
     }
   }).on('dragStart', function(item, event) {
-    if (!(item._id in collapseSave)) {
+    if (content(item).includes('class="group_title"') && !(item._id in collapseSave)) {
       toggleGroupCollapse(item, event);
       collapseDrag = true;
     } else {
@@ -66,6 +70,7 @@ function initialise() {
     if (collapseDrag) {
       toggleGroupCollapse(item, event);
     }
+    changeCardColour(item);
   });
 
   dummyGrid = new Muuri('.dummygrid'); // Invisible grid used to house regular cards that collapse in on groups
@@ -88,7 +93,7 @@ function initialise() {
     load(layout);
   }
 
-  regBtn.style.cursor = "default"; // Sets the cursor for the regular card toggle in the add card modal
+  changeTemplateColour(); // Initialises the template's border colour. Would be undefined if this wasn't here
 
   var modals = document.querySelectorAll(".modal"); // List of all modals
   var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
@@ -105,15 +110,56 @@ function ghostAction() { // Change this to toggle visibility of two buttons. One
   toggleModal();
 }
 
+function content(item) { // Returns an item's "card" class
+  return item.getElement().firstElementChild.innerHTML;
+}
+
+function changeTemplateColour() { // Changes the template's border colour
+  templateCard.style.borderColor = colourPicker.value;
+}
+
+function firstGroupBackwards(startIndex) { // Returns the first group card going backwards from the starting index
+  var items = grid.getItems();
+  for (var i = startIndex; i >= 0; i--) {
+    if (content(items[i]).includes('class="group_title"')) {
+      return items[i];
+    }
+  }
+  return null;
+}
+
+function changeCardColour(card) { // Changes the card's border colour based on the group it's in. Only for regular cards
+  var items = grid.getItems();
+  var startIndex = items.indexOf(card);
+  var cardElement = card.getElement().querySelector('.card');
+
+  if (content(card).includes('class="comment"')) {
+    try {
+      cardElement.style.borderColor = firstGroupBackwards(startIndex - 1).getElement().querySelector('.card').style.borderColor;
+    } catch (e) {
+      cardElement.style.borderColor = 'black';
+    }
+
+  } else { // Updates ungrouped cards' colours if a group is dragged in front of the ungrouped cards
+    for (var i = startIndex + 1; i < items.length; i++) {
+      if (content(items[i]).includes('class="comment"')) {
+        items[i].getElement().querySelector('.card').style.borderColor = cardElement.style.borderColor;
+      } else {
+        return;
+      }
+    }
+  }
+}
+
 function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
 
-  if (data.length == 3) { // If 3, create a regular card
+  if (data.length == 4) { // If 3, create a regular card
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
-      '<div class="card">' +
+      '<div class="card" style="border-color:' + data[3] + '">' +
       '<p class="title" contenteditable="true"' + style + data[0] + '</p>' +
       '<p class="comment" contenteditable="true"' + style + data[1] + '</p>' +
       '<p class="code" contenteditable="true"' + style + data[2] + '</p>' +
@@ -126,7 +172,7 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
-      '<div class="card">' +
+      '<div class="card" style="border-color:' + data[1] + '">' +
       '<p class="group_title" contenteditable="true"' + style + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '<div class="group-collapse">C</div>' +
@@ -148,8 +194,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
     if (itemsToLoad === undefined && eventTarget !== null) { // For collapsing a group
       var savedItems = [];
       for (var i = items.indexOf(gridItem) + 1; i < items.length; i++) {
-        var content = items[i].getElement().firstElementChild.innerHTML;
-        if (!content.includes("group_title")) { // If it's a regular card, save it
+        if (!content(items[i]).includes('class="group_title"')) { // If it's a regular card, save it
           savedItems.push(items[i]);
           grid.hide(items[i], {
             onFinish: function(hiddenItem) {
@@ -165,7 +210,6 @@ function toggleGroupCollapse(gridItem, eventTarget) {
     } else { // For expanding a group
       var destinationIndex = items.indexOf(gridItem) + 2;
       itemsToLoad.forEach(function(item) {
-        var dummyItems = dummyGrid.getItems();
         dummyGrid.send(item, grid, destinationIndex++);
       });
       grid.show(itemsToLoad);
@@ -187,7 +231,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
 
 function undoGroupCollapse() { // Goes through every item and undoes any collapsed grids. Necessary for saving
   allItems().forEach(function(item) {
-    if (item.getElement().firstElementChild.innerHTML.includes("group-collapse")) {
+    if (content(item).includes("group-collapse")) {
       toggleGroupCollapse(item, null);
     }
   });
@@ -195,16 +239,20 @@ function undoGroupCollapse() { // Goes through every item and undoes any collaps
 
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
   undoGroupCollapse();
-  var items = allItems().map(item => item.getElement());
+  var items = allItems();
   var itemsToSave = [];
   items.forEach(function(item) {
-    item = JSON.stringify(item.firstElementChild.innerHTML);
+    item = content(item);
     var itemData = item.match(/<p.*?<\/p>/g);
     var dataToSave = [];
     itemData.forEach(function(elem) {
       elem = elem.split('">').pop().split('</p>')[0];
       dataToSave.push(elem);
     });
+
+    var style = item.match(/border-color:.*?"/g);
+    style = style[0].split(':').pop().split('"')[0];
+    dataToSave.push(style);
     itemsToSave.push(dataToSave);
   });
   return JSON.stringify(itemsToSave);
@@ -213,7 +261,7 @@ function saveItems() { // Returns all of the grid's item data in a readable form
 function load(layout) { // Loads cards that have already been created before
   var itemsToLoad = JSON.parse(layout);
   itemsToLoad.forEach(function(item) {
-    addNewCard(item);
+    addNewCard(item, true);
   });
 }
 
@@ -240,17 +288,19 @@ function toggleModal() { // Toggles the currently selected modal's visibility
 function toggleGroupRegular() {
   regBtn.disabled = !regBtn.disabled;
   groupBtn.disabled = !groupBtn.disabled;
+  colourPicker.disabled = !colourPicker.disabled;
   templateGroupTitle.hidden = !templateGroupTitle.hidden;
   templateTitle.hidden = !templateTitle.hidden;
   templateComment.hidden = !templateComment.hidden;
   templateCode.hidden = !templateCode.hidden;
   if (regBtn.disabled) {
-    regBtn.style.cursor = "default";
     groupBtn.style.cursor = "pointer";
+    regBtn.style.cursor = "default";
   } else {
-    regBtn.style.cursor = "pointer";
     groupBtn.style.cursor = "default";
+    regBtn.style.cursor = "pointer";
   }
+  pickColourBtn.classList.toggle("pickColourBtnDisabled");
 }
 
 
@@ -273,6 +323,7 @@ window.addEventListener('mouseup', function(event) {
 toggleEditBtn.addEventListener('click', function(event) {
   var pStyle;
   var allPElements = document.getElementsByTagName('p');
+
   if (editable) {
     toggleEditBtn.style.backgroundColor = "white";
     pStyle = "inherit";
@@ -280,7 +331,7 @@ toggleEditBtn.addEventListener('click', function(event) {
     toggleEditBtn.style.backgroundColor = "lightblue";
     pStyle = "text";
   }
-  for (var i = 0; i < allPElements.length; i++) {
+  for (var i = 0; i < allPElements.length - 4; i++) { // Excludes the last 4 elements, which are the template inputs
     allPElements[i].style.cursor = pStyle;
   }
   editable = !editable;
@@ -333,7 +384,7 @@ addCardBtn.addEventListener('click', function(event) {
   if (groupBtn.disabled) { // If "group" is selected in the modal, generate a group card
     var group_title = templateGroupTitle.textContent;
     if (templateGroupTitle === "") group_title = "Group Title";
-    addNewCard([group_title]);
+    addNewCard([group_title, templateCard.style.borderColor]);
 
   } else { // Otherwise generate a standard card
     var title = templateTitle.textContent;
@@ -342,6 +393,12 @@ addCardBtn.addEventListener('click', function(event) {
     if (title === "") title = "Title";
     if (comment === "") comment = "Comment";
     if (code === "") code = "Code";
-    addNewCard([title, comment, code]);
+
+    try {
+      var borderColour = firstGroupBackwards(grid.getItems().length - 1).getElement().querySelector('.card').style.borderColor;
+    } catch (e) {
+      var borderColour = 'black';
+    }
+    addNewCard([title, comment, code, borderColour]);
   }
 });

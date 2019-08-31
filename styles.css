@@ -32,7 +32,7 @@ p {
   color: black;
   overflow-x: hidden;
 }
-input[type=file] {
+input, .dummygrid {
   display: none;
 }
 
@@ -107,9 +107,6 @@ input[type=file] {
   margin: 0 -10px;
   width: 100%;
 }
-.dummygrid {
-  display: none;
-}
 .item {
   position: absolute;
   width: 225px;
@@ -147,10 +144,9 @@ input[type=file] {
   bottom: 0;
   text-align: center;
   background: #fff;
-  color: #000;
   border: 2px solid;
+  border-color: #ff0000;
   border-radius: 5px;
-  color: red;
   cursor: grab;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
@@ -188,8 +184,7 @@ input[type=file] {
   display: block;
 }
 #ghost {
-  color: black;
-  border-style: dashed;
+  border: 2px dashed black;
   font-size: 25px;
   cursor: pointer;
 }
@@ -243,14 +238,16 @@ input[type=file] {
 #template {
   position: relative;
   max-width: inherit;
-  cursor: default;
-  width: 100%;
+  width: calc(99% + 3px);
   height: 425px;
   margin: 0px;
-  margin-top: 40px;
+  margin-top: 5px;
   margin-bottom: 9px;
 }
-#template:active {
+#template p {
+  cursor: text;
+}
+#templateCard, #templateCard:active {
   cursor: default;
 }
 #templateTitle, #templateComment, #templateCode {
@@ -260,11 +257,23 @@ input[type=file] {
   margin-right: 0px;
   width: 50%;
 }
-.regBtn {
-  float: left;
-}
 .groupBtn {
+  float: left;
+  cursor: default;
+}
+.regBtn {
   float: right;
+}
+.pickColourBtn {
+  position: relative;
+  width: 99%;
+}
+.pickColourBtnDisabled {
+  color: #6F7E86;
+  cursor: default;
+}
+.pickColourBtnDisabled:active {
+  border: 2px outset lightgray;
 }
 .group_title, .title, .comment, .code, .card h1 {
   text-align: center;
@@ -318,7 +327,7 @@ input[type=file] {
   max-height: 6.5%;
 }
 .addCardbtn {
-  width: calc(99% + 2px);
+  width: calc(99% + 1px);
 }
 
 /* Control button styles */
