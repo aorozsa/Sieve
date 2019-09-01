@@ -144,8 +144,7 @@ input, .dummygrid {
   bottom: 0;
   text-align: center;
   background: #fff;
-  border: 2px solid;
-  border-color: #ff0000;
+  border: 2px solid #000000;
   border-radius: 5px;
   cursor: grab;
   -webkit-transition: all 0.2s ease-out;
@@ -314,7 +313,7 @@ input, .dummygrid {
   font-size: 65px;
 }
 #templateTitle {
-  font-size: 44px;
+  font-size: 43.5px;
   max-height: 11.9%;
 }
 #templateComment {
