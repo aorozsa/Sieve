@@ -58,11 +58,9 @@ function initialise() {
     }
 
   }).on('dragStart', function(item, e) {
-    if (content(item).includes('class="group_title"') && !(item._id in collapseSave)) {
+    collapseDrag = content(item).includes('class="group_title"') && !(item._id in collapseSave);
+    if (collapseDrag) {
       toggleGroupCollapse(item, e);
-      collapseDrag = true;
-    } else {
-      collapseDrag = false;
     }
 
   }).on('dragEnd', function(item, event) {
@@ -99,7 +97,7 @@ function initialise() {
     '</div>' +
     '</div>';
   itemElem.innerHTML = itemTemplate;
-  grid.add(itemElem.firstChild);
+  addItems(itemElem.firstChild);
   ghost = grid.getItems(0)[0];
 
   // Automatically loads the last layout if applicable
@@ -132,6 +130,21 @@ function allItems() { // Returns all grid items except the ghost
   var items = grid.getItems();
   items.shift()
   return items;
+}
+
+function addItems(itemsToAdd) { // Adds a single card in a fancy way
+  grid.add(itemsToAdd, {
+    layout: function(i) {
+      var items = grid.getItems();
+      if (itemsToAdd.length === undefined) items = items[items.length - 1];
+      grid.hide(items, {
+        instant: true,
+        onFinish: function(hiddenItems) {
+          grid.show(hiddenItems);
+        }
+      });
+    }
+  });
 }
 
 function deleteItems(items, selectedGrid = grid) {
@@ -177,7 +190,7 @@ function changeCardColour(card, deleteGroup = false) { // Changes the card's bor
   }
 }
 
-function addNewCard(data) { // Creates a HTML element based on the data and adds it to the grid
+function addNewCard(data, returnElement = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
   var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
 
@@ -208,7 +221,11 @@ function addNewCard(data) { // Creates a HTML element based on the data and adds
   }
 
   itemElem.innerHTML = itemTemplate;
-  grid.add(itemElem.firstChild);
+  if (returnElement) {
+    return itemElem.firstChild;
+  } else {
+    addItems(itemElem.firstChild);
+  }
 }
 
 function toggleGroupCollapse(gridItem, eventTarget) {
@@ -288,9 +305,10 @@ function saveItems() { // Returns all of the grid's item data in a readable form
 
 function load(layout) { // Loads cards that have already been created before
   var itemsToLoad = JSON.parse(layout);
-  itemsToLoad.forEach(function(item) {
-    addNewCard(item);
-  });
+  for (var i = 0; i < itemsToLoad.length; i++) {
+    itemsToLoad[i] = addNewCard(itemsToLoad[i], true);
+  }
+  addItems(itemsToLoad);
 }
 
 function toggleModal() { // Toggles the currently selected modal's visibility
