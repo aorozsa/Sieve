@@ -106,8 +106,6 @@ function initialise() {
     load(layout);
   }
 
-  changeTemplateColour(false); // Initialises the template's border colour to the value of the input
-
   var modals = document.querySelectorAll(".modal"); // List of all modals
   var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
   modals.forEach(function(modal) { // Enables the modals
@@ -159,10 +157,11 @@ function deleteItems(items, selectedGrid = grid) {
 
 function ghostAction() { // Activates when the ghost card is clicked
   modal = document.getElementById("newCardModal");
+  changeTemplateColour(!groupBtn.disabled);
   toggleModal();
 }
 
-function changeTemplateColour(setToLastItem = true) { // Changes the template's border colour. Based either on the last item or the colour picker
+function changeTemplateColour(setToLastItem) { // Changes the template's border colour. Based either on the last item or the colour picker
   if (setToLastItem) {
     var lastItem = grid.getItems();
     templateCard.style.borderColor = object(lastItem[lastItem.length - 1]).style.borderColor;
@@ -418,7 +417,6 @@ addCardBtn.addEventListener('click', function(e) {
     addNewCard([group_title, templateCard.style.borderColor]);
 
   } else { // Otherwise generate a standard card
-    changeTemplateColour();
     var title = templateTitle.textContent;
     var comment = templateComment.textContent;
     var code = templateCode.textContent;
