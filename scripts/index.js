@@ -44,6 +44,7 @@ function initialise() {
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost || (e.target.matches("p") && editable)) return false;
       if (e.target.matches(".card-remove")) {
+        undoGroupCollapse(item);
         deleteItems(item);
         return false;
       }
@@ -80,7 +81,7 @@ function initialise() {
   }).on('remove', function(items, indices) {
     if (items.length == 1) {
       if (content(items[0]).includes('class="group_title"')) {
-        var items = grid.getItems();
+        items = grid.getItems();
         changeCardColour(items[indices[0] - 1], true);
       }
     }
@@ -130,10 +131,11 @@ function allItems() { // Returns all grid items except the ghost
   return items;
 }
 
-function addItems(itemsToAdd) { // Adds a single card in a fancy way
+function addItems(itemsToAdd, fileLoad = false) { // Adds a single card in a fancy way
   grid.add(itemsToAdd, {
     layout: function(i) {
       var items = grid.getItems();
+      if (fileLoad) items.shift(); // Omits the first item
       if (itemsToAdd.length === undefined) items = items[items.length - 1];
       grid.hide(items, {
         instant: true,
@@ -233,7 +235,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
   var itemsToLoad = collapseSave[saveName];
 
   try {
-    if (itemsToLoad === undefined && eventTarget !== null) { // For collapsing a group
+    if (itemsToLoad === undefined && eventTarget !== undefined) { // For collapsing a group
       var savedItems = [];
       for (var i = items.indexOf(gridItem) + 1; i < items.length; i++) {
         if (!content(items[i]).includes('class="group_title"')) { // If it's a regular card, save it
@@ -271,12 +273,14 @@ function toggleGroupCollapse(gridItem, eventTarget) {
   }
 }
 
-function undoGroupCollapse() { // Goes through every item and undoes any collapsed grids. Necessary for saving
-  allItems().forEach(function(item) {
-    if (content(item).includes("group-collapse")) {
-      toggleGroupCollapse(item, null);
-    }
-  });
+function undoGroupCollapse(item) { // Goes through every item and undoes any collapsed grids. Necessary for saving
+  if (item === undefined) {
+    allItems().forEach(function(item) {
+      if (content(item).includes("group-collapse")) {
+        toggleGroupCollapse(item);
+      }
+    });
+  } else toggleGroupCollapse(item); // For a single item instead
 }
 
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
@@ -307,7 +311,7 @@ function load(layout) { // Loads cards that have already been created before
   for (var i = 0; i < itemsToLoad.length; i++) {
     itemsToLoad[i] = addNewCard(itemsToLoad[i], true);
   }
-  addItems(itemsToLoad);
+  addItems(itemsToLoad, true);
 }
 
 function toggleModal() { // Toggles the currently selected modal's visibility
