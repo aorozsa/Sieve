@@ -6,6 +6,7 @@ var editable = false; // Boolean that specifies whether the cards can be modifie
 var collapseLock = false; // Stops the group collapse button's action from firing twice
 var collapseDrag = false; // True if the group collapse was triggered by dragging and wasn't already active
 var collapseSave = {}; // Used to record the active collapsed cards
+var dragStartIndex; // Used to undo certain group movements in grid.on('dragEnd')
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
@@ -37,13 +38,21 @@ function initialise() {
     dragContainer: document.body,
     dragPlaceholder: {
       enabled: true,
-      createElement: function(item) {
-        return item.getElement().cloneNode(true);
+      createElement: function(item) { // This guarantees that the placeholder's border is dashed and is 4 pixels thick.
+        var itemObject = object(item);
+        var defaultBorder = itemObject.style.borderStyle;
+        var defaultBorderWidth = itemObject.style.borderWidth;
+        itemObject.style.borderStyle = "dashed";
+        itemObject.style.borderWidth = "4px";
+        var placeholder = item.getElement().cloneNode(true);
+        itemObject.style.borderStyle = defaultBorder;
+        itemObject.style.borderWidth = defaultBorderWidth;
+        return placeholder;
       }
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
-      if (editable && e.target.matches("p") && content(item).includes('class="comment"')) return false;
+      if (editable && e.target.matches("p") && isRegular(item)) return false;
       if (e.target.matches(".card-remove")) {
         undoGroupCollapse(item);
         deleteItems(item);
@@ -60,18 +69,33 @@ function initialise() {
     }
 
   }).on('dragStart', function(item, e) {
-    collapseDrag = content(item).includes('class="group_title"') && !(item._id in collapseSave);
+    dragStartIndex = grid.getItems().indexOf(item);
+    collapseDrag = isGroup(item) && !(item._id in collapseSave);
     if (collapseDrag) {
       toggleGroupCollapse(item, e);
+    } else if (collapseSave[item.id] === undefined || collapseSave[item.id].length > 0) {
+      changeBorder(object(item), "8px double");
     }
 
   }).on('dragEnd', function(item, event) {
+    var delay = 0;
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
     }
-    if (collapseDrag) {
-      toggleGroupCollapse(item, event);
+    if (isGroup(item)) {
+      var items = grid.getItems();
+      var i = items.indexOf(item);
+      // If the item isn't the last in the list, the item in front isn't a group, or the item behind isn't the ghost, undo the movement and set a delay
+      if (!(i === items.length - 1 || isGroup(items[i + 1]) || content(items[i - 1]).includes('onclick="ghostAction();"'))) {
+        grid.move(item, dragStartIndex);
+        delay = 300; // This has to be equal to the grid's dragReleaseDuration for the best looks. The default is 300
+      }
     }
+    setTimeout(function() {
+      if (collapseDrag) {
+        toggleGroupCollapse(item, event);
+      }
+    }, delay);
     changeCardColour(item);
 
   }).on('add', function(items) {
@@ -81,7 +105,7 @@ function initialise() {
 
   }).on('remove', function(items, indices) {
     if (items.length == 1) {
-      if (content(items[0]).includes('class="group_title"')) {
+      if (isGroup(items[0])) {
         items = grid.getItems();
         changeCardColour(items[indices[0] - 1], true);
       }
@@ -124,6 +148,14 @@ function content(item) { // Returns an item's "card" class
 
 function object(item) { // Return's the HTML element of an item's "card" class. Utilised in changing styles
   return item.getElement().querySelector('.card');
+}
+
+function isGroup(item) {
+  return content(item).includes('class="group_title"');
+}
+
+function isRegular(item) {
+  return content(item).includes('class="comment"');
 }
 
 function allItems() { // Returns all grid items except the ghost
@@ -178,12 +210,12 @@ function changeCardColour(card, deleteGroup = false) { // Changes the card's bor
   var startIndex = items.indexOf(card);
   var cardElement = object(card);
 
-  if (content(card).includes('class="comment"') && !deleteGroup) {
+  if (isRegular(card) && !deleteGroup) {
     cardElement.style.borderColor = object(items[startIndex - 1]).style.borderColor;
 
   } else { // Updates ungrouped cards' colours if a group is dragged in front of the ungrouped cards. Also turns newly ungrouped cards black
     for (var i = startIndex + 1; i < items.length; i++) {
-      if (content(items[i]).includes('class="comment"')) {
+      if (isRegular(items[i])) {
         object(items[i]).style.borderColor = cardElement.style.borderColor;
       } else {
         return;
@@ -213,7 +245,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
-      '<div class="card" style="border-color:' + data[1] + '">' +
+      '<div class="card" style="border-color:' + data[1] + ';">' +
       '<p class="group_title">' + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '<div class="group-collapse">C</div>' +
@@ -230,16 +262,24 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
   }
 }
 
+function changeBorder(itemElement, style) {
+  var colour = itemElement.style.borderColor;
+  itemElement.style.borderBottom = style;
+  itemElement.style.borderRight = style;
+  itemElement.style.borderColor = colour;
+}
+
 function toggleGroupCollapse(gridItem, eventTarget) {
   var items = allItems();
-  var saveName = String(gridItem._id); // Assigns the save data to the grid card's id within the grid
+  var itemElement = object(gridItem);
+  var saveName = gridItem._id; // Assigns the save data to the grid card's id within the grid
   var itemsToLoad = collapseSave[saveName];
 
   try {
     if (itemsToLoad === undefined && eventTarget !== undefined) { // For collapsing a group
       var savedItems = [];
       for (var i = items.indexOf(gridItem) + 1; i < items.length; i++) {
-        if (!content(items[i]).includes('class="group_title"')) { // If it's a regular card, save it
+        if (!isGroup(items[i])) { // If it's a regular card, save it
           savedItems.push(items[i]);
           grid.hide(items[i], {
             onFinish: function(hiddenItem) {
@@ -252,6 +292,11 @@ function toggleGroupCollapse(gridItem, eventTarget) {
       }
       collapseSave[saveName] = savedItems; // Save the data
 
+      if (savedItems.length > 0) {
+        changeBorder(itemElement, "8px double");
+      }
+      eventTarget.innerHTML = 'E';
+
     } else { // For expanding a group
       var destinationIndex = items.indexOf(gridItem) + 2;
       itemsToLoad.forEach(function(item) {
@@ -259,11 +304,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
       });
       grid.show(itemsToLoad);
       delete collapseSave[saveName]; // Delete the data
-    }
-
-    if (eventTarget.innerHTML === 'C') {
-      eventTarget.innerHTML = 'E';
-    } else {
+      changeBorder(itemElement, "4px solid")
       eventTarget.innerHTML = 'C';
     }
 
@@ -277,7 +318,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
 function undoGroupCollapse(item) { // Goes through every item and undoes any collapsed grids. Necessary for saving
   if (item === undefined) {
     allItems().forEach(function(item) {
-      if (content(item).includes("group-collapse")) {
+      if (isGroup(item)) {
         toggleGroupCollapse(item);
       }
     });
@@ -298,8 +339,8 @@ function saveItems() { // Returns all of the grid's item data in a readable form
     });
 
     if (dataToSave.length < 3) {
-      var groupStyle = item.match(/border-color:.*?"/g);
-      groupStyle = groupStyle[0].split(':').pop().split('"')[0];
+      var groupStyle = item.match(/border-color:.*?;/g);
+      groupStyle = groupStyle[0].split(':').pop().split(';')[0];
       dataToSave.push(groupStyle);
     }
     itemsToSave.push(dataToSave);
