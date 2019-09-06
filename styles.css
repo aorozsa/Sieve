@@ -109,9 +109,9 @@ input, .dummygrid {
 }
 .item {
   position: absolute;
-  width: 225px;
-  height: 225px;
-  margin: 10px;
+  width: 250px;
+  height: 250px;
+  margin: 9px;
   z-index: 1;
 }
 .item.muuri-item-dragging {
@@ -144,7 +144,7 @@ input, .dummygrid {
   bottom: 0;
   text-align: center;
   background: #fff;
-  border: 2px solid #000000;
+  border: 4px solid #000000;
   border-radius: 5px;
   cursor: grab;
   -webkit-transition: all 0.2s ease-out;
@@ -183,7 +183,7 @@ input, .dummygrid {
   display: block;
 }
 #ghost {
-  border: 2px dashed black;
+  border: 4px dashed black;
   font-size: 25px;
   cursor: pointer;
 }

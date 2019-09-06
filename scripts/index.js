@@ -42,7 +42,8 @@ function initialise() {
       }
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
-      if (item === ghost || (e.target.matches("p") && editable)) return false;
+      if (item === ghost) return false;
+      if (editable && e.target.matches("p") && content(item).includes('class="comment"')) return false;
       if (e.target.matches(".card-remove")) {
         undoGroupCollapse(item);
         deleteItems(item);
@@ -193,9 +194,9 @@ function changeCardColour(card, deleteGroup = false) { // Changes the card's bor
 
 function addNewCard(data, returnElement = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
-  var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
 
   if (data.length == 3) { // If 3, create a regular card
+    var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
@@ -213,7 +214,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card" style="border-color:' + data[1] + '">' +
-      '<p class="group_title" contenteditable="true"' + style + data[0] + '</p>' +
+      '<p class="group_title">' + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '<div class="group-collapse">C</div>' +
       '</div>' +
@@ -366,7 +367,9 @@ toggleEditBtn.addEventListener('click', function(e) {
     pStyle = "text";
   }
   for (var i = 0; i < allPElements.length - 4; i++) { // Excludes the last 4 elements, which are the template inputs
-    allPElements[i].style.cursor = pStyle;
+    if (allPElements[i].contentEditable == 'true') { // Only activate on elements that can be edited
+      allPElements[i].style.cursor = pStyle;
+    }
   }
   editable = !editable;
 });
