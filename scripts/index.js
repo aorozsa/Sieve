@@ -73,7 +73,7 @@ function initialise() {
     collapseDrag = isGroup(item) && !(item._id in collapseSave);
     if (collapseDrag) {
       toggleGroupCollapse(item, e);
-    } else if (collapseSave[item.id] === undefined || collapseSave[item.id].length > 0) {
+    } else if (isGroup(item) && (collapseSave[item.id] === undefined || collapseSave[item.id].length > 0)) {
       changeBorder(object(item), "8px double");
     }
 
