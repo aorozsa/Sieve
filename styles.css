@@ -31,6 +31,11 @@ p {
   overflow: auto;
   color: black;
   overflow-x: hidden;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 input, .dummygrid {
   display: none;
@@ -293,7 +298,7 @@ input, .dummygrid {
 }
 .title {
   max-height: 15%;
-  font-size: 22px;
+  font-size: 30px;
   font-weight: bold;
 }
 .comment {
@@ -301,29 +306,25 @@ input, .dummygrid {
   top: 54%;
   transform: translate(-50%, -52%);
   max-height: 70%;
-  font-size: 15px;
+  font-size: 20px;
 }
 .code {
   top: 100%;
   transform: translate(-50%, -100%);
   max-height: 8%;
-  font-size: 12px;
+  font-size: 15px;
 }
 #templateGroupTitle {
-  font-size: 65px;
+  font-size: 400%;
 }
 #templateTitle {
-  font-size: 43.5px;
-  max-height: 11.9%;
+  font-size: 250%;
 }
 #templateComment {
-  top: 51%;
-  font-size: 30px;
-  max-height: 69.5%;
+  font-size: 170%;
 }
 #templateCode {
-  font-size: 24px;
-  max-height: 6.5%;
+  font-size: 135%;
 }
 .addCardbtn {
   width: calc(99% + 1px);

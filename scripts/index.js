@@ -86,7 +86,7 @@ function initialise() {
       var items = grid.getItems();
       var i = items.indexOf(item);
       // If the item isn't the last in the list, the item in front isn't a group, or the item behind isn't the ghost, undo the movement and set a delay
-      if (!(i === items.length - 1 || isGroup(items[i + 1]) || content(items[i - 1]).includes('onclick="ghostAction();"'))) {
+      if (!(i === items.length - 1 || isGroup(items[i + 1]) || object(items[i - 1]).style.borderColor == "")) {
         grid.move(item, dragStartIndex);
         delay = 300; // This has to be equal to the grid's dragReleaseDuration for the best looks. The default is 300
       }
@@ -125,6 +125,9 @@ function initialise() {
   itemElem.innerHTML = itemTemplate;
   addItems(itemElem.firstChild);
   ghost = grid.getItems(0)[0];
+
+  // Adds event listeners to the template text elements
+  addListenersToPElements(document.getElementsByTagName('p'));
 
   // Automatically loads the last layout if applicable
   var layout = window.localStorage.getItem('layout');
@@ -224,6 +227,22 @@ function changeCardColour(card, deleteGroup = false) { // Changes the card's bor
   }
 }
 
+function addListenersToPElements(elements) {
+  function swap(elem) {
+    if (elem.textContent.length > 0) {
+      elem.style.borderStyle = "none";
+    } else {
+      elem.style.border = "1px solid #98B6FF";
+    }
+  }
+  for (var i = 0; i < elements.length; i++) {
+    swap(elements[i]); // Once on initialisation
+    elements[i].addEventListener("keyup", function(e) {
+      swap(this);
+    });
+  }
+}
+
 function addNewCard(data, returnElement = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
 
@@ -253,8 +272,9 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
       '</div>' +
       '</div>';
   }
-
   itemElem.innerHTML = itemTemplate;
+  addListenersToPElements(itemElem.getElementsByTagName('p'));
+
   if (returnElement) {
     return itemElem.firstChild;
   } else {
@@ -379,6 +399,25 @@ function toggleGroupRegular() {
   changeTemplateColour(!groupBtn.disabled);
 }
 
+function checkText(element) {
+  if (element.textContent === "") {
+    for (var delay = 0; delay <= 600; delay += 200) {
+      setTimeout(function() {
+        if (templateCard.style.borderColor === "") {
+          templateCard.style.borderColor = "black";
+        }
+        if (element.style.backgroundColor === templateCard.style.borderColor) {
+          element.style.backgroundColor = null;
+        } else {
+          element.style.backgroundColor = templateCard.style.borderColor;
+        }
+      }, delay);
+    }
+    return false;
+  }
+  return true;
+}
+
 
 // Event listeners
 initialise();
@@ -460,18 +499,14 @@ regBtn.addEventListener('click', toggleGroupRegular);
 groupBtn.addEventListener('click', toggleGroupRegular);
 addCardBtn.addEventListener('click', function(e) {
   if (groupBtn.disabled) { // If "group" is selected in the modal, generate a group card
-    var group_title = templateGroupTitle.textContent;
-    if (templateGroupTitle === "") group_title = "Group Title";
-    addNewCard([group_title, templateCard.style.borderColor]);
+    if (!checkText(templateGroupTitle)) return;
+    addNewCard([templateGroupTitle.textContent, templateCard.style.borderColor]);
 
   } else { // Otherwise generate a standard card
-    var title = templateTitle.textContent;
-    var comment = templateComment.textContent;
-    var code = templateCode.textContent;
-    if (title === "") title = "Title";
-    if (comment === "") comment = "Comment";
-    if (code === "") code = "Code";
-
-    addNewCard([title, comment, code]);
+    var cont = checkText(templateTitle);
+    cont = checkText(templateComment) && cont;
+    cont = checkText(templateCode) && cont;
+    if (!cont) return;
+    addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
   }
 });
