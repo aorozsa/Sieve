@@ -2,7 +2,7 @@
 html {
   font-family: "Georgia", "Times", serif;
 }
-label, button {
+.controls label, button {
   position: relative;
   display: inline-block;
   cursor: pointer;
@@ -15,9 +15,26 @@ label, button {
   border: 2px outset lightgray;
   border-radius: 5px;
   background-color: white;
+  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background-color:transparent;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#666666;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
 }
 button {
   line-height: normal;
+
 }
 label:active, button:active {
   border: 2px inset lightgray;
@@ -41,6 +58,13 @@ input, .dummygrid {
   display: none;
 }
 
+.wrapper {
+  padding-top:100px;
+  width: 85%;
+	margin: auto;
+
+}
+
 /* Classes that have text selection disabled. You can add more. */
 .modal, body {
   -webkit-touch-callout: none;
@@ -49,6 +73,8 @@ input, .dummygrid {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  background-color: #fdfdfd;
+background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Scrollbar styles */
@@ -110,7 +136,11 @@ input, .dummygrid {
 .grid {
   position: relative;
   margin: 0 -10px;
+  margin-top: 70px;
   width: 100%;
+  border: 5px outset black;
+  border-radius: 5px;
+  background-color: white;
 }
 .item {
   position: absolute;
@@ -120,10 +150,10 @@ input, .dummygrid {
   z-index: 1;
 }
 .item.muuri-item-dragging {
-  z-index: 9999;
+  z-index: 100;
 }
 .item.muuri-item-releasing {
-  z-index: 9999;
+  z-index: 100;
 }
 .item.muuri-item-hidden {
   z-index: 0;
@@ -150,16 +180,20 @@ input, .dummygrid {
   text-align: center;
   background: #fff;
   border: 4px solid #000000;
-  border-radius: 5px;
   cursor: grab;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -ms-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
+  z-index:1;
 }
 .card:active {
   cursor: grabbing;
+  transform: scale(1.05 );
+  -webkit-box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.42);
+  -moz-box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.42);
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.42);
 }
 .card-remove, .group-collapse {
   display: none;
@@ -336,6 +370,7 @@ input, .dummygrid {
 }
 .clearBtn {
   background-image: url("app_images/clear.png");
+    background-size: cover;
 }
 .saveBtn {
   background-image: url("app_images/save.png");
