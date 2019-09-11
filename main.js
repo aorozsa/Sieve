@@ -1,7 +1,10 @@
-
+'use strict';
 
 const { app, BrowserWindow, Menu } = require('electron');
-
+const debug = require('electron-debug');
+debug();
+require('electron-reload')(__dirname);
+require('excel4node');
 const path = require('path');
 let win;
 
@@ -15,6 +18,9 @@ function createWindow() {
 
   // Create the browser window.
   win = new BrowserWindow({
+    webPreferences: {
+            nodeIntegration: true
+        },
     show: false,
     icon: path.join(__dirname, icon),
     minWidth: 1280,
