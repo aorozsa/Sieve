@@ -11,7 +11,6 @@ var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
-var exportBtn = document.querySelector('.exportBtn');
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
@@ -19,6 +18,7 @@ var firstClick; // Used to determine if the mouse is released in the same place 
 var templateCard = document.getElementById('templateCard');
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
+var regBtn = document.querySelector('.regBtn');
 var pickColourBtn = document.querySelector('.pickColourBtn');
 var colourPicker = document.querySelector('.colourPicker');
 var addCardBtn = document.querySelector('.addCardBtn');
@@ -28,11 +28,6 @@ var templateComment = document.getElementById('templateComment');
 var templateCode = document.getElementById('templateCode');
 var clearYesBtn = document.getElementById('clearYesBtn');
 var clearNoBtn = document.getElementById('clearNoBtn');
-
-// Excel export
-var xl = require('excel4node');
-
-//Inspect element
 
 
 // Functions
@@ -478,53 +473,6 @@ saveBtn.addEventListener('click', function(e) {
     type: 'application/octet-stream'
   });
   saveAs(file, "SieveSaveFile");
-});
-
-exportBtn.addEventListener('click', function(e) {
-  var wb = new xl.Workbook();
-
-// Add Worksheets to the workbook
-var ws = wb.addWorksheet('Sheet 1');
-var ws2 = wb.addWorksheet('Sheet 2');
-
-// Create a reusable style
-var style = wb.createStyle({
-  font: {
-    color: '#FF0800',
-    size: 12,
-  },
-  numberFormat: '$#,##0.00; ($#,##0.00); -',
-});
-
-// Set value of cell A1 to 100 as a number type styled with paramaters of style
-ws.cell(1, 1)
-  .string('Interview 1')
-  .style(style);
-
-// Set value of cell B1 to 200 as a number type styled with paramaters of style
-ws.cell(1, 2)
-  .number(200)
-  .style(style);
-
-// Set value of cell C1 to a formula styled with paramaters of style
-ws.cell(1, 3)
-  .formula('A1 + B1')
-  .style(style);
-
-// Set value of cell A2 to 'string' styled with paramaters of style
-ws.cell(2, 1)
-
-
-// Set value of cell A3 to true as a boolean type styled with paramaters of style but with an adjustment to the font size.
-ws.cell(3, 1)
-  .bool(true)
-  .style(style)
-  .style({font: {size: 14}});
-
-ws
-
-wb.write('src/assets/export/Excel.xlsx');
-
 });
 
 loadBtn.addEventListener('change', function(e) {

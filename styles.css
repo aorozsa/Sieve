@@ -2,31 +2,19 @@
 html {
   font-family: "Georgia", "Times", serif;
 }
-.controls label, button {
+label, button {
   position: relative;
   display: inline-block;
   cursor: pointer;
   text-align: center;
   line-height: 250%;
-  margin: 20px;
+  margin-right: 20px;
   width: 50px;
   height: 50px;
   font-size: 20px;
   border: 2px outset lightgray;
+  border-radius: 5px;
   background-color: white;
-  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	box-shadow:inset 0px 1px 0px 0px #ffffff;
-	background-color:transparent;
-	border:1px solid #dcdcdc;
-	display:inline-block;
-	cursor:pointer;
-	color:#666666;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:bold;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #ffffff;
 }
 button {
   line-height: normal;
@@ -53,13 +41,6 @@ input, .dummygrid {
   display: none;
 }
 
-.wrapper {
-  padding-top:100px;
-  width: 98%;
-	margin: auto;
-
-}
-
 /* Classes that have text selection disabled. You can add more. */
 .modal, body {
   -webkit-touch-callout: none;
@@ -68,15 +49,6 @@ input, .dummygrid {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: #fdfdfd;
-}
-
-.modal {
-  background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
-}
-
-body {
-  background-color: #6399E6;
 }
 
 /* Scrollbar styles */
@@ -138,13 +110,7 @@ body {
 .grid {
   position: relative;
   margin: 0 -10px;
-  margin-top: 70px;
   width: 100%;
-  border: 1px outset black;
-  background-color: white;
-  -webkit-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
--moz-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
-box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
 }
 .item {
   position: absolute;
@@ -154,10 +120,10 @@ box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
   z-index: 1;
 }
 .item.muuri-item-dragging {
-  z-index: 100;
+  z-index: 9999;
 }
 .item.muuri-item-releasing {
-  z-index: 100;
+  z-index: 9999;
 }
 .item.muuri-item-hidden {
   z-index: 0;
@@ -184,20 +150,16 @@ box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
   text-align: center;
   background: #fff;
   border: 4px solid #000000;
+  border-radius: 5px;
   cursor: grab;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -ms-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
-  z-index:1;
 }
 .card:active {
   cursor: grabbing;
-  transform: scale(1.05 );
-  -webkit-box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.42);
-  -moz-box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.42);
-  box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.42);
 }
 .card-remove, .group-collapse {
   display: none;
@@ -259,19 +221,15 @@ box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
 }
 .close-button {
   float: right;
+  width: 1.5rem;
   line-height: 1.5rem;
   text-align: center;
   cursor: pointer;
+  border-radius: 0.25rem;
+  background-color: lightgray;
 }
-
-.close-button img {
-  content:url("app_images/back-button.png");
-  width: 35px;
-  height: auto;
-}
-
-.close-button:hover img {
-  content:url("app_images/back-active.png");
+.close-button:hover {
+  background-color: darkgray;
 }
 .show-modal {
   opacity: 1;
@@ -300,57 +258,27 @@ box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
   cursor: text;
 }
 .regBtn, .groupBtn {
-  margin: 10px;
-  color: #DBDBDB;
-  width: 150px;
-  -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-}
-
-#modal-buttons{
-  margin-bottom: 20px;
-  margin-top:30px;
-}
-.regBtn:disabled, .groupBtn:disabled {
-  color: #000000;
-  -webkit-box-shadow: inset 0px 0px 8px 6px rgba(0,0,0,0.16);
-  box-shadow: inset 0px 0px 8px 6px rgba(0,0,0,0.16);
+  margin-right: 0px;
+  width: 50%;
 }
 .groupBtn {
+  float: left;
   cursor: default;
 }
 .regBtn {
-  margin-top:0px;
+  float: right;
 }
-
 .pickColourBtn {
-  z-index: 9999;
-  float:left;
-  padding: 3px;
   position: relative;
-  margin:10px;
-  border-radius:50%;
-}
-
-.pickColourBtn img {
-  width:50px;
-  height: auto;
-  float: left;
+  width: 99%;
 }
 .pickColourBtnDisabled {
-  opacity:0;
   color: #6F7E86;
   cursor: default;
 }
 .pickColourBtnDisabled:active {
   border: 2px outset lightgray;
 }
-
-.addCardbtn {
-  border: 5px black;
-}
-
 .group_title, .title, .comment, .code, .card h1 {
   text-align: center;
   position: absolute;
@@ -398,7 +326,9 @@ box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
 #templateCode {
   font-size: 135%;
 }
-
+.addCardbtn {
+  width: calc(99% + 1px);
+}
 
 /* Control button styles */
 .toggleEditBtn {
@@ -406,7 +336,6 @@ box-shadow: 0px 0px 11px -4px rgba(0,0,0,0.75);
 }
 .clearBtn {
   background-image: url("app_images/clear.png");
-    background-size: cover;
 }
 .saveBtn {
   background-image: url("app_images/save.png");

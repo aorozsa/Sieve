@@ -52,13 +52,11 @@
   "devDependencies": {
     "electron": "^5.0.10",
     "electron-builder": "^20.44.4",
-    "electron-packager": "^14.0.5",
+    "electron-packager": "^14.0.6",
     "electron-reload": "^1.5.0",
     "run-script-os": "^1.0.7"
   },
   "dependencies": {
-    "electron-debug": "^3.0.1",
-    "excel4node": "^1.7.2",
     "muuri": "^0.8.0",
     "web-animations-js": "^2.3.2"
   }

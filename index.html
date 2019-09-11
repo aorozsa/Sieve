@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="styles.css">
   <title>Sieve</title>
 </head>
-<div class='wrapper'>
+
 <body>
   <div class='controls'>
     <label class='toggleEditBtn'>
@@ -27,7 +27,6 @@
       </span>
     </label>
 
-
     <label class="loadBtn">
       <span class="tooltip">
         <h6>Load&nbsp;Project</h6>
@@ -36,32 +35,27 @@
         <input type="file">
       </form>
     </label>
-
-    <label class='exportBtn'>
-      <span class="tooltip">
-        <h6>Export&nbsp;Project</h6>
-      </span>
-    </label>
-
   </div>
+
   <div class="grid"></div>
   <div class="dummygrid"></div>
 
   <!-- Modals. A new div has to be specified every time with a different id -->
   <div class="modal" id="newCardModal">
     <div class="modal-content">
-      <span class="close-button"><img/></span>
-      <div id='modal-buttons'>
+      <span class="close-button">&times;</span>
+      <br>
+      <br>
       <button class='groupBtn' disabled>Group Card</button>
       <button class='regBtn'>Regular Card</button>
-      </div>
-
-
+      <br>
+      <br>
+      <br>
+      <label class="pickColourBtn">
+        Change colour (groups only)
+        <input type="color" class="colourPicker" onchange='changeTemplateColour(false);' value="#ff0000">
+      </label>
       <div class="item" id="template">
-        <label class="pickColourBtn">
-          <input type="color" class="colourPicker" onchange='changeTemplateColour(false);' value="#ff0000">
-          <img src="app_images/colourwheel.png">
-        </label>
         <div class="item-content">
           <div class="card" id="templateCard">
             <p class="group_title" id="templateGroupTitle" contenteditable="true"></p>
@@ -93,5 +87,5 @@
   <script src="scripts/index.js"></script>
   </div>
 </body>
-</div>
+
 </html>
