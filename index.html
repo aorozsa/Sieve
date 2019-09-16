@@ -35,10 +35,17 @@
         <input type="file">
       </form>
     </label>
+
+    <label class='exportBtn'>
+      <span class="tooltip">
+        <h6>Export&nbsp;Project</h6>
+      </span>
+    </label>
+
   </div>
 
   <div class="grid"></div>
-  <div class="dummyGrid"></div>
+  <div class="dummygrid"></div>
 
   <!-- Modals. A new div has to be specified every time with a different id -->
   <div class="modal" id="newCardModal">
@@ -59,7 +66,6 @@
         <div class="item-content">
           <div class="card" id="templateCard">
             <p class="group_title" id="templateGroupTitle" contenteditable="true"></p>
-            <textarea class="heading" id="templateHeading" readonly hidden></textarea>
             <p class="title" id="templateTitle" contenteditable="true" hidden></p>
             <p class="comment" id="templateComment" contenteditable="true" hidden></p>
             <p class="code" id="templateCode" contenteditable="true" hidden></p>
@@ -86,6 +92,7 @@
   <script src="scripts/web-animations.min.js"></script>
   <script src="scripts/FileSaver.js"></script>
   <script src="scripts/index.js"></script>
+  <script src="scripts/xlsx.full.min.js"></script>
   </div>
 </body>
 
