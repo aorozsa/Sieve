@@ -11,6 +11,7 @@ var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
+var exportBtn = document.querySelector('.exportBtn');
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
@@ -450,6 +451,13 @@ function checkText(element) { // Returns true if the element contains text. Othe
   return true;
 }
 
+function s2ab(s) { // Used in excel exporting
+  var buf = new ArrayBuffer(s.length); // Convert s to ArrayBuffer
+  var view = new Uint8Array(buf);  // Create Uint8Array as viewer
+  for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; // Convert to octet
+  return buf;
+}
+
 
 // Event listeners
 initialise();
@@ -523,7 +531,72 @@ loadBtn.addEventListener('change', function(e) {
     });
   };
   reader.readAsText(file);
-}), false;
+});
+
+exportBtn.addEventListener('click', function(e) {
+  var wb = XLSX.utils.book_new();
+  wb.Props = {
+    Title: "Thematic Analysis Export"
+  };
+  wb.SheetNames.push("First Sheet");
+  var ws_data = JSON.parse(saveItems());
+  console.log(ws_data);
+  undoGroupCollapse();
+  var items = allItems();
+  var interviews = [];
+  items.forEach(function(item) {
+    item = content(item);
+    var itemData = item.match(/<p.*?<\/p>/g);
+    var dataToSave = [];
+    itemData.forEach(function(elem) {
+      elem = elem.split('">').pop().split('</p>')[0].toString();
+      dataToSave.push(elem);
+      console.log(dataToSave);
+    });
+    if (dataToSave.length == 3) {
+      if (typeof interviews[dataToSave[2].charAt(10)] === 'undefined') {
+        // does not exist
+        interviews[dataToSave[2].charAt(10)] = [['Interview: ' + dataToSave[2].charAt(10)]];
+        var headers = ['Quote Title', 'Quote', 'Code'];
+        interviews[dataToSave[2].charAt(10)].push(headers);
+      }
+      interviews[dataToSave[2].charAt(10)].push(dataToSave);
+    }
+    // if (dataToSave.length < 3) {
+    //   var groupStyle = item.match(/border-color:.*?;/g);
+    //   groupStyle = groupStyle[0].split(':').pop().split(';')[0];
+    //   dataToSave.push(groupStyle);
+    // }
+    // interviews.push(dataToSave);
+
+  });
+  rows = [];
+  console.log(interviews[1]);
+  for (i = 0; i < interviews.length; i++) {
+
+    if (typeof interviews[i] == 'undefined') {
+      console.log(typeof interviews[i] + i);
+      // does not exist
+    } else {
+      console.log(interviews[i] + i);
+      for (j = 0; j < interviews[i].length; j++) {
+        rows.push(interviews[i][j]);
+      }
+    }
+  }
+  wb.Sheets["First Sheet"] = XLSX.utils.aoa_to_sheet(rows);
+  // var cell_address = {c:0, r:0};
+  // const cell_ref = XLSX.utils.encode_cell(cell_address);
+  // wb.Sheets[wb.SheetNames[0]] = {};
+  // var ws = wb.Sheets[wb.SheetNames[0]];
+  // console.log(wb);
+  // var cell = {};
+  // ws["!ref"] = cell_ref;
+  // ws[cell_ref] = cell;
+  // ws[cell_ref].v = 100;
+  var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+  saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'ThematicDataExport.xlsx');
+});
 
 regBtn.addEventListener('click', toggleGroupRegular);
 groupBtn.addEventListener('click', toggleGroupRegular);
