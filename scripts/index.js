@@ -11,7 +11,6 @@ var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
-var exportBtn = document.querySelector('.exportBtn');
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
@@ -24,6 +23,7 @@ var pickColourBtn = document.querySelector('.pickColourBtn');
 var colourPicker = document.querySelector('.colourPicker');
 var addCardBtn = document.querySelector('.addCardBtn');
 var templateGroupTitle = document.getElementById('templateGroupTitle');
+var templateHeading = document.getElementById('templateHeading');
 var templateTitle = document.getElementById('templateTitle');
 var templateComment = document.getElementById('templateComment');
 var templateCode = document.getElementById('templateCode');
@@ -39,7 +39,7 @@ function initialise() {
     dragContainer: document.body,
     dragPlaceholder: {
       enabled: true,
-      createElement: function(item) { // This guarantees that the placeholder's border is dashed and is 4 pixels thick.
+      createElement: function(item) { // This guarantees that the placeholder's border is dashed and is 4 pixels thick
         var itemObject = object(item);
         var defaultBorder = itemObject.style.borderStyle;
         var defaultBorderWidth = itemObject.style.borderWidth;
@@ -53,7 +53,7 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
-      if (editable && e.target.matches("p") && isRegular(item)) return false;
+      if (editable && e.target.matches("p") && !e.target.matches(".heading") && isRegular(item)) return false;
       if (e.target.matches(".card-remove")) {
         undoGroupCollapse(item);
         deleteItems(item);
@@ -83,6 +83,7 @@ function initialise() {
     if (grid.getItems(0)[0] !== ghost) {
       grid.move(item, ghost); // Swap the item positions, putting the ghost back in front
     }
+
     if (isGroup(item)) {
       var items = grid.getItems();
       var i = items.indexOf(item);
@@ -92,28 +93,31 @@ function initialise() {
         delay = 300; // This has to be equal to the grid's dragReleaseDuration for the best looks. The default is 300
       }
     }
+
     setTimeout(function() {
       if (collapseDrag) {
         toggleGroupCollapse(item, event);
       }
     }, delay);
-    changeCardColour(item);
+    changeCardAttributes(item);
 
   }).on('add', function(items) {
     items.forEach(function(item) {
-      changeCardColour(item);
+      changeCardAttributes(item);
     });
 
   }).on('remove', function(items, indices) {
     if (items.length == 1) {
       if (isGroup(items[0])) {
         items = grid.getItems();
-        changeCardColour(items[indices[0] - 1], true);
+        changeCardAttributes(items[indices[0] - 1], true);
       }
     }
   });
 
-  dummyGrid = new Muuri('.dummygrid'); // Invisible grid used to house regular cards that collapse in on groups
+  dummyGrid = new Muuri('.dummyGrid', { // Grid used to house regular cards that collapse in on groups
+    dragEnabled: false
+  });
 
   // Adds in the ghost card by default
   var itemElem = document.createElement('div');
@@ -168,7 +172,7 @@ function allItems() { // Returns all grid items except the ghost
   return items;
 }
 
-function addItems(itemsToAdd, fileLoad = false) { // Adds a single card in a fancy way
+function addItems(itemsToAdd, fileLoad = false) { // Adds cards with an animation
   grid.add(itemsToAdd, {
     layout: function(i) {
       var items = grid.getItems();
@@ -184,7 +188,7 @@ function addItems(itemsToAdd, fileLoad = false) { // Adds a single card in a fan
   });
 }
 
-function deleteItems(items, selectedGrid = grid) {
+function deleteItems(items, selectedGrid = grid) { // Deletes items with an animation
   selectedGrid.hide(items, {
     onFinish: function(hiddenItems) {
       grid.remove(hiddenItems, {
@@ -196,8 +200,18 @@ function deleteItems(items, selectedGrid = grid) {
 
 function ghostAction() { // Activates when the ghost card is clicked
   modal = document.getElementById("newCardModal");
+  var items = grid.getItems();
+  try {
+    templateHeading.textContent = items[items.length - 1].getElement().getElementsByTagName('p')[0].textContent;
+  } catch (e) {
+    templateHeading.textContent = "UNGROUPED";
+  }
   changeTemplateColour(!groupBtn.disabled);
   toggleModal();
+}
+
+function toggleModal() { // Toggles the currently selected modal's visibility
+  modal.classList.toggle("show-modal");
 }
 
 function changeTemplateColour(setToLastItem) { // Changes the template's border colour. Based either on the last item or the colour picker
@@ -209,18 +223,29 @@ function changeTemplateColour(setToLastItem) { // Changes the template's border 
   }
 }
 
-function changeCardColour(card, deleteGroup = false) { // Changes the card's border colour based on the group it's in. Only for regular cards
+function changeCardAttributes(card, deleteGroup = false) { // Changes the card's border colour based on the group it's in. Also changes regular cards' headers
   var items = grid.getItems();
   var startIndex = items.indexOf(card);
   var cardElement = object(card);
 
+  function changeHeader(item) {
+    var headingElem = item.getElement().getElementsByTagName('p')[0];
+    try {
+      headingElem.textContent = items[items.indexOf(item) - 1].getElement().getElementsByTagName('p')[0].textContent;
+    } catch (e) {
+      headingElem.textContent = "UNGROUPED";
+    }
+  }
+
   if (isRegular(card) && !deleteGroup) {
     cardElement.style.borderColor = object(items[startIndex - 1]).style.borderColor;
+    changeHeader(card);
 
   } else { // Updates ungrouped cards' colours if a group is dragged in front of the ungrouped cards. Also turns newly ungrouped cards black
     for (var i = startIndex + 1; i < items.length; i++) {
       if (isRegular(items[i])) {
         object(items[i]).style.borderColor = cardElement.style.borderColor;
+        changeHeader(items[i]);
       } else {
         return;
       }
@@ -238,7 +263,7 @@ function addListenersToPElements(elements) {
   }
   for (var i = 0; i < elements.length; i++) {
     swap(elements[i]); // Once on initialisation
-    elements[i].addEventListener("keyup", function(e) {
+    elements[i].addEventListener('blur', function(e) { // Happens whenever the textbox loses focus
       swap(this);
     });
   }
@@ -247,15 +272,16 @@ function addListenersToPElements(elements) {
 function addNewCard(data, returnElement = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
 
-  if (data.length == 3) { // If 3, create a regular card
+  if (data.length == 4) { // If 4, create a regular card
     var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p class="title" contenteditable="true"' + style + data[0] + '</p>' +
-      '<p class="comment" contenteditable="true"' + style + data[1] + '</p>' +
-      '<p class="code" contenteditable="true"' + style + data[2] + '</p>' +
+      '<p class="heading" contenteditable="true">' + data[0] + '</p>' +
+      '<p class="title" contenteditable="true"' + style + data[1] + '</p>' +
+      '<p class="comment" contenteditable="true"' + style + data[2] + '</p>' +
+      '<p class="code" contenteditable="true"' + style + data[3] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '</div>' +
       '</div>' +
@@ -266,7 +292,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card" style="border-color:' + data[1] + ';">' +
-      '<p class="group_title">' + data[0] + '</p>' +
+      '<p class="group_title" contenteditable="true">' + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '<div class="group-collapse">C</div>' +
       '</div>' +
@@ -343,7 +369,9 @@ function undoGroupCollapse(item) { // Goes through every item and undoes any col
         toggleGroupCollapse(item);
       }
     });
-  } else toggleGroupCollapse(item); // For a single item instead
+  } else {
+    toggleGroupCollapse(item); // For a single item instead
+  }
 }
 
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
@@ -359,7 +387,7 @@ function saveItems() { // Returns all of the grid's item data in a readable form
       dataToSave.push(elem);
     });
 
-    if (dataToSave.length < 3) {
+    if (dataToSave.length < 4) {
       var groupStyle = item.match(/border-color:.*?;/g);
       groupStyle = groupStyle[0].split(':').pop().split(';')[0];
       dataToSave.push(groupStyle);
@@ -377,21 +405,24 @@ function load(layout) { // Loads cards that have already been created before
   addItems(itemsToLoad, true);
 }
 
-function toggleModal() { // Toggles the currently selected modal's visibility
-  modal.classList.toggle("show-modal");
-}
-
 function toggleGroupRegular() {
   regBtn.disabled = !regBtn.disabled;
   groupBtn.disabled = !groupBtn.disabled;
   colourPicker.disabled = !colourPicker.disabled;
   templateGroupTitle.hidden = !templateGroupTitle.hidden;
+  templateHeading.hidden = !templateHeading.hidden;
   templateTitle.hidden = !templateTitle.hidden;
   templateComment.hidden = !templateComment.hidden;
   templateCode.hidden = !templateCode.hidden;
   if (regBtn.disabled) {
     groupBtn.style.cursor = "pointer";
     regBtn.style.cursor = "default";
+    var items = grid.getItems();
+    try {
+      templateHeading.textContent = items[items.length - 1].getElement().getElementsByTagName('p')[0].textContent;
+    } catch (e) {
+      templateHeading.textContent = "UNGROUPED";
+    }
   } else {
     groupBtn.style.cursor = "default";
     regBtn.style.cursor = "pointer";
@@ -400,7 +431,7 @@ function toggleGroupRegular() {
   changeTemplateColour(!groupBtn.disabled);
 }
 
-function checkText(element) {
+function checkText(element) { // Returns true if the element contains text. Otherwise it makes it flash, then returns false
   if (element.textContent === "") {
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
@@ -459,17 +490,13 @@ clearBtn.addEventListener('click', function(e) {
   modal = document.getElementById("clearConfirmModal");
   toggleModal();
 });
-
 clearYesBtn.addEventListener('click', function(e) { // Removes all items except the ghost, then removes everything from memory
   toggleModal();
   deleteItems(allItems());
   deleteItems(dummyGrid.getItems(), dummyGrid);
   window.localStorage.clear();
 });
-
-clearNoBtn.addEventListener('click', function(e) {
-  toggleModal();
-});
+clearNoBtn.addEventListener('click', toggleModal);
 
 saveBtn.addEventListener('click', function(e) {
   var file = new Blob([saveItems()], {
@@ -478,78 +505,6 @@ saveBtn.addEventListener('click', function(e) {
   saveAs(file, "SieveSaveFile");
 });
 
-exportBtn.addEventListener('click', function(e) {
-  var wb = XLSX.utils.book_new();
-  wb.Props = {
-    Title: "Thematic Analysis Export"
-  };
-  wb.SheetNames.push("First Sheet");
-  var ws_data = JSON.parse(saveItems());
-  console.log(ws_data);
-  undoGroupCollapse();
-  var items = allItems();
-  var interviews = [];
-  items.forEach(function(item) {
-    item = content(item);
-    var itemData = item.match(/<p.*?<\/p>/g);
-    var dataToSave = [];
-    itemData.forEach(function(elem) {
-      elem = elem.split('">').pop().split('</p>')[0].toString();
-      dataToSave.push(elem);
-      console.log(dataToSave);
-    });
-    if (dataToSave.length == 3){
-      if(typeof interviews[dataToSave[2].charAt(10)] === 'undefined') {
-    // does not exist
-      interviews[dataToSave[2].charAt(10)] = [['Interview: ' + dataToSave[2].charAt(10)]];
-      var headers = ['Quote Title', 'Quote', 'Code'];
-      interviews[dataToSave[2].charAt(10)].push(headers);
-      }
-      interviews[dataToSave[2].charAt(10)].push(dataToSave);
-    }
-    // if (dataToSave.length < 3) {
-    //   var groupStyle = item.match(/border-color:.*?;/g);
-    //   groupStyle = groupStyle[0].split(':').pop().split(';')[0];
-    //   dataToSave.push(groupStyle);
-    // }
-    // interviews.push(dataToSave);
-
-  });
-  rows = [];
-  console.log(interviews[1]);
-  for(i = 0; i < interviews.length; i++){
-
-    if(typeof interviews[i] == 'undefined') {
-    console.log(typeof interviews[i] + i);
-  // does not exist
-    } else {
-    console.log(interviews[i] + i);
-    for(j = 0; j < interviews[i].length; j++){
-      rows.push(interviews[i][j]);
-    }
-}
-  }
-  wb.Sheets["First Sheet"] = XLSX.utils.aoa_to_sheet(rows);
-  // var cell_address = {c:0, r:0};
-  // const cell_ref = XLSX.utils.encode_cell(cell_address);
-  // wb.Sheets[wb.SheetNames[0]] = {};
-  // var ws = wb.Sheets[wb.SheetNames[0]];
-  // console.log(wb);
-  // var cell = {};
-  // ws["!ref"] = cell_ref;
-  // ws[cell_ref] = cell;
-  // ws[cell_ref].v = 100;
-  var wbout = XLSX.write(wb, {bookType:'xlsx', type: 'binary'});
-  saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ThematicDataExport.xlsx');
- });
-
-function s2ab(s) {
-               var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
-               var view = new Uint8Array(buf);  //create uint8array as viewer
-               for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
-               return buf;
-             }
-
 loadBtn.addEventListener('change', function(e) {
   var file = e.target.files[0];
   if (!file) return;
@@ -557,7 +512,7 @@ loadBtn.addEventListener('change', function(e) {
   var reader = new FileReader();
   reader.onload = function(e) {
     var contents = e.target.result;
-    grid.hide(allItems(), { // Deletes the items in a fancy way before loading in new items
+    grid.hide(allItems(), { // Deletes the items with an animation before loading in new items
       onFinish: function(hiddenItems) {
         grid.remove(hiddenItems, {
           removeElements: true
@@ -582,6 +537,6 @@ addCardBtn.addEventListener('click', function(e) {
     cont = checkText(templateComment) && cont;
     cont = checkText(templateCode) && cont;
     if (!cont) return;
-    addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
+    addNewCard([templateHeading.textContent, templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
   }
 });
