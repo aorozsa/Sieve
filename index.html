@@ -17,7 +17,7 @@
 
     <label class='clearBtn'>
       <span class="tooltip">
-        <h6>Clear&nbsp;Grid</h6>
+        <h6>Clear&nbsp;Project</h6>
       </span>
     </label>
 
@@ -41,12 +41,29 @@
         <h6>Export&nbsp;Project</h6>
       </span>
     </label>
+
+    <input type="text" maxlength="65" size="1" id="projectTitle" placeholder="Project Title" disabled />
   </div>
 
   <div class="grid"></div>
   <div class="dummyGrid"></div>
 
   <!-- Modals. A new div has to be specified every time with a different id -->
+  <div class="modal" id="queryProjectTitle">
+    <div class="modal-content">
+      <h1>Type in a research question. Press enter or click away to confirm. This field can not be left blank.</h1>
+    </div>
+  </div>
+
+  <div class="modal" id="confirmProjectTitle">
+    <div class="modal-content">
+      <h1>Do you want this to be your project title? It can not be changed later.</h1>
+      <br>
+      <label class="confirmBtn" id="titleYesBtn">Yes</label>
+      <label class="confirmBtn" id="titleNoBtn">No</label>
+    </div>
+  </div>
+
   <div class="modal" id="newCardModal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
@@ -80,7 +97,7 @@
     <div class="modal-content">
       <span class="close-button">&times;</span>
       <br>
-      <h1>Are you sure you want to clear the entire grid? This can not be undone.</h1>
+      <h1>Are you sure you want to clear this project and start a new one? This can not be undone.</h1>
       <br>
       <label class="confirmBtn" id="clearYesBtn">Yes</label>
       <label class="confirmBtn" id="clearNoBtn">No</label>

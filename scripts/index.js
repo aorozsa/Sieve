@@ -12,10 +12,13 @@ var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
 var exportBtn = document.querySelector('.exportBtn');
+var projectTitle = document.getElementById('projectTitle');
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
 var firstClick; // Used to determine if the mouse is released in the same place as it was held down
+var titleYesBtn = document.getElementById('titleYesBtn');
+var titleNoBtn = document.getElementById('titleNoBtn');
 var templateCard = document.getElementById('templateCard');
 var regBtn = document.querySelector('.regBtn');
 var groupBtn = document.querySelector('.groupBtn');
@@ -100,18 +103,18 @@ function initialise() {
         toggleGroupCollapse(item, event);
       }
     }, delay);
-    changeCardAttributes(item);
+    changeCardBorder(item);
 
   }).on('add', function(items) {
     items.forEach(function(item) {
-      changeCardAttributes(item);
+      changeCardBorder(item);
     });
 
   }).on('remove', function(items, indices) {
     if (items.length == 1) {
       if (isGroup(items[0])) {
         items = grid.getItems();
-        changeCardAttributes(items[indices[0] - 1], true);
+        changeCardBorder(items[indices[0] - 1], true);
       }
     }
   });
@@ -135,12 +138,6 @@ function initialise() {
   // Adds event listeners to the template text elements
   addListenersToPElements(document.getElementsByTagName('p'));
 
-  // Automatically loads the last layout if applicable
-  var layout = window.localStorage.getItem('layout');
-  if (layout) {
-    load(layout);
-  }
-
   var modals = document.querySelectorAll(".modal"); // List of all modals
   var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
   modals.forEach(function(modal) { // Enables the modals
@@ -149,6 +146,15 @@ function initialise() {
   closeButtons.forEach(function(closeButton) { // Adds an event listener to all the modal close buttons
     closeButton.addEventListener('click', toggleModal);
   });
+
+  // Automatically loads the last layout if applicable. Otherwise promt the user to input a
+  var layout = window.localStorage.getItem('layout');
+  if (layout && layout !== '[""]') {
+    load(layout);
+    projectTitle.style.zIndex = 0;
+  } else {
+    setTimeout(queryProjectTitle, 0); // Makes the modal appear with a smooth animation instead of instantly
+  }
 }
 
 function content(item) { // Returns an item's "card" class
@@ -171,6 +177,26 @@ function allItems() { // Returns all grid items except the ghost
   var items = grid.getItems();
   items.shift()
   return items;
+}
+
+function queryProjectTitle() {
+  modal = document.getElementById("queryProjectTitle");
+  projectTitle.disabled = false;
+  projectTitle.style.zIndex = 10;
+  projectTitle.value = "";
+  toggleModal();
+  projectTitle.focus();
+}
+
+function checkProjectTitle() {
+  if (checkText(projectTitle)) {
+    toggleModal();
+    modal = document.getElementById("confirmProjectTitle");
+    toggleModal();
+    projectTitle.disabled = true;
+  } else {
+    projectTitle.focus();
+  }
 }
 
 function addItems(itemsToAdd, fileLoad = false) { // Adds cards with an animation
@@ -201,12 +227,7 @@ function deleteItems(items, selectedGrid = grid) { // Deletes items with an anim
 
 function ghostAction() { // Activates when the ghost card is clicked
   modal = document.getElementById("newCardModal");
-  var items = grid.getItems();
-  try {
-    templateHeading.textContent = items[items.length - 1].getElement().getElementsByTagName('p')[0].textContent;
-  } catch (e) {
-    templateHeading.textContent = "UNGROUPED";
-  }
+  templateHeading.value = projectTitle.value;
   changeTemplateColour(!groupBtn.disabled);
   toggleModal();
 }
@@ -224,29 +245,18 @@ function changeTemplateColour(setToLastItem) { // Changes the template's border 
   }
 }
 
-function changeCardAttributes(card, deleteGroup = false) { // Changes the card's border colour based on the group it's in. Also changes regular cards' headers
+function changeCardBorder(card, deleteGroup = false) { // Changes the card's border colour based on the group it's in. Also changes regular cards' headers
   var items = grid.getItems();
   var startIndex = items.indexOf(card);
   var cardElement = object(card);
 
-  function changeHeader(item) {
-    var headingElem = item.getElement().getElementsByTagName('p')[0];
-    try {
-      headingElem.textContent = items[items.indexOf(item) - 1].getElement().getElementsByTagName('p')[0].textContent;
-    } catch (e) {
-      headingElem.textContent = "UNGROUPED";
-    }
-  }
-
   if (isRegular(card) && !deleteGroup) {
     cardElement.style.borderColor = object(items[startIndex - 1]).style.borderColor;
-    changeHeader(card);
 
   } else { // Updates ungrouped cards' colours if a group is dragged in front of the ungrouped cards. Also turns newly ungrouped cards black
     for (var i = startIndex + 1; i < items.length; i++) {
       if (isRegular(items[i])) {
         object(items[i]).style.borderColor = cardElement.style.borderColor;
-        changeHeader(items[i]);
       } else {
         return;
       }
@@ -273,16 +283,16 @@ function addListenersToPElements(elements) {
 function addNewCard(data, returnElement = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
 
-  if (data.length == 4) { // If 4, create a regular card
+  if (data.length == 3) { // If 4, create a regular card
     var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card">' +
-      '<p class="heading" contenteditable="true">' + data[0] + '</p>' +
-      '<p class="title" contenteditable="true"' + style + data[1] + '</p>' +
-      '<p class="comment" contenteditable="true"' + style + data[2] + '</p>' +
-      '<p class="code" contenteditable="true"' + style + data[3] + '</p>' +
+      '<p class="heading" contenteditable="true">' + projectTitle.value + '</p>' +
+      '<p class="title" contenteditable="true"' + style + data[0] + '</p>' +
+      '<p class="comment" contenteditable="true"' + style + data[1] + '</p>' +
+      '<p class="code" contenteditable="true"' + style + data[2] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '</div>' +
       '</div>' +
@@ -378,28 +388,32 @@ function undoGroupCollapse(item) { // Goes through every item and undoes any col
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
   undoGroupCollapse();
   var items = allItems();
-  var itemsToSave = [];
+  var itemsToSave = [projectTitle.value];
   items.forEach(function(item) {
     item = content(item);
-    var itemData = item.match(/<p.*?<\/p>/g);
+    var itemData = item.match(/<p.*?<\/p>/g); // This also includes the value of the heading, which is unwanted
     var dataToSave = [];
     itemData.forEach(function(elem) {
       elem = elem.split('">').pop().split('</p>')[0];
       dataToSave.push(elem);
     });
 
-    if (dataToSave.length < 4) {
+    if (dataToSave.length == 4) { // Remove the value of the heading if the card is a regular one
+      dataToSave.shift();
+    } else { // Otherwise save the group's colour
       var groupStyle = item.match(/border-color:.*?;/g);
       groupStyle = groupStyle[0].split(':').pop().split(';')[0];
       dataToSave.push(groupStyle);
     }
     itemsToSave.push(dataToSave);
   });
+  console.log(itemsToSave)
   return JSON.stringify(itemsToSave);
 }
 
 function load(layout) { // Loads cards that have already been created before
   var itemsToLoad = JSON.parse(layout);
+  projectTitle.value = itemsToLoad.shift();
   for (var i = 0; i < itemsToLoad.length; i++) {
     itemsToLoad[i] = addNewCard(itemsToLoad[i], true);
   }
@@ -418,12 +432,6 @@ function toggleGroupRegular() {
   if (regBtn.disabled) {
     groupBtn.style.cursor = "pointer";
     regBtn.style.cursor = "default";
-    var items = grid.getItems();
-    try {
-      templateHeading.textContent = items[items.length - 1].getElement().getElementsByTagName('p')[0].textContent;
-    } catch (e) {
-      templateHeading.textContent = "UNGROUPED";
-    }
   } else {
     groupBtn.style.cursor = "default";
     regBtn.style.cursor = "pointer";
@@ -433,16 +441,14 @@ function toggleGroupRegular() {
 }
 
 function checkText(element) { // Returns true if the element contains text. Otherwise it makes it flash, then returns false
-  if (element.textContent === "") {
+  var text = element !== projectTitle ? element.textContent : element.value;
+  if (text === "") {
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
-        if (templateCard.style.borderColor === "") {
-          templateCard.style.borderColor = "black";
-        }
-        if (element.style.backgroundColor === templateCard.style.borderColor) {
-          element.style.backgroundColor = null;
+        if (element.style.backgroundColor === "red") {
+          element.style.backgroundColor = "white";
         } else {
-          element.style.backgroundColor = templateCard.style.borderColor;
+          element.style.backgroundColor = "red";
         }
       }, delay);
     }
@@ -470,9 +476,28 @@ window.addEventListener('mousedown', function(e) {
   firstClick = e.target;
 });
 window.addEventListener('mouseup', function(e) {
-  if (e.target === modal && e.target === firstClick) {
-    toggleModal();
+  if (modal !== document.getElementById("queryProjectTitle") && modal !== document.getElementById("confirmProjectTitle")) {
+    if (e.target === modal && e.target === firstClick) {
+      toggleModal();
+    }
   }
+});
+
+projectTitle.addEventListener('blur', checkProjectTitle) // Whenever it loses focus (i.e. click away or press tab)
+projectTitle.addEventListener('keyup', function(e) { // If enter is pressed
+  if (e.keyCode == 13) checkProjectTitle();
+});
+titleYesBtn.addEventListener('click', function(e) {
+  toggleModal();
+  projectTitle.style.zIndex = 0;
+  templateHeading.value = projectTitle.value;
+});
+titleNoBtn.addEventListener('click', function(e) {
+  toggleModal();
+  modal = document.getElementById("queryProjectTitle");
+  toggleModal();
+  projectTitle.disabled = false;
+  projectTitle.focus();
 });
 
 toggleEditBtn.addEventListener('click', function(e) {
@@ -503,6 +528,7 @@ clearYesBtn.addEventListener('click', function(e) { // Removes all items except 
   deleteItems(allItems());
   deleteItems(dummyGrid.getItems(), dummyGrid);
   window.localStorage.clear();
+  queryProjectTitle();
 });
 clearNoBtn.addEventListener('click', toggleModal);
 
@@ -610,6 +636,6 @@ addCardBtn.addEventListener('click', function(e) {
     cont = checkText(templateComment) && cont;
     cont = checkText(templateCode) && cont;
     if (!cont) return;
-    addNewCard([templateHeading.textContent, templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
+    addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
   }
 });
