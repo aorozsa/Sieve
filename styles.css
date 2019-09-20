@@ -48,7 +48,7 @@ input, .dummyGrid {
   display: none;
 }
 input[type="text"] {
-  display: inline-block;
+  display: block;
   position: relative;
   float: right;
   text-align: center;
@@ -210,8 +210,10 @@ input[type="text"]:disabled {
 .group-collapse {
   bottom: 0;
   left: 50%;
+  width: 50px;
+  height: 50px;
   transform: translate(-50%, -30%);
-  font-size: 40px;
+  background-image: url("app_images/collapse.png");
 }
 .card:hover .card-remove,
 .card:hover .group-collapse {

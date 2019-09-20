@@ -305,7 +305,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
       '<div class="card" style="border-color:' + data[1] + ';">' +
       '<p class="group_title" contenteditable="true">' + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
-      '<div class="group-collapse">C</div>' +
+      '<label class="group-collapse"></label>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -353,7 +353,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
       if (savedItems.length > 0) {
         changeBorder(itemElement, "8px double");
       }
-      eventTarget.innerHTML = 'E';
+      eventTarget.style.backgroundImage = 'url("app_images/expand.png")';
 
     } else { // For expanding a group
       var destinationIndex = items.indexOf(gridItem) + 2;
@@ -363,7 +363,7 @@ function toggleGroupCollapse(gridItem, eventTarget) {
       grid.show(itemsToLoad);
       delete collapseSave[saveName]; // Delete the data
       changeBorder(itemElement, "4px solid")
-      eventTarget.innerHTML = 'C';
+      eventTarget.style.backgroundImage = 'url("app_images/collapse.png")';
     }
 
   } catch (e) {
@@ -407,7 +407,6 @@ function saveItems() { // Returns all of the grid's item data in a readable form
     }
     itemsToSave.push(dataToSave);
   });
-  console.log(itemsToSave)
   return JSON.stringify(itemsToSave);
 }
 
@@ -470,7 +469,7 @@ initialise();
 
 window.addEventListener("beforeunload", function(e) { // Necessary things to do before closing
   undoGroupCollapse();
-  window.localStorage.setItem('layout', saveItems()); // Autosaves the grid's layout
+  this.localStorage.setItem('layout', saveItems()); // Autosaves the grid's layout
 });
 window.addEventListener('mousedown', function(e) {
   firstClick = e.target;
