@@ -170,7 +170,7 @@ function isGroup(item) {
 }
 
 function isRegular(item) {
-  return content(item).includes('class="comment"');
+  return content(item).includes('class="heading"');
 }
 
 function allItems() { // Returns all grid items except the ghost
@@ -511,7 +511,7 @@ toggleEditBtn.addEventListener('click', function(e) {
     pStyle = "text";
   }
   for (var i = 0; i < allPElements.length - 4; i++) { // Excludes the last 4 elements, which are the template inputs
-    if (allPElements[i].contentEditable == 'true') { // Only activate on elements that can be edited
+    if (!(allPElements[i].className == "group_title") && !(allPElements[i].className == "heading")) {
       allPElements[i].style.cursor = pStyle;
     }
   }
