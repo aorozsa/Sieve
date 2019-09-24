@@ -700,7 +700,16 @@ addCardBtn.addEventListener('click', function(e) {
 slider.oninput = function() {
   console.log(this.value);
    var sheet = window.document.styleSheets[0];
-
-   sheet.insertRule('.card { transform:scale('+(this.value/90)+') }', sheet.cssRules.length);
-
+   sheet.deleteRule(sheet.cssRules.length-1);
+   sheet.deleteRule(sheet.cssRules.length-1);
+   sheet.deleteRule(sheet.cssRules.length-1);
+   sheet.deleteRule(sheet.cssRules.length-1);
+   sheet.deleteRule(sheet.cssRules.length-1);
+   // sheet.insertRule('.card { transform:scale('+(this.value/100)+') }', sheet.cssRules.length);
+   sheet.insertRule('.item { width: '+250*(this.value/50)+'px; height: '+250*(this.value/50)+';}', sheet.cssRules.length);
+   sheet.insertRule('.title { font-size:'+150*(this.value/50)+'%;}', sheet.cssRules.length);
+   sheet.insertRule('.heading { font-size:'+(this.value)+'%;}', sheet.cssRules.length);
+   sheet.insertRule('.comment { font-size:'+150*(this.value/50)+'%;}', sheet.cssRules.length);
+   sheet.insertRule('.code { font-size:'+150*(this.value/50)+'%; top:'+ (this.value) +'%); }', sheet.cssRules.length);
+   grid.refreshItems().layout();
 }

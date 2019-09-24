@@ -2,6 +2,7 @@
 
 const { app, BrowserWindow, Menu } = require('electron');
 
+require('electron-reload')(__dirname);
 const path = require('path');
 let win;
 
