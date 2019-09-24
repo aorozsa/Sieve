@@ -28,7 +28,7 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   })
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
 }
 
 // Set the application menu to null

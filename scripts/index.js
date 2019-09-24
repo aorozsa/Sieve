@@ -13,6 +13,7 @@ var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
 var exportBtn = document.querySelector('.exportBtn');
 var projectTitle = document.getElementById('projectTitle');
+var cardStyle = document.getElementsByClassName('item');
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
@@ -26,6 +27,7 @@ var regBtn = document.querySelector('.regBtn');
 var pickColourBtn = document.querySelector('.pickColourBtn');
 var colourPicker = document.querySelector('.colourPicker');
 var addCardBtn = document.querySelector('.addCardBtn');
+var slider = document.getElementById("myRange");
 var templateGroupTitle = document.getElementById('templateGroupTitle');
 var templateHeading = document.getElementById('templateHeading');
 var templateTitle = document.getElementById('templateTitle');
@@ -657,8 +659,8 @@ rows = transpose(quotesSorted);
   // var cell_address = {c:0, r:0};
   // const cell_ref = XLSX.utils.encode_cell(cell_address);
   // wb.Sheets[wb.SheetNames[0]] = {};
-  var ws = wb.Sheets[wb.SheetNames[0]];
-  ws['!cols'] = wscols;
+  // var ws = wb.Sheets[wb.SheetNames[0]];
+  // // ws['!cols'] = wscols;
 
   // console.log(wb);
   // var cell = {};
@@ -692,3 +694,13 @@ addCardBtn.addEventListener('click', function(e) {
     addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
   }
 });
+
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  console.log(this.value);
+   var sheet = window.document.styleSheets[0];
+
+   sheet.insertRule('.card { transform:scale('+(this.value/90)+') }', sheet.cssRules.length);
+
+}
