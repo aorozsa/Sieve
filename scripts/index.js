@@ -659,8 +659,8 @@ rows = transpose(quotesSorted);
   // var cell_address = {c:0, r:0};
   // const cell_ref = XLSX.utils.encode_cell(cell_address);
   // wb.Sheets[wb.SheetNames[0]] = {};
-  // var ws = wb.Sheets[wb.SheetNames[0]];
-  // // ws['!cols'] = wscols;
+  var ws = wb.Sheets[wb.SheetNames[0]];
+  // ws['!cols'] = wscols;
 
   // console.log(wb);
   // var cell = {};
