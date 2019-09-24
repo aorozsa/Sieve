@@ -569,6 +569,7 @@ exportBtn.addEventListener('click', function(e) {
   undoGroupCollapse();
   var items = allItems();
   var interviews = [];
+  var wscols = [];
   items.forEach(function(item) {
     item = content(item);
     var itemData = item.match(/<p.*?<\/p>/g);
@@ -576,14 +577,12 @@ exportBtn.addEventListener('click', function(e) {
     itemData.forEach(function(elem) {
       elem = elem.split('">').pop().split('</p>')[0].toString();
       dataToSave.push(elem);
-      console.log(dataToSave);
     });
-    if (dataToSave.length == 3) {
+    if (dataToSave.length == 4) { // Remove the value of the heading if the card is a regular one
+      dataToSave.shift();
       if (typeof interviews[dataToSave[2].charAt(10)] === 'undefined') {
         // does not exist
         interviews[dataToSave[2].charAt(10)] = [['Interview: ' + dataToSave[2].charAt(10)]];
-        var headers = ['Quote Title', 'Quote', 'Code'];
-        interviews[dataToSave[2].charAt(10)].push(headers);
       }
       interviews[dataToSave[2].charAt(10)].push(dataToSave);
     }
@@ -595,25 +594,72 @@ exportBtn.addEventListener('click', function(e) {
     // interviews.push(dataToSave);
 
   });
-  rows = [];
-  console.log(interviews[1]);
-  for (i = 0; i < interviews.length; i++) {
+  console.log(interviews);
 
-    if (typeof interviews[i] == 'undefined') {
-      console.log(typeof interviews[i] + i);
+
+  var rows = [];
+  var quotes = new Array(interviews.length);
+  var quotesSorted = new Array(interviews.length);
+
+  for (i = 1; i < interviews.length; i++) {
+    if (typeof interviews[i] === 'undefined') {
+      // console.log(typeof interviews[i] + i);
       // does not exist
     } else {
-      console.log(interviews[i] + i);
-      for (j = 0; j < interviews[i].length; j++) {
-        rows.push(interviews[i][j]);
+      quotes[i] = new Array();
+      for (j = 1; j < interviews[i].length; j++) {
+        if (typeof interviews[i][j][1] !== 'undefined') {
+          quotes[i].push(interviews[i][j][0]);
+          // console.log(interviews[i][j][1]);
+        }
+      quotes[i].sort();
       }
     }
   }
+
+  console.log(quotes);
+
+  for(i = 1;  i < quotes.length; i++){
+    if (typeof quotes[i] !== 'undefined'){
+      quotesSorted[i] = new Array();
+      var intName = "Interview: " + i;
+      quotesSorted[i].push(intName);
+      longest = intName.length;
+      console.log(longest);
+      quotesSorted[i].push(quotes[i][0]);
+      for(j = 1;  j < quotes[i].length; j++){
+        str1 = String(quotes[i][j]);
+        length = str1.length;
+        str2 = String(quotes[i][j-1]);
+        if(str1.localeCompare(str2)){
+          quotesSorted[i].push('');
+          quotesSorted[i].push(str1);
+        } else {
+          quotesSorted[i].push(str1);
+        }
+        if(length > longest){
+          longest = length;
+        }
+        }
+    }
+    wscols.push('{wch:'+ longest + '}');
+}
+
+console.log(wscols);
+
+var quotesSorted = quotesSorted.filter(function (el) {
+  return el != null;
+});
+
+rows = transpose(quotesSorted);
+
   wb.Sheets["First Sheet"] = XLSX.utils.aoa_to_sheet(rows);
   // var cell_address = {c:0, r:0};
   // const cell_ref = XLSX.utils.encode_cell(cell_address);
   // wb.Sheets[wb.SheetNames[0]] = {};
-  // var ws = wb.Sheets[wb.SheetNames[0]];
+  var ws = wb.Sheets[wb.SheetNames[0]];
+  ws['!cols'] = wscols;
+
   // console.log(wb);
   // var cell = {};
   // ws["!ref"] = cell_ref;
@@ -622,6 +668,14 @@ exportBtn.addEventListener('click', function(e) {
   var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
   saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'ThematicDataExport.xlsx');
 });
+
+
+
+function transpose(a) {
+    return Object.keys(a[0]).map(function(c) {
+        return a.map(function(r) { return r[c]; });
+    });
+}
 
 regBtn.addEventListener('click', toggleGroupRegular);
 groupBtn.addEventListener('click', toggleGroupRegular);
