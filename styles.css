@@ -26,19 +26,14 @@ p {
   position: absolute;
   width: 100%;
   overflow: auto;
-  color: black;
   overflow-x: hidden;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -ms-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
+  color: black;
 }
-
 textarea {
   resize: none;
   border-style: none;
   text-align: center;
+  overflow-x: hidden;
   cursor: default;
   width: 100%;
 }
@@ -54,17 +49,13 @@ input[type="text"] {
   float: right;
   text-align: center;
   resize: horizontal;
-  z-index: 10; /* Place it above the modal */
+  /* Place it above the modal */
+  z-index: 10;
   width: 77.5%;
   height: 53px;
   margin-top: 0px;
   margin-left: -20px;
   font-size: 43px;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -ms-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
 }
 input[type="text"]:disabled {
   background-color: white;
@@ -72,7 +63,16 @@ input[type="text"]:disabled {
   border-style: none;
 }
 
-/* Classes that have text selection disabled. You can add more. */
+/* Classes with animations. More can be added. */
+p, input[type="text"], .card {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+/* Classes that have text selection disabled. More can be added. */
 .modal, body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -84,7 +84,7 @@ input[type="text"]:disabled {
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -94,6 +94,7 @@ input[type="text"]:disabled {
   background: #888;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
@@ -117,9 +118,7 @@ input[type="text"]:disabled {
 }
 .tooltip h6 {
   line-height: 30px;
-  margin-top: 0;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin: 0px 5px 0 5px;
 }
 .tooltip::after {
   content: "";
@@ -131,10 +130,50 @@ input[type="text"]:disabled {
   border-style: solid;
   border-color: transparent transparent #555 transparent;
 }
-.toggleEditBtn:hover .tooltip, .clearBtn:hover .tooltip,
-.saveBtn:hover .tooltip, .loadBtn:hover .tooltip {
+.toggleEditBtn:hover .tooltip, .clearBtn:hover .tooltip, .saveBtn:hover .tooltip, .loadBtn:hover .tooltip {
   visibility: visible;
   opacity: 1;
+}
+
+/* Slider styles */
+.slidecontainer {
+  width: 100%;
+  margin-top: 5px;
+  margin-left: -2px;
+}
+.slider {
+  -webkit-appearance: none;
+  /* Override default CSS styles */
+  display: block;
+  width: inherit;
+  background: lightgrey;
+  outline: none;
+  opacity: 0.7;
+  /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s;
+  /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+.slider:hover, .slider:active {
+  opacity: 1;
+}
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  /* Override default look */
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: black;
+  /* Green background */
+  cursor: pointer;
+}
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  /* Green background */
+  cursor: pointer;
 }
 
 /* Core Muuri & card styles */
@@ -145,12 +184,11 @@ input[type="text"]:disabled {
 }
 .item {
   position: absolute;
-  width: 400px;
+  width: 250px;
   height: 250px;
   margin: 9px;
   z-index: 1;
 }
-
 .item.muuri-item-dragging {
   z-index: 9999;
 }
@@ -184,16 +222,10 @@ input[type="text"]:disabled {
   border: 4px solid #000000;
   border-radius: 5px;
   cursor: grab;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -ms-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-.card:hover{
-  transform: scale(1.1);
 }
 .card:active {
+  transform: scale(1.05);
+  box-shadow: 4px 4px 2px gray;
   cursor: grabbing;
 }
 .card-remove, .group-collapse {
@@ -203,7 +235,6 @@ input[type="text"]:disabled {
   height: 30px;
   line-height: 30px;
   text-align: center;
-
   font-weight: 400;
   cursor: pointer;
 }
@@ -220,14 +251,16 @@ input[type="text"]:disabled {
   transform: translate(-50%, -30%);
   background-image: url("app_images/collapse.png");
 }
-.card:hover .card-remove,
-.card:hover .group-collapse {
+.card:hover .card-remove, .card:hover .group-collapse {
   display: block;
 }
 #ghost {
   border: 4px dashed black;
-  font-size: 25px;
   cursor: pointer;
+}
+#ghost:active {
+  transform: scale(0.95);
+  box-shadow: none;
 }
 
 /* Core modal styles */
@@ -282,12 +315,12 @@ input[type="text"]:disabled {
   max-width: inherit;
   width: calc(99% + 3px);
   height: 425px;
-  margin: 0px;
-  margin-top: 5px;
-  margin-bottom: 9px;
+  margin: 5px 0px 9px 1px;
 }
 #templateCard, #templateCard:active {
   cursor: default;
+  transform: none;
+  box-shadow: none;
 }
 #template p, #templateTitle, #templateComment, #templateCode {
   cursor: text;
@@ -314,12 +347,18 @@ input[type="text"]:disabled {
 .pickColourBtnDisabled:active {
   border: 2px outset lightgray;
 }
-.group_title, .title, .comment, .code, .card h1 {
+.group_title, .heading, .title, .comment, .code, .card h1 {
   text-align: center;
   position: absolute;
   margin: 0;
   left: 50%;
   transform: translate(-50%, 0%);
+  line-height: -50px;
+  -webkit-transition: none; /* Remove the animation on resizing */
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 .group_title, .card h1 {
   height: auto;
@@ -327,32 +366,34 @@ input[type="text"]:disabled {
   top: 50%;
   transform: translate(-50%, -50%);
   font-weight: bold;
+  font-size: 230%;
 }
-.group_title {
-  font-size: 35px;
+.card h1 {
+  font-size: 75px;
 }
 .heading {
   max-height: 13%;
-  font-size: 90%;
+  font-size: 170%;
   font-weight: bold;
 }
 .title {
-  top: 13%;
-  max-height: 16.5%;
-  font-size: 35px;
+  top: 15%;
+  max-height: 16%;
+  font-size: 200%;
   font-weight: bold;
 }
 .comment {
-  top: 63%;
-  transform: translate(-50%, -52%);
-  max-height: 57%;
-  font-size: 20px;
+  top: 64%;
+  transform: translate(-50%, -55%);
+  max-height: 50%;
+  font-size: 130%;
 }
 .code {
   top: 100%;
   transform: translate(-50%, -100%);
   max-height: 7.5%;
-  font-size: 15.5px;
+  font-size: 94%;
+  height: 100px;
 }
 #templateGroupTitle {
   font-size: 420%;
@@ -393,45 +434,6 @@ input[type="text"]:disabled {
 .confirmBtn {
   width: 40%;
 }
-/* slider styling */
-.slidecontainer {
-  width: 100%; /* Width of the outside container */
-}
-
-.slider {
-  -webkit-appearance: none;  /* Override default CSS styles */
-  display: inline;
-  width: 100%; /* Full-width */
-  height: 25px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
-}
-
-/* Mouse-over effects */
-.slider:hover {
-  opacity: 1; /* Fully shown on mouse-over */
-}
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
-
-.slider::-moz-range-thumb {
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
-
 #clearNoBtn {
   float: right;
 }

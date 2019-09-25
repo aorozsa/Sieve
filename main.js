@@ -1,5 +1,3 @@
-
-
 const { app, BrowserWindow, Menu } = require('electron');
 
 const path = require('path');
@@ -28,11 +26,11 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   })
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 }
 
 // Set the application menu to null
-Menu.setApplicationMenu(null);
+//Menu.setApplicationMenu(null);
 
 // Create window on electron intialization
 app.on('ready', createWindow);
