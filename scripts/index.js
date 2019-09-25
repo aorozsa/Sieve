@@ -7,13 +7,14 @@ var collapseLock = false; // Stops the group collapse button's action from firin
 var collapseDrag = false; // True if the group collapse was triggered by dragging and wasn't already active
 var collapseSave = {}; // Used to record the active collapsed cards
 var dragStartIndex; // Used to undo certain group movements in grid.on('dragEnd')
+var sliderUsedOnce = false; // Used to identify if the zoom slider has already been used once
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
 var exportBtn = document.querySelector('.exportBtn');
 var projectTitle = document.getElementById('projectTitle');
-var cardStyle = document.getElementsByClassName('item');
+var slider = document.querySelector(".slider");
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
@@ -27,7 +28,6 @@ var regBtn = document.querySelector('.regBtn');
 var pickColourBtn = document.querySelector('.pickColourBtn');
 var colourPicker = document.querySelector('.colourPicker');
 var addCardBtn = document.querySelector('.addCardBtn');
-var slider = document.getElementById("myRange");
 var templateGroupTitle = document.getElementById('templateGroupTitle');
 var templateHeading = document.getElementById('templateHeading');
 var templateTitle = document.getElementById('templateTitle');
@@ -350,6 +350,10 @@ function toggleGroupCollapse(gridItem, eventTarget) {
           break;
         }
       }
+
+      if (savedItems.length == 0) { // End early if there's nothing to collapse
+        return;
+      }
       collapseSave[saveName] = savedItems; // Save the data
 
       if (savedItems.length > 0) {
@@ -458,14 +462,6 @@ function checkText(element) { // Returns true if the element contains text. Othe
   return true;
 }
 
-function s2ab(s) { // Used in excel exporting
-  var buf = new ArrayBuffer(s.length); // Convert s to ArrayBuffer
-  var view = new Uint8Array(buf);  // Create Uint8Array as viewer
-  for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; // Convert to octet
-  return buf;
-}
-
-
 // Event listeners
 initialise();
 
@@ -561,6 +557,19 @@ loadBtn.addEventListener('change', function(e) {
 });
 
 exportBtn.addEventListener('click', function(e) {
+  function s2ab(s) {
+    var buf = new ArrayBuffer(s.length); // Convert s to ArrayBuffer
+    var view = new Uint8Array(buf);  // Create Uint8Array as viewer
+    for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; // Convert to octet
+    return buf;
+  }
+
+  function transpose(a) {
+    return Object.keys(a[0]).map(function(c) {
+      return a.map(function(r) { return r[c]; });
+    });
+  }
+
   var wb = XLSX.utils.book_new();
   wb.Props = {
     Title: "Thematic Analysis Export"
@@ -614,46 +623,46 @@ exportBtn.addEventListener('click', function(e) {
           quotes[i].push(interviews[i][j][0]);
           // console.log(interviews[i][j][1]);
         }
-      quotes[i].sort();
+        quotes[i].sort();
       }
     }
   }
 
   console.log(quotes);
 
-  for(i = 1;  i < quotes.length; i++){
-    if (typeof quotes[i] !== 'undefined'){
+  for (i = 1; i < quotes.length; i++) {
+    if (typeof quotes[i] !== 'undefined') {
       quotesSorted[i] = new Array();
       var intName = "Interview: " + i;
       quotesSorted[i].push(intName);
       longest = intName.length;
       console.log(longest);
       quotesSorted[i].push(quotes[i][0]);
-      for(j = 1;  j < quotes[i].length; j++){
+      for (j = 1; j < quotes[i].length; j++) {
         str1 = String(quotes[i][j]);
         length = str1.length;
-        str2 = String(quotes[i][j-1]);
-        if(str1.localeCompare(str2)){
+        str2 = String(quotes[i][j - 1]);
+        if (str1.localeCompare(str2)) {
           quotesSorted[i].push('');
           quotesSorted[i].push(str1);
         } else {
           quotesSorted[i].push(str1);
         }
-        if(length > longest){
+        if (length > longest) {
           longest = length;
         }
-        }
+      }
     }
-    wscols.push('{wch:'+ longest + '}');
-}
+    wscols.push('{wch:' + longest + '}');
+  }
 
-console.log(wscols);
+  console.log(wscols);
 
-var quotesSorted = quotesSorted.filter(function (el) {
-  return el != null;
-});
+  var quotesSorted = quotesSorted.filter(function(el) {
+    return el != null;
+  });
 
-rows = transpose(quotesSorted);
+  rows = transpose(quotesSorted);
 
   wb.Sheets["First Sheet"] = XLSX.utils.aoa_to_sheet(rows);
   // var cell_address = {c:0, r:0};
@@ -671,12 +680,28 @@ rows = transpose(quotesSorted);
   saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'ThematicDataExport.xlsx');
 });
 
+// Update the current slider value (each time you drag the slider handle). Works by appending new values to the stylesheet
+slider.oninput = function() {
+  var sheet = window.document.styleSheets[0];
+  var scale = this.value / 50;
+  if (sliderUsedOnce) {
+    for (var i = 0; i < 7; i++) { // Deletes the previous temporary rules
+      sheet.deleteRule(sheet.cssRules.length - 1);
+    }
+  } else {
+    sliderUsedOnce = true;
+  }
+  
+  // The new size is the default size multiplied by the slider value divided by 50
+  sheet.insertRule('#ghost h1 { font-size: ' + 75 * scale + 'px; }', sheet.cssRules.length);
+  sheet.insertRule('.item { width: ' + 250 * scale + 'px; height: ' + 250 * scale + '; }', sheet.cssRules.length);
+  sheet.insertRule('.group_title { font-size: ' + 150 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.heading { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.title { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.comment { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.code { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
 
-
-function transpose(a) {
-    return Object.keys(a[0]).map(function(c) {
-        return a.map(function(r) { return r[c]; });
-    });
+  grid.refreshItems().layout(); // Refresh the size of the items and readjust the items.
 }
 
 regBtn.addEventListener('click', toggleGroupRegular);
@@ -694,22 +719,3 @@ addCardBtn.addEventListener('click', function(e) {
     addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
   }
 });
-
-
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function() {
-  console.log(this.value);
-   var sheet = window.document.styleSheets[0];
-   sheet.deleteRule(sheet.cssRules.length-1);
-   sheet.deleteRule(sheet.cssRules.length-1);
-   sheet.deleteRule(sheet.cssRules.length-1);
-   sheet.deleteRule(sheet.cssRules.length-1);
-   sheet.deleteRule(sheet.cssRules.length-1);
-   // sheet.insertRule('.card { transform:scale('+(this.value/100)+') }', sheet.cssRules.length);
-   sheet.insertRule('.item { width: '+250*(this.value/50)+'px; height: '+250*(this.value/50)+';}', sheet.cssRules.length);
-   sheet.insertRule('.title { font-size:'+150*(this.value/50)+'%;}', sheet.cssRules.length);
-   sheet.insertRule('.heading { font-size:'+(this.value)+'%;}', sheet.cssRules.length);
-   sheet.insertRule('.comment { font-size:'+150*(this.value/50)+'%;}', sheet.cssRules.length);
-   sheet.insertRule('.code { font-size:'+150*(this.value/50)+'%; top:'+ (this.value) +'%); }', sheet.cssRules.length);
-   grid.refreshItems().layout();
-}
