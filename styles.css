@@ -130,7 +130,8 @@ p, input[type="text"], .card {
   border-style: solid;
   border-color: transparent transparent #555 transparent;
 }
-.toggleEditBtn:hover .tooltip, .clearBtn:hover .tooltip, .saveBtn:hover .tooltip, .loadBtn:hover .tooltip {
+.toggleEditBtn:hover .tooltip, .clearBtn:hover .tooltip, .saveBtn:hover .tooltip,
+.loadBtn:hover .tooltip, .exportBtn:hover .tooltip {
   visibility: visible;
   opacity: 1;
 }
@@ -428,8 +429,8 @@ p, input[type="text"], .card {
 .loadBtn {
   background-image: url("app_images/load.png");
 }
-.loadBtn:focus {
-  padding: 0 0.56em 0 0.68em;
+.exportBtn {
+  background-image: url("app_images/excel.png");
 }
 .confirmBtn {
   width: 40%;
