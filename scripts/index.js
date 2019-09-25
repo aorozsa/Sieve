@@ -437,6 +437,7 @@ function toggleGroupRegular() {
   if (regBtn.disabled) {
     groupBtn.style.cursor = "pointer";
     regBtn.style.cursor = "default";
+    templateTitle.focus();
   } else {
     groupBtn.style.cursor = "default";
     regBtn.style.cursor = "pointer";
@@ -695,11 +696,11 @@ slider.oninput = function() {
   // The new size is the default size multiplied by the slider value divided by 50
   sheet.insertRule('#ghost h1 { font-size: ' + 75 * scale + 'px; }', sheet.cssRules.length);
   sheet.insertRule('.item { width: ' + 250 * scale + 'px; height: ' + 250 * scale + '; }', sheet.cssRules.length);
-  sheet.insertRule('.group_title { font-size: ' + 150 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.heading { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.title { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.comment { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.code { font-size:' + 150 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.group_title { font-size: ' + 230 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.heading { font-size:' + 170 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.title { font-size:' + 200 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.comment { font-size:' + 130 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.code { font-size:' + 94 * scale + '%; }', sheet.cssRules.length);
 
   grid.refreshItems().layout(); // Refresh the size of the items and readjust the items.
 }

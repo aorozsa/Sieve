@@ -33,6 +33,7 @@ textarea {
   resize: none;
   border-style: none;
   text-align: center;
+  overflow-x: hidden;
   cursor: default;
   width: 100%;
 }
@@ -83,7 +84,7 @@ p, input[type="text"], .card {
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -117,9 +118,7 @@ p, input[type="text"], .card {
 }
 .tooltip h6 {
   line-height: 30px;
-  margin-top: 0;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin: 0px 5px 0 5px;
 }
 .tooltip::after {
   content: "";
@@ -136,7 +135,7 @@ p, input[type="text"], .card {
   opacity: 1;
 }
 
-/* Slider styling */
+/* Slider styles */
 .slidecontainer {
   width: 100%;
   margin-top: 5px;
@@ -145,11 +144,9 @@ p, input[type="text"], .card {
 .slider {
   -webkit-appearance: none;
   /* Override default CSS styles */
-  display: inline;
-  width: 100%;
-  height: 25px;
-  background: #d3d3d3;
-  /* Grey background */
+  display: block;
+  width: inherit;
+  background: lightgrey;
   outline: none;
   opacity: 0.7;
   /* Set transparency (for mouse-over effects on hover) */
@@ -157,7 +154,7 @@ p, input[type="text"], .card {
   /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
-.slider:hover {
+.slider:hover, .slider:active {
   opacity: 1;
 }
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
@@ -167,7 +164,7 @@ p, input[type="text"], .card {
   appearance: none;
   width: 25px;
   height: 25px;
-  background: #4CAF50;
+  background: black;
   /* Green background */
   cursor: pointer;
 }
@@ -318,9 +315,7 @@ p, input[type="text"], .card {
   max-width: inherit;
   width: calc(99% + 3px);
   height: 425px;
-  margin: 0px;
-  margin-top: 5px;
-  margin-bottom: 9px;
+  margin: 5px 0px 9px 1px;
 }
 #templateCard, #templateCard:active {
   cursor: default;
@@ -371,33 +366,33 @@ p, input[type="text"], .card {
   top: 50%;
   transform: translate(-50%, -50%);
   font-weight: bold;
-  font-size: 100;
+  font-size: 230%;
 }
 .card h1 {
   font-size: 75px;
 }
 .heading {
   max-height: 13%;
-  font-size: 265%;
+  font-size: 170%;
   font-weight: bold;
 }
 .title {
-  top: 13%;
-  max-height: 16.5%;
-  font-size: 360%;
+  top: 15%;
+  max-height: 16%;
+  font-size: 200%;
   font-weight: bold;
 }
 .comment {
-  top: 63%;
+  top: 64%;
   transform: translate(-50%, -55%);
-  max-height: 51%;
-  font-size: 225%;
+  max-height: 50%;
+  font-size: 130%;
 }
 .code {
   top: 100%;
   transform: translate(-50%, -100%);
   max-height: 7.5%;
-  font-size: 170%;
+  font-size: 94%;
   height: 100px;
 }
 #templateGroupTitle {
