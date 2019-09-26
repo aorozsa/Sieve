@@ -64,7 +64,7 @@ input[type="text"]:disabled {
 }
 
 /* Classes with animations. More can be added. */
-p, input[type="text"], .card {
+input[type="text"], .card, .card p {
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -ms-transition: all 0.2s ease-out;

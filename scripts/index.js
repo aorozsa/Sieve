@@ -275,10 +275,19 @@ function addListenersToPElements(elements) {
     }
   }
   for (var i = 0; i < elements.length; i++) {
-    swap(elements[i]); // Once on initialisation
-    elements[i].addEventListener('blur', function(e) { // Happens whenever the textbox loses focus
-      swap(this);
-    });
+    if (elements[i].className === "code") {
+      elements[i].addEventListener('keyup', function(e) {
+        if (!checkText(this)) {
+          this.innerHTML = "Interview:&nbsp;";
+        }
+      })
+
+    } else {
+      swap(elements[i]); // Once on initialisation
+      elements[i].addEventListener('blur', function(e) { // Happens whenever the textbox loses focus
+        swap(this);
+      });
+    }
   }
 }
 
@@ -446,9 +455,11 @@ function toggleGroupRegular() {
   changeTemplateColour(!groupBtn.disabled);
 }
 
-function checkText(element) { // Returns true if the element contains text. Otherwise it makes it flash, then returns false
+function checkText(element, confirm = false) { // Returns true if the element contains text. Otherwise it makes it flash, then returns false
   var text = element !== projectTitle ? element.textContent : element.value;
-  if (text === "") {
+  var isCode = element.className === "code";
+
+  if ((isCode && text.match(/^Interview: [0-9]+$/g) === null) || text === "") {
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
         if (element.style.backgroundColor === "red") {
@@ -592,11 +603,11 @@ exportBtn.addEventListener('click', function(e) {
     });
     if (dataToSave.length == 4) { // Remove the value of the heading if the card is a regular one
       dataToSave.shift();
-      if (typeof interviews[dataToSave[2].charAt(10)] === 'undefined') {
+      if (typeof interviews[dataToSave[2].charAt(11)] === 'undefined') {
         // does not exist
-        interviews[dataToSave[2].charAt(10)] = [['Interview: ' + dataToSave[2].charAt(10)]];
+        interviews[dataToSave[2].charAt(11)] = [['Interview: ' + dataToSave[2].charAt(11)]];
       }
-      interviews[dataToSave[2].charAt(10)].push(dataToSave);
+      interviews[dataToSave[2].charAt(11)].push(dataToSave);
     }
     // if (dataToSave.length < 3) {
     //   var groupStyle = item.match(/border-color:.*?;/g);
@@ -636,8 +647,6 @@ exportBtn.addEventListener('click', function(e) {
       quotesSorted[i] = new Array();
       var intName = "Interview: " + i;
       quotesSorted[i].push(intName);
-      longest = intName.length;
-      console.log(longest);
       quotesSorted[i].push(quotes[i][0]);
       for (j = 1; j < quotes[i].length; j++) {
         str1 = String(quotes[i][j]);
@@ -649,12 +658,8 @@ exportBtn.addEventListener('click', function(e) {
         } else {
           quotesSorted[i].push(str1);
         }
-        if (length > longest) {
-          longest = length;
-        }
       }
     }
-    wscols.push('{wch:' + longest + '}');
   }
 
   console.log(wscols);
@@ -678,7 +683,7 @@ exportBtn.addEventListener('click', function(e) {
   // ws[cell_ref] = cell;
   // ws[cell_ref].v = 100;
   var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-  saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'ThematicDataExport.xlsx');
+  saveAs(new Blob([s2ab(wbout)], { type: "application/excel" }), 'ThematicDataExport.xlsx');
 });
 
 // Update the current slider value (each time you drag the slider handle). Works by appending new values to the stylesheet
@@ -692,7 +697,7 @@ slider.oninput = function() {
   } else {
     sliderUsedOnce = true;
   }
-  
+
   // The new size is the default size multiplied by the slider value divided by 50
   sheet.insertRule('#ghost h1 { font-size: ' + 75 * scale + 'px; }', sheet.cssRules.length);
   sheet.insertRule('.item { width: ' + 250 * scale + 'px; height: ' + 250 * scale + '; }', sheet.cssRules.length);
@@ -702,7 +707,7 @@ slider.oninput = function() {
   sheet.insertRule('.comment { font-size:' + 130 * scale + '%; }', sheet.cssRules.length);
   sheet.insertRule('.code { font-size:' + 94 * scale + '%; }', sheet.cssRules.length);
 
-  grid.refreshItems().layout(); // Refresh the size of the items and readjust the items.
+  grid.refreshItems().layout(true); // Refresh the size of the items and readjust the items.
 }
 
 regBtn.addEventListener('click', toggleGroupRegular);
@@ -715,7 +720,7 @@ addCardBtn.addEventListener('click', function(e) {
   } else { // Otherwise generate a standard card
     var cont = checkText(templateTitle);
     cont = checkText(templateComment) && cont;
-    cont = checkText(templateCode) && cont;
+    cont = checkText(templateCode, true) && cont;
     if (!cont) return;
     addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
   }
