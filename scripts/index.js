@@ -592,11 +592,12 @@ exportBtn.addEventListener('click', function(e) {
     });
     if (dataToSave.length == 4) { // Remove the value of the heading if the card is a regular one
       dataToSave.shift();
-      if (typeof interviews[dataToSave[2].charAt(10)] === 'undefined') {
+      var interviewnumber = dataToSave[2].substr(10);
+      if (typeof interviews[interviewnumber] === 'undefined') {
         // does not exist
-        interviews[dataToSave[2].charAt(10)] = [['Interview: ' + dataToSave[2].charAt(10)]];
+        interviews[interviewnumber] = [['Interview: ' + dataToSave[2].charAt(10)]];
       }
-      interviews[dataToSave[2].charAt(10)].push(dataToSave);
+      interviews[interviewnumber].push(dataToSave);
     }
     // if (dataToSave.length < 3) {
     //   var groupStyle = item.match(/border-color:.*?;/g);
@@ -636,8 +637,6 @@ exportBtn.addEventListener('click', function(e) {
       quotesSorted[i] = new Array();
       var intName = "Interview: " + i;
       quotesSorted[i].push(intName);
-      longest = intName.length;
-      console.log(longest);
       quotesSorted[i].push(quotes[i][0]);
       for (j = 1; j < quotes[i].length; j++) {
         str1 = String(quotes[i][j]);
@@ -649,12 +648,10 @@ exportBtn.addEventListener('click', function(e) {
         } else {
           quotesSorted[i].push(str1);
         }
-        if (length > longest) {
-          longest = length;
-        }
+
       }
     }
-    wscols.push('{wch:' + longest + '}');
+
   }
 
   console.log(wscols);
@@ -692,7 +689,7 @@ slider.oninput = function() {
   } else {
     sliderUsedOnce = true;
   }
-  
+
   // The new size is the default size multiplied by the slider value divided by 50
   sheet.insertRule('#ghost h1 { font-size: ' + 75 * scale + 'px; }', sheet.cssRules.length);
   sheet.insertRule('.item { width: ' + 250 * scale + 'px; height: ' + 250 * scale + '; }', sheet.cssRules.length);
