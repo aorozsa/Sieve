@@ -7,7 +7,6 @@ var collapseLock = false; // Stops the group collapse button's action from firin
 var collapseDrag = false; // True if the group collapse was triggered by dragging and wasn't already active
 var collapseSave = {}; // Used to record the active collapsed cards
 var dragStartIndex; // Used to undo certain group movements in grid.on('dragEnd')
-var sliderUsedOnce = false; // Used to identify if the zoom slider has already been used once
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
@@ -460,6 +459,9 @@ function checkText(element, confirm = false) { // Returns true if the element co
   var isCode = element.className === "code";
 
   if ((isCode && text.match(/^Interview: [0-9]+$/g) === null) || text === "") {
+    if (!confirm && text === "Interview: ") {
+      return true;
+    }
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
         if (element.style.backgroundColor === "red") {
@@ -588,7 +590,6 @@ exportBtn.addEventListener('click', function(e) {
   };
   wb.SheetNames.push("First Sheet");
   var ws_data = JSON.parse(saveItems());
-  console.log(ws_data);
   undoGroupCollapse();
   var items = allItems();
   var interviews = [];
@@ -603,30 +604,20 @@ exportBtn.addEventListener('click', function(e) {
     });
     if (dataToSave.length == 4) { // Remove the value of the heading if the card is a regular one
       dataToSave.shift();
-<<<<<<< HEAD
+
       var interviewnumber = dataToSave[2].substr(10);
       if (typeof interviews[interviewnumber] === 'undefined') {
         // does not exist
         interviews[interviewnumber] = [['Interview: ' + dataToSave[2].charAt(10)]];
       }
       interviews[interviewnumber].push(dataToSave);
-=======
-      if (typeof interviews[dataToSave[2].charAt(11)] === 'undefined') {
+      if (typeof interviews[dataToSave[2].substr(11)] === 'undefined') {
         // does not exist
-        interviews[dataToSave[2].charAt(11)] = [['Interview: ' + dataToSave[2].charAt(11)]];
+        interviews[dataToSave[2].substr(11)] = [['Interview: ' + dataToSave[2].charAt(11)]];
       }
-      interviews[dataToSave[2].charAt(11)].push(dataToSave);
->>>>>>> caf91d797b31a52d37ae2c6aa7b1f6f4add34f04
+      interviews[dataToSave[2].substr(11)].push(dataToSave);
     }
-    // if (dataToSave.length < 3) {
-    //   var groupStyle = item.match(/border-color:.*?;/g);
-    //   groupStyle = groupStyle[0].split(':').pop().split(';')[0];
-    //   dataToSave.push(groupStyle);
-    // }
-    // interviews.push(dataToSave);
-
   });
-  console.log(interviews);
 
 
   var rows = [];
@@ -634,22 +625,16 @@ exportBtn.addEventListener('click', function(e) {
   var quotesSorted = new Array(interviews.length);
 
   for (i = 1; i < interviews.length; i++) {
-    if (typeof interviews[i] === 'undefined') {
-      // console.log(typeof interviews[i] + i);
-      // does not exist
-    } else {
+    if (typeof interviews[i] !== 'undefined') {
       quotes[i] = new Array();
       for (j = 1; j < interviews[i].length; j++) {
         if (typeof interviews[i][j][1] !== 'undefined') {
           quotes[i].push(interviews[i][j][0]);
-          // console.log(interviews[i][j][1]);
         }
         quotes[i].sort();
       }
     }
   }
-
-  console.log(quotes);
 
   for (i = 1; i < quotes.length; i++) {
     if (typeof quotes[i] !== 'undefined') {
@@ -667,18 +652,9 @@ exportBtn.addEventListener('click', function(e) {
         } else {
           quotesSorted[i].push(str1);
         }
-<<<<<<< HEAD
-
       }
     }
-
-=======
-      }
-    }
->>>>>>> caf91d797b31a52d37ae2c6aa7b1f6f4add34f04
   }
-
-  console.log(wscols);
 
   var quotesSorted = quotesSorted.filter(function(el) {
     return el != null;
@@ -687,31 +663,23 @@ exportBtn.addEventListener('click', function(e) {
   rows = transpose(quotesSorted);
 
   wb.Sheets["First Sheet"] = XLSX.utils.aoa_to_sheet(rows);
-  // var cell_address = {c:0, r:0};
-  // const cell_ref = XLSX.utils.encode_cell(cell_address);
-  // wb.Sheets[wb.SheetNames[0]] = {};
-  var ws = wb.Sheets[wb.SheetNames[0]];
-  // ws['!cols'] = wscols;
-
-  // console.log(wb);
-  // var cell = {};
-  // ws["!ref"] = cell_ref;
-  // ws[cell_ref] = cell;
-  // ws[cell_ref].v = 100;
   var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
   saveAs(new Blob([s2ab(wbout)], { type: "application/excel" }), 'ThematicDataExport.xlsx');
 });
 
 // Update the current slider value (each time you drag the slider handle). Works by appending new values to the stylesheet
 slider.oninput = function() {
-  var sheet = window.document.styleSheets[0];
   var scale = this.value / 50;
-  if (sliderUsedOnce) {
-    for (var i = 0; i < 7; i++) { // Deletes the previous temporary rules
+  try {
+    var sheet = window.document.styleSheets[1];
+    for (var i = 0; i < 7; i++) { // Deletes the previous rules
       sheet.deleteRule(sheet.cssRules.length - 1);
     }
-  } else {
-    sliderUsedOnce = true;
+  } catch (e) { // Creates a new sheet that can be modified and read by both a browser and Electron
+    style = document.createElement("style");
+    style.appendChild(document.createTextNode(""));
+    document.head.appendChild(style);
+    var sheet = window.document.styleSheets[1];
   }
 
   // The new size is the default size multiplied by the slider value divided by 50
@@ -723,7 +691,7 @@ slider.oninput = function() {
   sheet.insertRule('.comment { font-size:' + 130 * scale + '%; }', sheet.cssRules.length);
   sheet.insertRule('.code { font-size:' + 94 * scale + '%; }', sheet.cssRules.length);
 
-  grid.refreshItems().layout(true); // Refresh the size of the items and readjust the items.
+  grid.refreshItems().layout(true); // Refresh the size of the items and readjust the layout
 }
 
 regBtn.addEventListener('click', toggleGroupRegular);
