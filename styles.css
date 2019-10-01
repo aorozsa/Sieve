@@ -417,6 +417,13 @@ input[type="text"], .card, .card p {
 }
 
 /* Control button styles */
+.controls {
+  position: -webkit-sticky;
+  position: sticky;
+  background-color: white;
+  margin: -8px -1px;
+  top: 0;
+}
 .toggleEditBtn {
   background-image: url("app_images/edit.png");
 }

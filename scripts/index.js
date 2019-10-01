@@ -185,15 +185,18 @@ function queryProjectTitle() {
   projectTitle.disabled = false;
   projectTitle.style.zIndex = 10;
   projectTitle.value = "";
-  toggleModal();
+  var controls = document.querySelector(".controls");
+  controls.style.position = "relative";
+  controls.style.zIndex = "initial";
+  toggleModal(false);
   projectTitle.focus();
 }
 
 function checkProjectTitle() {
   if (checkText(projectTitle)) {
-    toggleModal();
+    toggleModal(false);
     modal = document.getElementById("confirmProjectTitle");
-    toggleModal();
+    toggleModal(false);
     projectTitle.disabled = true;
   } else {
     projectTitle.focus();
@@ -233,8 +236,19 @@ function ghostAction() { // Activates when the ghost card is clicked
   toggleModal();
 }
 
-function toggleModal() { // Toggles the currently selected modal's visibility
+function toggleModal(change = true) { // Toggles the currently selected modal's visibility
   modal.classList.toggle("show-modal");
+  if (change) {
+    if (modal.classList.contains("show-modal")) {
+      document.querySelector(".controls").style.zIndex = "initial";
+      document.querySelector(".grid").style.zIndex = -9999;
+    } else {
+      setTimeout(function() {
+        document.querySelector(".controls").style.zIndex = 20;
+        document.querySelector(".grid").style.zIndex = "initial";
+      }, 200);
+    }
+  }
 }
 
 function changeTemplateColour(setToLastItem) { // Changes the template's border colour. Based either on the last item or the colour picker
@@ -453,6 +467,7 @@ function load(layout) { // Loads cards that have already been created before
     itemsToLoad[i] = addNewCard(itemsToLoad[i], true);
   }
   addItems(itemsToLoad, true);
+  document.querySelector(".controls").style.zIndex = 20;
 }
 
 function toggleGroupRegular() {
@@ -481,7 +496,7 @@ function checkText(element, noBlank = false) { // Returns true if the element co
   var isCode = element.className === "code";
 
   if ((isCode && text.match(/^Interview: [1-9]+[0-9]*$/g) === null &&
-  !(!noBlank && text === "Interview: ")) || text === "") {
+    !(!noBlank && text === "Interview: ")) || text === "") {
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
         if (element.style.backgroundColor === "red") {
@@ -519,14 +534,16 @@ projectTitle.addEventListener('keyup', function(e) { // If enter is pressed
   if (e.keyCode == 13) checkProjectTitle();
 });
 titleYesBtn.addEventListener('click', function(e) {
+  var controls = document.querySelector(".controls");
+  controls.style.position = "sticky";
   toggleModal();
   projectTitle.style.zIndex = 0;
   templateHeading.value = projectTitle.value;
 });
 titleNoBtn.addEventListener('click', function(e) {
-  toggleModal();
+  toggleModal(false);
   modal = document.getElementById("queryProjectTitle");
-  toggleModal();
+  toggleModal(false);
   projectTitle.disabled = false;
   projectTitle.focus();
 });
@@ -555,7 +572,7 @@ clearBtn.addEventListener('click', function(e) {
   toggleModal();
 });
 clearYesBtn.addEventListener('click', function(e) { // Removes all items except the ghost, then removes everything from memory
-  toggleModal();
+  toggleModal(false);
   deleteItems(allItems());
   deleteItems(dummyGrid.getItems(), dummyGrid);
   window.localStorage.clear();
@@ -610,7 +627,7 @@ exportBtn.addEventListener('click', function(e) {
   };
   wb.SheetNames.push("First Sheet");
   undoGroupCollapse();
-  
+
   // Check if any of the code inputs are blank. Exit if any of them are
   var allPElements = document.getElementsByTagName('p');
   var cont = true;
