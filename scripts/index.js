@@ -137,7 +137,7 @@ function initialise() {
   ghost = grid.getItems(0)[0];
 
   // Adds event listeners to the template text elements
-  addListenersToPElements(document.getElementsByTagName('p'));
+  addListenersToPElements(document.getElementsByTagName('p'), false);
 
   var modals = document.querySelectorAll(".modal"); // List of all modals
   var closeButtons = document.querySelectorAll(".close-button"); // List of all modal close buttons
@@ -265,7 +265,7 @@ function changeCardBorder(card, deleteGroup = false) { // Changes the card's bor
   }
 }
 
-function addListenersToPElements(elements) {
+function addListenersToPElements(elements, noBlank) {
   function swap(elem) {
     if (elem.textContent.length > 0) {
       elem.style.borderStyle = "none";
@@ -294,7 +294,7 @@ function addListenersToPElements(elements) {
   for (var i = 0; i < elements.length; i++) {
     if (elements[i].className === "code") {
       elements[i].addEventListener('keyup', function(e) {
-        if (!checkText(this)) {
+        if (!checkText(this, noBlank)) {
           this.innerHTML = "Interview:&nbsp;";
           caratToEnd(this);
         }
@@ -343,7 +343,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
       '</div>';
   }
   itemElem.innerHTML = itemTemplate;
-  addListenersToPElements(itemElem.getElementsByTagName('p'));
+  addListenersToPElements(itemElem.getElementsByTagName('p'), true);
 
   if (returnElement) {
     return itemElem.firstChild;
@@ -476,14 +476,12 @@ function toggleGroupRegular() {
   changeTemplateColour(!groupBtn.disabled);
 }
 
-function checkText(element, confirm = false) { // Returns true if the element contains text. Otherwise it makes it flash, then returns false
+function checkText(element, noBlank = false) { // Returns true if the element contains text. Otherwise it makes it flash, then returns false
   var text = element !== projectTitle ? element.textContent : element.value;
   var isCode = element.className === "code";
 
-  if ((isCode && text.match(/^Interview: [0-9]+$/g) === null) || text === "") {
-    if (!confirm && text === "Interview: ") {
-      return true;
-    }
+  if ((isCode && text.match(/^Interview: [1-9]+[0-9]*$/g) === null &&
+  !(!noBlank && text === "Interview: ")) || text === "") {
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
         if (element.style.backgroundColor === "red") {
@@ -612,6 +610,17 @@ exportBtn.addEventListener('click', function(e) {
   };
   wb.SheetNames.push("First Sheet");
   undoGroupCollapse();
+  
+  // Check if any of the code inputs are blank. Exit if any of them are
+  var allPElements = document.getElementsByTagName('p');
+  var cont = true;
+  for (var i = 0; i < allPElements.length - 4; i++) { // Excludes the last 4 elements, which are the template inputs
+    if (!checkText(allPElements[i], true)) {
+      cont = false;
+    }
+  }
+  if (!cont) return;
+
   var items = allItems();
   var interviews = [];
   items.forEach(function(item) {
