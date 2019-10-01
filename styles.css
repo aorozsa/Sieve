@@ -180,7 +180,7 @@ input[type="text"], .card, .card p {
 /* Core Muuri & card styles */
 .grid {
   position: relative;
-  margin: 0 -10px;
+  margin: 8px -10px;
   width: 100%;
 }
 .item {
@@ -416,13 +416,16 @@ input[type="text"], .card, .card p {
   width: calc(99% + 1px);
 }
 
-/* Control button styles */
+/* Control styles */
 .controls {
   position: -webkit-sticky;
   position: sticky;
   background-color: white;
   margin: -8px -1px;
   top: 0;
+}
+.controls #space {
+  height: 8px;
 }
 .toggleEditBtn {
   background-image: url("app_images/edit.png");
