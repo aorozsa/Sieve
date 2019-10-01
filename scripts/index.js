@@ -273,13 +273,35 @@ function addListenersToPElements(elements) {
       elem.style.border = "1px solid #98B6FF";
     }
   }
+  function caratToEnd(elem) { // Changing the text of a field sets the carat to the start. This sets it to the end
+    elem.focus();
+    if (typeof window.getSelection != "undefined"
+      && typeof document.createRange != "undefined") {
+      var range = document.createRange();
+      range.selectNodeContents(elem);
+      range.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+      var textRange = document.body.createTextRange();
+      textRange.moveToElementText(elem);
+      textRange.collapse(false);
+      textRange.select();
+    }
+  }
+
   for (var i = 0; i < elements.length; i++) {
     if (elements[i].className === "code") {
       elements[i].addEventListener('keyup', function(e) {
         if (!checkText(this)) {
           this.innerHTML = "Interview:&nbsp;";
+          caratToEnd(this);
         }
-      })
+      });
+      elements[i].addEventListener('focus', function(e) {
+        caratToEnd(this);
+      });
 
     } else {
       swap(elements[i]); // Once on initialisation
@@ -589,11 +611,9 @@ exportBtn.addEventListener('click', function(e) {
     Title: "Thematic Analysis Export"
   };
   wb.SheetNames.push("First Sheet");
-  var ws_data = JSON.parse(saveItems());
   undoGroupCollapse();
   var items = allItems();
   var interviews = [];
-  var wscols = [];
   items.forEach(function(item) {
     item = content(item);
     var itemData = item.match(/<p.*?<\/p>/g);
@@ -607,12 +627,10 @@ exportBtn.addEventListener('click', function(e) {
 
       var interviewnumber = dataToSave[2].substr(10);
       if (typeof interviews[interviewnumber] === 'undefined') {
-        // does not exist
         interviews[interviewnumber] = [['Interview: ' + dataToSave[2].charAt(10)]];
       }
       interviews[interviewnumber].push(dataToSave);
       if (typeof interviews[dataToSave[2].substr(11)] === 'undefined') {
-        // does not exist
         interviews[dataToSave[2].substr(11)] = [['Interview: ' + dataToSave[2].charAt(11)]];
       }
       interviews[dataToSave[2].substr(11)].push(dataToSave);
