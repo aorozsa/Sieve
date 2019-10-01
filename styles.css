@@ -51,7 +51,7 @@ input[type="text"] {
   resize: horizontal;
   /* Place it above the modal */
   z-index: 10;
-  width: 77.5%;
+  width: calc(100% - (75px * 5)); /* Takes window resizing into account */
   height: 53px;
   margin-top: 0px;
   margin-left: -20px;
