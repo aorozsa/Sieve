@@ -1,7 +1,9 @@
 # Sieve
 
 ## Getting started
-Run `npm install` to install the required packages. Run `npm update` to update installed packages.
+While the application can be run simply by opening `index.html` in a browser, the latest version of Node.js is required to run the application in Electron and build installers. Download it here: https://nodejs.org/en/
+
+In a terminal window within the project directory, run `npm install` to install the required packages. Run `npm update` to update installed packages.
 
 Markup is found in `index.html`, scripts are found in `scripts/`, and styles are found in `styles.css`.
 
