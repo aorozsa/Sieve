@@ -13,7 +13,19 @@
     <label class='toggleEditBtn'>
       <span class="tooltip">
         <!-- Use non-breaking spaces instead of regular spaces -->
-        <h6>Toggle&nbsp;Card&nbsp;Edit</h6>
+        <h6>Toggle&nbsp;Note&nbsp;Edit</h6>
+      </span>
+    </label>
+
+    <label class='zoomOutBtn'>
+      <span class="tooltip">
+        <h6>Zoom&nbsp;Out</h6>
+      </span>
+    </label>
+
+    <label class='zoomInBtn'>
+      <span class="tooltip">
+        <h6>Zoom&nbsp;In</h6>
       </span>
     </label>
 
@@ -44,11 +56,7 @@
       </span>
     </label>
 
-    <input type="text" maxlength="65" size="1" id="projectTitle" placeholder="Project Title" disabled />
-
-    <div class="slidecontainer">
-      <input type="range" min="40" max="80" value="50" class="slider" />
-    </div>
+    <input type="text" maxlength="60" size="1" id="projectTitle" placeholder="Project Title" disabled />
   </div>
 
   <div class="grid"></div>
@@ -75,13 +83,13 @@
       <span class="close-button">&times;</span>
       <br>
       <br>
-      <button class='groupBtn' disabled>Group Card</button>
-      <button class='regBtn'>Regular Card</button>
+      <button class='groupBtn' disabled>New Group</button>
+      <button class='regBtn'>New Note</button>
       <br>
       <br>
       <br>
       <label class="pickColourBtn">
-        Change colour (groups only)
+        Change group colour
         <input type="color" class="colourPicker" onchange='changeTemplateColour(false);' value="#ff0000">
       </label>
       <div class="item" id="template">
@@ -95,7 +103,7 @@
           </div>
         </div>
       </div>
-      <label class='addCardbtn'>Add New Card</label>
+      <label class='addCardbtn'>Add New Item</label>
     </div>
   </div>
 

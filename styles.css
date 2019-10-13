@@ -8,7 +8,7 @@ label, button {
   cursor: pointer;
   text-align: center;
   line-height: 250%;
-  margin-right: 20px;
+  margin-right: 10px;
   width: 50px;
   height: 50px;
   font-size: 20px;
@@ -51,7 +51,7 @@ input[type="text"] {
   resize: horizontal;
   /* Place it above the modal */
   z-index: 10;
-  width: calc(100% - (75px * 5)); /* Takes window resizing into account */
+  width: calc(100% - (68px * 7)); /* Takes window resizing into account */
   height: 53px;
   margin-top: 0px;
   margin-left: -20px;
@@ -130,51 +130,10 @@ input[type="text"], .card, .card p {
   border-style: solid;
   border-color: transparent transparent #555 transparent;
 }
-.toggleEditBtn:hover .tooltip, .clearBtn:hover .tooltip, .saveBtn:hover .tooltip,
-.loadBtn:hover .tooltip, .exportBtn:hover .tooltip {
+.toggleEditBtn:hover .tooltip, .zoomOutBtn:hover .tooltip, .zoomInBtn:hover .tooltip, .clearBtn:hover .tooltip,
+.saveBtn:hover .tooltip, .loadBtn:hover .tooltip, .exportBtn:hover .tooltip {
   visibility: visible;
   opacity: 1;
-}
-
-/* Slider styles */
-.slidecontainer {
-  width: 100%;
-  margin-top: 5px;
-  margin-left: -2px;
-}
-.slider {
-  -webkit-appearance: none;
-  /* Override default CSS styles */
-  display: block;
-  width: inherit;
-  background: lightgrey;
-  outline: none;
-  opacity: 0.7;
-  /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s;
-  /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
-}
-.slider:hover, .slider:active {
-  opacity: 1;
-}
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  /* Override default look */
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  background: black;
-  /* Green background */
-  cursor: pointer;
-}
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
-  /* Green background */
-  cursor: pointer;
 }
 
 /* Core Muuri & card styles */
@@ -341,7 +300,7 @@ input[type="text"], .card, .card p {
   position: relative;
   width: 99%;
 }
-.pickColourBtnDisabled {
+.pickColourBtnDisabled { /* Gets applied in javascript to give the same appearance as a disabled button */
   color: #6F7E86;
   cursor: default;
 }
@@ -355,11 +314,6 @@ input[type="text"], .card, .card p {
   left: 50%;
   transform: translate(-50%, 0%);
   line-height: -50px;
-  -webkit-transition: none; /* Remove the animation on resizing */
-  -moz-transition: none;
-  -ms-transition: none;
-  -o-transition: none;
-  transition: none;
 }
 .group_title, .card h1 {
   height: auto;
@@ -429,6 +383,20 @@ input[type="text"], .card, .card p {
 }
 .toggleEditBtn {
   background-image: url("app_images/edit.png");
+}
+.zoomOutBtn {
+  background-image: url("app_images/zoomout.png");
+}
+.zoomInBtn {
+  background-image: url("app_images/zoomin.png");
+}
+.zoomBtnDisabled { /* Gets applied in javascript to give the same appearance as a disabled button */
+  color: #6F7E86;
+  background-color: #f1f1f1;
+  cursor: default;
+}
+.zoomBtnDisabled:active {
+  border: 2px outset lightgray;
 }
 .clearBtn {
   background-image: url("app_images/clear.png");

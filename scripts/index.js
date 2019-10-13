@@ -8,12 +8,14 @@ var collapseDrag = false; // True if the group collapse was triggered by draggin
 var collapseSave = {}; // Used to record the active collapsed cards
 var dragStartIndex; // Used to undo certain group movements in grid.on('dragEnd')
 var toggleEditBtn = document.querySelector('.toggleEditBtn');
+var zoomOutBtn = document.querySelector('.zoomOutBtn');
+var zoomInBtn = document.querySelector('.zoomInBtn');
+var zoomValue = 50;
 var clearBtn = document.querySelector('.clearBtn');
 var saveBtn = document.querySelector('.saveBtn');
 var loadBtn = document.querySelector('.loadBtn');
 var exportBtn = document.querySelector('.exportBtn');
 var projectTitle = document.getElementById('projectTitle');
-var slider = document.querySelector(".slider");
 
 // Modal variables
 var modal; // Div element that gets set by every button that opens a modal
@@ -282,13 +284,14 @@ function changeCardBorder(card, deleteGroup = false) { // Changes the card's bor
 function addListenersToPElements(elements, noBlank) {
   function swap(elem) {
     if (elem.textContent.length > 0) {
-      elem.style.borderStyle = "none";
+      if (!editable || (elem == templateTitle || elem == templateComment)) {
+        elem.style.borderStyle = "none";
+      }
     } else {
-      elem.style.border = "1px solid #98B6FF";
+      elem.style.border = "1px dashed black";
     }
   }
   function caratToEnd(elem) { // Changing the text of a field sets the carat to the start. This sets it to the end
-    elem.focus();
     if (typeof window.getSelection != "undefined"
       && typeof document.createRange != "undefined") {
       var range = document.createRange();
@@ -330,7 +333,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
   var itemElem = document.createElement('div');
 
   if (data.length == 3) { // If 4, create a regular card
-    var style = editable ? ' style="cursor:text;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
+    var style = editable ? ' style="cursor:text;border:1px dashed black;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
@@ -395,9 +398,6 @@ function toggleGroupCollapse(gridItem, eventTarget) {
         }
       }
 
-      if (savedItems.length == 0) { // End early if there's nothing to collapse
-        return;
-      }
       collapseSave[saveName] = savedItems; // Save the data
 
       if (savedItems.length > 0) {
@@ -433,6 +433,32 @@ function undoGroupCollapse(item) { // Goes through every item and undoes any col
   } else {
     toggleGroupCollapse(item); // For a single item instead
   }
+}
+
+function zoom() { // Zooms in or out on the grid by resizing the items based on the zoom value
+  var scale = zoomValue / 50;
+  try {
+    var sheet = window.document.styleSheets[1];
+    for (var i = 0; i < 7; i++) { // Deletes the previous rules
+      sheet.deleteRule(sheet.cssRules.length - 1);
+    }
+  } catch (e) { // Creates a new sheet that can be modified and read by both a browser and Electron
+    style = document.createElement("style");
+    style.appendChild(document.createTextNode(""));
+    document.head.appendChild(style);
+    var sheet = window.document.styleSheets[1];
+  }
+
+  // The new size is the default size multiplied by the zoom value divided by 50
+  sheet.insertRule('#ghost h1 { font-size: ' + 75 * scale + 'px; }', sheet.cssRules.length);
+  sheet.insertRule('.item { width: ' + 250 * scale + 'px; height: ' + 250 * scale + '; }', sheet.cssRules.length);
+  sheet.insertRule('.group_title { font-size: ' + 230 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.heading { font-size:' + 170 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.title { font-size:' + 200 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.comment { font-size:' + 130 * scale + '%; }', sheet.cssRules.length);
+  sheet.insertRule('.code { font-size:' + 94 * scale + '%; }', sheet.cssRules.length);
+
+  grid.refreshItems().layout(true); // Refresh the size of the items and readjust the layout
 }
 
 function saveItems() { // Returns all of the grid's item data in a readable format. Core component for saving
@@ -549,22 +575,47 @@ titleNoBtn.addEventListener('click', function(e) {
 });
 
 toggleEditBtn.addEventListener('click', function(e) {
-  var pStyle;
+  var style1, style2;
   var allPElements = document.getElementsByTagName('p');
-
   if (editable) {
     toggleEditBtn.style.backgroundColor = "white";
-    pStyle = "inherit";
+    style1 = "inherit";
+    style2 = "initial";
   } else {
     toggleEditBtn.style.backgroundColor = "lightblue";
-    pStyle = "text";
+    style1 = "text";
+    style2 = "1px dashed black";
   }
   for (var i = 0; i < allPElements.length - 4; i++) { // Excludes the last 4 elements, which are the template inputs
     if (!(allPElements[i].className == "group_title") && !(allPElements[i].className == "heading")) {
-      allPElements[i].style.cursor = pStyle;
+      allPElements[i].style.cursor = style1;
+      if (allPElements[i].innerHTML.length > 0) {
+        allPElements[i].style.border = style2;
+      }
     }
   }
   editable = !editable;
+});
+
+zoomOutBtn.addEventListener('click', function(e) {
+  if (zoomValue > 30) {
+    zoomValue -= 10;
+    zoomInBtn.classList.remove("zoomBtnDisabled");
+    if (zoomValue == 30) {
+      this.classList.add("zoomBtnDisabled");
+    }
+  }
+  zoom();
+});
+zoomInBtn.addEventListener('click', function(e) {
+  if (zoomValue < 100) {
+    zoomValue += 10;
+    zoomOutBtn.classList.remove("zoomBtnDisabled");
+    if (zoomValue == 100) {
+      this.classList.add("zoomBtnDisabled");
+    }
+  }
+  zoom();
 });
 
 clearBtn.addEventListener('click', function(e) {
@@ -710,33 +761,6 @@ exportBtn.addEventListener('click', function(e) {
   var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
   saveAs(new Blob([s2ab(wbout)], { type: "application/excel" }), 'ThematicDataExport.xlsx');
 });
-
-// Update the current slider value (each time you drag the slider handle). Works by appending new values to the stylesheet
-slider.oninput = function() {
-  var scale = this.value / 50;
-  try {
-    var sheet = window.document.styleSheets[1];
-    for (var i = 0; i < 7; i++) { // Deletes the previous rules
-      sheet.deleteRule(sheet.cssRules.length - 1);
-    }
-  } catch (e) { // Creates a new sheet that can be modified and read by both a browser and Electron
-    style = document.createElement("style");
-    style.appendChild(document.createTextNode(""));
-    document.head.appendChild(style);
-    var sheet = window.document.styleSheets[1];
-  }
-
-  // The new size is the default size multiplied by the slider value divided by 50
-  sheet.insertRule('#ghost h1 { font-size: ' + 75 * scale + 'px; }', sheet.cssRules.length);
-  sheet.insertRule('.item { width: ' + 250 * scale + 'px; height: ' + 250 * scale + '; }', sheet.cssRules.length);
-  sheet.insertRule('.group_title { font-size: ' + 230 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.heading { font-size:' + 170 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.title { font-size:' + 200 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.comment { font-size:' + 130 * scale + '%; }', sheet.cssRules.length);
-  sheet.insertRule('.code { font-size:' + 94 * scale + '%; }', sheet.cssRules.length);
-
-  grid.refreshItems().layout(true); // Refresh the size of the items and readjust the layout
-}
 
 regBtn.addEventListener('click', toggleGroupRegular);
 groupBtn.addEventListener('click', toggleGroupRegular);
