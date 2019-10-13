@@ -64,7 +64,7 @@ input[type="text"]:disabled {
 }
 
 /* Classes with animations. More can be added. */
-input[type="text"], .card, .card p {
+input[type="text"], .card, .card p, .card-remove {
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -ms-transition: all 0.2s ease-out;
@@ -202,6 +202,9 @@ input[type="text"], .card, .card p {
   right: 0;
   top: 0;
   font-size: 24px;
+}
+.card-remove:hover {
+  font-size: 34px;
 }
 .group-collapse {
   bottom: 0;
