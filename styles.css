@@ -1,4 +1,8 @@
 /* Global styles */
+[contenteditable] { /* Allows editing of text elements in Safari */
+  -webkit-user-select: text;
+  user-select: text;
+}
 html, textarea {
   font-family: "Georgia", "Times", serif;
 }
@@ -131,7 +135,7 @@ input[type="text"], .card, .card p, .card-remove {
   border-color: transparent transparent #555 transparent;
 }
 .toggleEditBtn:hover .tooltip, .zoomOutBtn:hover .tooltip, .zoomInBtn:hover .tooltip, .clearBtn:hover .tooltip,
-.saveBtn:hover .tooltip, .loadBtn:hover .tooltip, .exportBtn:hover .tooltip {
+.saveBtn:hover .tooltip, .loadBtn:hover .tooltip, .exportBtn:hover .tooltip, .downloadBtn:hover .tooltip {
   visibility: visible;
   opacity: 1;
 }
@@ -292,11 +296,11 @@ input[type="text"], .card, .card p, .card-remove {
   margin-right: 0px;
   width: 50%;
 }
-.groupBtn {
+.regBtn {
   float: left;
   cursor: default;
 }
-.regBtn {
+.groupBtn {
   float: right;
 }
 .pickColourBtn {
@@ -412,6 +416,20 @@ input[type="text"], .card, .card p, .card-remove {
 }
 .exportBtn {
   background-image: url("app_images/excel.png");
+}
+.downloadBtn {
+  position: absolute;
+  top: 75px;
+  right: 10px;
+  margin-right: 0;
+  margin-bottom: 0;
+  background-image: url("app_images/download.png");
+}
+.downloadBtn .tooltip {
+  left: -90%;
+}
+.downloadBtn .tooltip::after {
+  left: 130px;
 }
 .confirmBtn {
   width: 40%;

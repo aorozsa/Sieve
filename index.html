@@ -62,6 +62,12 @@
   <div class="grid"></div>
   <div class="dummyGrid"></div>
 
+  <label class='downloadBtn'>
+    <span class="tooltip">
+      <h6>Download&nbsp;Offline&nbsp;Version</h6>
+    </span>
+  </label>
+
   <!-- Modals. A new div has to be specified every time with a different id -->
   <div class="modal" id="queryProjectTitle">
     <div class="modal-content">
@@ -83,23 +89,23 @@
       <span class="close-button">&times;</span>
       <br>
       <br>
-      <button class='groupBtn' disabled>New Group</button>
-      <button class='regBtn'>New Note</button>
+      <button class='regBtn' disabled>New Note</button>
+      <button class='groupBtn'>New Group</button>
       <br>
       <br>
       <br>
-      <label class="pickColourBtn">
+      <label class="pickColourBtn pickColourBtnDisabled">
         Change group colour
-        <input type="color" class="colourPicker" onchange='changeTemplateColour(false);' value="#ff0000">
+        <input type="color" class="colourPicker" onchange='changeTemplateColour(false);' value="#ff0000" disabled>
       </label>
       <div class="item" id="template">
         <div class="item-content">
           <div class="card" id="templateCard">
-            <p class="group_title" id="templateGroupTitle" contenteditable="true"></p>
-            <textarea class="heading" id="templateHeading" readonly hidden></textarea>
-            <p class="title" id="templateTitle" contenteditable="true" hidden></p>
-            <p class="comment" id="templateComment" contenteditable="true" hidden></p>
-            <p class="code" id="templateCode" contenteditable="true" hidden>Interview:&nbsp;</p>
+            <p class="group_title" id="templateGroupTitle" contenteditable="true" hidden></p>
+            <textarea class="heading" id="templateHeading" readonly></textarea>
+            <p class="title" id="templateTitle" contenteditable="true"></p>
+            <p class="comment" id="templateComment" contenteditable="true"></p>
+            <p class="code" id="templateCode" contenteditable="true">Interview:&nbsp;</p>
           </div>
         </div>
       </div>

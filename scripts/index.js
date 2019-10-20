@@ -60,7 +60,7 @@ function initialise() {
     },
     dragStartPredicate: function(item, e) { // Items are draggable if true is returned
       if (item === ghost) return false;
-      if (editable && e.target.matches("p") && !e.target.matches(".heading") && isRegular(item)) return false;
+      if (editable && e.target.matches("p") && !e.target.matches(".heading")) return false;
       if (e.target.matches(".card-remove")) {
         undoGroupCollapse(item);
         deleteItems(item);
@@ -121,6 +121,23 @@ function initialise() {
       }
     }
   });
+
+  // Loads the download button if not running in electron
+  var userAgent = navigator.userAgent.toLowerCase();
+  if (!(userAgent.indexOf('electron/') > -1)) {
+    document.querySelector('.downloadBtn').addEventListener('click', function() {
+      var link = document.createElement('a');
+      if (window.navigator.userAgent.indexOf("Mac") != -1) { // Set the download link based on the OS
+        link.setAttribute('href', "installers/mac.txt");
+      } else if (window.navigator.userAgent.indexOf("Linux") != -1) {
+        link.setAttribute('href', "installers/linux.txt");
+      } else { // Windows
+        link.setAttribute('href', "installers/windows.txt");
+      }
+      link.click();
+      link.remove();
+    });
+  }
 
   dummyGrid = new Muuri('.dummyGrid', { // Grid used to house regular cards that collapse in on groups
     dragEnabled: false
@@ -352,7 +369,7 @@ function addNewCard(data, returnElement = false) { // Creates a HTML element bas
       '<div class="item">' +
       '<div class="item-content">' +
       '<div class="card" style="border-color:' + data[1] + ';">' +
-      '<p class="group_title" contenteditable="true">' + data[0] + '</p>' +
+      '<p class="group_title" contenteditable="true"' + style + data[0] + '</p>' +
       '<div class="card-remove">&#10005</div>' +
       '<label class="group-collapse"></label>' +
       '</div>' +
@@ -521,7 +538,7 @@ function checkText(element, noBlank = false) { // Returns true if the element co
   var text = element !== projectTitle ? element.textContent : element.value;
   var isCode = element.className === "code";
 
-  if ((isCode && text.match(/^Interview: [1-9]+[0-9]*$/g) === null &&
+  if ((isCode && text.match(/^Interview: [1-9]+.*$/g) === null &&
     !(!noBlank && text === "Interview: ")) || text === "") {
     for (var delay = 0; delay <= 600; delay += 200) {
       setTimeout(function() {
@@ -587,7 +604,7 @@ toggleEditBtn.addEventListener('click', function(e) {
     style2 = "1px dashed black";
   }
   for (var i = 0; i < allPElements.length - 4; i++) { // Excludes the last 4 elements, which are the template inputs
-    if (!(allPElements[i].className == "group_title") && !(allPElements[i].className == "heading")) {
+    if (!(allPElements[i].className == "heading")) {
       allPElements[i].style.cursor = style1;
       if (allPElements[i].innerHTML.length > 0) {
         allPElements[i].style.border = style2;
