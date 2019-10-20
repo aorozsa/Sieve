@@ -418,6 +418,7 @@ input[type="text"], .card, .card p, .card-remove {
   background-image: url("app_images/excel.png");
 }
 .downloadBtn {
+  visibility: hidden;
   position: absolute;
   top: 75px;
   right: 10px;

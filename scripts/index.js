@@ -122,22 +122,6 @@ function initialise() {
     }
   });
 
-  // Loads the download button if not running in electron
-  var userAgent = navigator.userAgent.toLowerCase();
-  if (!(userAgent.indexOf('electron/') > -1)) {
-    document.querySelector('.downloadBtn').addEventListener('click', function() {
-      var link = document.getElementById("link");
-      if (window.navigator.userAgent.indexOf("Mac") != -1) { // Set the download link based on the OS
-        link.setAttribute('href', "installers/mac.txt");
-      } else if (window.navigator.userAgent.indexOf("Linux") != -1) {
-        link.setAttribute('href', "installers/linux.txt");
-      } else { // Windows
-        link.setAttribute('href', "installers/windows.txt");
-      }
-      link.click();
-    });
-  }
-
   dummyGrid = new Muuri('.dummyGrid', { // Grid used to house regular cards that collapse in on groups
     dragEnabled: false
   });
