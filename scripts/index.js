@@ -126,7 +126,7 @@ function initialise() {
   var userAgent = navigator.userAgent.toLowerCase();
   if (!(userAgent.indexOf('electron/') > -1)) {
     document.querySelector('.downloadBtn').addEventListener('click', function() {
-      var link = document.createElement('a');
+      var link = document.getElementById("link");
       if (window.navigator.userAgent.indexOf("Mac") != -1) { // Set the download link based on the OS
         link.setAttribute('href', "installers/mac.txt");
       } else if (window.navigator.userAgent.indexOf("Linux") != -1) {
@@ -135,7 +135,6 @@ function initialise() {
         link.setAttribute('href', "installers/windows.txt");
       }
       link.click();
-      link.remove();
     });
   }
 
