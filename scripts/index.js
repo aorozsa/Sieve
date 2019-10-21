@@ -230,7 +230,7 @@ function addItems(itemsToAdd, fileLoad = false) { // Adds cards with an animatio
 function deleteItems(items, selectedGrid = grid) { // Deletes items with an animation
   selectedGrid.hide(items, {
     onFinish: function(hiddenItems) {
-      grid.remove(hiddenItems, {
+      selectedGrid.remove(hiddenItems, {
         removeElements: true
       });
     }
@@ -242,6 +242,11 @@ function ghostAction() { // Activates when the ghost card is clicked
   templateHeading.value = projectTitle.value;
   changeTemplateColour(!groupBtn.disabled);
   toggleModal();
+  if (regBtn.disabled) {
+    templateTitle.focus();
+  } else {
+    templateGroupTitle.focus();
+  }
 }
 
 function toggleModal(change = true) { // Toggles the currently selected modal's visibility
@@ -337,9 +342,9 @@ function addListenersToPElements(elements, noBlank) {
 
 function addNewCard(data, returnElement = false) { // Creates a HTML element based on the data and adds it to the grid
   var itemElem = document.createElement('div');
+  var style = editable ? ' style="cursor:text;border:1px dashed black;">' : '>'; // Change the cursor and border if the edit toggle is active
 
   if (data.length == 3) { // If 4, create a regular card
-    var style = editable ? ' style="cursor:text;border:1px dashed black;">' : '>'; // Set the cursor to 'text' if the edit toggle is active
     var itemTemplate =
       '<div class="item">' +
       '<div class="item-content">' +
@@ -518,6 +523,7 @@ function toggleGroupRegular() {
   } else {
     groupBtn.style.cursor = "default";
     regBtn.style.cursor = "pointer";
+    templateGroupTitle.focus();
   }
   pickColourBtn.classList.toggle("pickColourBtnDisabled");
   changeTemplateColour(!groupBtn.disabled);
@@ -709,10 +715,17 @@ exportBtn.addEventListener('click', function(e) {
       dataToSave.shift();
 
       var interviewnumber = dataToSave[2].substr(10);
+      var split = interviewnumber.split(/[^0-9]/); // Separate the interview number from the notes
+      interviewnumber = split[1]; // The interview number is always the 2nd element
+      
       if (typeof interviews[interviewnumber] === 'undefined') {
         interviews[interviewnumber] = [['Interview: ' + dataToSave[2].charAt(10)]];
       }
       interviews[interviewnumber].push(dataToSave);
+      if (split.length == 2) { // Skip the iteration if the field has no additional notes
+        return;
+      }
+
       if (typeof interviews[dataToSave[2].substr(11)] === 'undefined') {
         interviews[dataToSave[2].substr(11)] = [['Interview: ' + dataToSave[2].charAt(11)]];
       }
@@ -761,7 +774,11 @@ exportBtn.addEventListener('click', function(e) {
     return el != null;
   });
 
-  rows = transpose(quotesSorted);
+  try {
+    rows = transpose(quotesSorted);
+  } catch (e) {
+    return;
+  }
 
   wb.Sheets["First Sheet"] = XLSX.utils.aoa_to_sheet(rows);
   var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -771,15 +788,15 @@ exportBtn.addEventListener('click', function(e) {
 regBtn.addEventListener('click', toggleGroupRegular);
 groupBtn.addEventListener('click', toggleGroupRegular);
 addCardBtn.addEventListener('click', function(e) {
-  if (groupBtn.disabled) { // If "group" is selected in the modal, generate a group card
-    if (!checkText(templateGroupTitle)) return;
-    addNewCard([templateGroupTitle.textContent, templateCard.style.borderColor]);
-
-  } else { // Otherwise generate a standard card
+  if (regBtn.disabled) { // If "Note" is selected in the modal, generate a standard card
     var cont = checkText(templateTitle);
     cont = checkText(templateComment) && cont;
     cont = checkText(templateCode, true) && cont;
     if (!cont) return;
     addNewCard([templateTitle.textContent, templateComment.textContent, templateCode.textContent]);
+
+  } else { // Otherwise generate a group card
+    if (!checkText(templateGroupTitle)) return;
+    addNewCard([templateGroupTitle.textContent, templateCard.style.borderColor]);
   }
 });
