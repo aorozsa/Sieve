@@ -39,12 +39,13 @@
       "category": "Productivity",
       "icon": "build/icon.icns",
       "target": [
-        "deb"
+        "deb",
+        "tar.gz"
       ]
     },
     "win": {
-      "target": "msi",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "target": "msi"
     }
   },
   "devDependencies": {

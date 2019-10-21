@@ -126,6 +126,12 @@ function initialise() {
     dragEnabled: false
   });
 
+  // Loads the download button if not running in electron
+  var userAgent = navigator.userAgent.toLowerCase();
+  if (!(userAgent.indexOf('electron/') > -1)) {
+    document.querySelector('.downloadBtn').style.visibility = "visible";
+  }
+
   // Adds in the ghost card by default
   var itemElem = document.createElement('div');
   var itemTemplate =
