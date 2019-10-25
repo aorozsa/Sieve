@@ -323,15 +323,16 @@ input[type="text"], .card, .card p, .card-remove {
   line-height: -50px;
 }
 .group_title, .card h1 {
-  height: auto;
   max-height: 100%;
   top: 50%;
   transform: translate(-50%, -50%);
   font-weight: bold;
-  font-size: 230%;
-}
-.card h1 {
   font-size: 75px;
+}
+.group_title {
+  min-height: 20%;
+  max-height: 100%;
+  font-size: 230%;
 }
 .heading {
   max-height: 13%;
@@ -340,7 +341,7 @@ input[type="text"], .card, .card p, .card-remove {
 }
 .title {
   top: 15%;
-  max-height: 16%;
+  height: 16%;
   font-size: 200%;
   font-weight: bold;
 }
@@ -348,6 +349,7 @@ input[type="text"], .card, .card p, .card-remove {
   top: 64%;
   transform: translate(-50%, -55%);
   max-height: 50%;
+  min-height: 10%;
   font-size: 130%;
 }
 .code {
@@ -421,17 +423,11 @@ input[type="text"], .card, .card p, .card-remove {
   visibility: hidden;
   position: absolute;
   top: 75px;
-  right: 10px;
+  left: 7px;
   z-index: 1;
   margin-right: 0;
   margin-bottom: 0;
   background-image: url("app_images/download.png");
-}
-.downloadBtn .tooltip {
-  left: -90%;
-}
-.downloadBtn .tooltip::after {
-  left: 130px;
 }
 .confirmBtn {
   width: 40%;

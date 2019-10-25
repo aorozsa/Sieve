@@ -2,10 +2,9 @@
   "name": "sieve",
   "productName": "Sieve",
   "version": "1.0.0",
-  "license": "ISC",
   "description": "A tool for assisting with data analysis.",
-  "author": "Smart Systems <a@b.c>",
-  "homepage": "",
+  "author": "Smart Systems <aorozsa@gmail.com>",
+  "homepage": "https://aorozsa.github.io/sieve/",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
