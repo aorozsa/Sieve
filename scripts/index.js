@@ -544,6 +544,13 @@ function checkText(element, noBlank = false) { // Returns true if the element co
         }
       }, delay);
     }
+
+    // Sorry for the inconvenience... If you have any ideas as to why the regex above doesn't work in Firefox,
+    // please do let me know via the open issue on the GitHub repository.
+    if (typeof InstallTrigger !== 'undefined') {
+      alert("This crucial feature doesn't work properly on Firefox. Please consider downloading an offline version or using another browser. Sorry for the inconvenience.");
+    }
+
     return false;
   }
   return true;
