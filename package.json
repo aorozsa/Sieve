@@ -5,8 +5,10 @@
   "description": "A tool for assisting with data analysis.",
   "author": "Smart Systems <aorozsa@gmail.com>",
   "homepage": "https://aorozsa.github.io/sieve/",
+  "repository": "https://github.com/aorozsa/sieve",
   "main": "main.js",
   "scripts": {
+    "update": "npm install --save-dev electron electron-builder electron-packager electron-reload run-script-os && npm install --save muuri web-animations-js",
     "start": "electron .",
     "dist": "(rm -r dist || echo) && npm run pack && run-script-os",
     "dist:darwin:linux": "build --pd dist/package/*",
@@ -48,9 +50,9 @@
     }
   },
   "devDependencies": {
-    "electron": "^5.0.11",
+    "electron": "^5.0.12",
     "electron-builder": "^20.44.4",
-    "electron-packager": "^14.0.6",
+    "electron-packager": "^14.1.1",
     "electron-reload": "^1.5.0",
     "run-script-os": "^1.0.7"
   },
